@@ -1,0 +1,30 @@
+# Metanorma build output
+_site/
+published/
+*.err.html
+*.alt.html
+*.presentation.xml
+*.rxl
+*.err
+sources/*.xml
+sources/*.html
+sources/*.pdf
+sources/*.doc
+sources/*.rxl
+sources/*.err
+
+# Relaton cache
+.relaton/
+relaton/
+*.relaton.cache
+.relaton-bib.pstore*
+
+# Ruby
+.bundle/
+vendor/bundle/
+
+# Editors / OS
+.DS_Store
+*.swp
+.idea/
+.vscode/

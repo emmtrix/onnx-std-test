@@ -1,0 +1,45 @@
+---
+# Metanorma "generic" flavour configuration for the ONNX Standard.
+#
+# The generic flavour lets a community define its own document class before it
+# has an SDO identity of its own. This file is the single place where the
+# publisher identity lives, so that the migration path
+#
+#   generic  ->  Linux Foundation JDF flavour  ->  ISO flavour
+#
+# only requires changing this file (and the `:mn-document-class:` attribute in
+# sources/onnx-std.adoc), not the document body.
+
+organization_name_short: ONNX
+organization_name_long: "ONNX Standardization Working Group"
+document_namespace: "https://www.metanorma.org/ns/onnx"
+
+# The document identifier is supplied per-document via the `:docidentifier:`
+# attribute rather than by a Liquid template here: metanorma-generic passes
+# `docid_template` through the AsciiDoc pipeline, where `{{ ... }}` is claimed
+# by Metanorma's concept-reference syntax.
+
+# Stages follow the ISO/IEC harmonised stage model so that the eventual move to
+# the ISO flavour is a rename, not a redesign.
+stage_abbreviations:
+  proposal: NP
+  preparatory: WD
+  committee: CD
+  approval: DS
+  publication: IS
+  withdrawn: WD-DRAFT
+
+published_stages:
+  - publication
+
+default_doctype: standard
+
+doctypes:
+  - standard
+  - specification
+  - technical-report
+  - guide
+
+# Committee metadata surfaced on the cover page.
+committees:
+  - "ONNX Standardization Working Group"

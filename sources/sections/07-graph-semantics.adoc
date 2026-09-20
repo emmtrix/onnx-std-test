@@ -1,0 +1,34 @@
+== Graph semantics
+
+=== Evaluation model
+
+Evaluating a <<graph>> means computing a value for each of its declared outputs,
+given a value for each of its declared inputs.
+
+Evaluation is defined by the dataflow relation between nodes. This document
+does not prescribe an evaluation order beyond the constraint that a node's
+inputs are available before the node is evaluated; in particular, a
+<<conforming-implementation>> MAY evaluate nodes concurrently, may elide nodes
+whose outputs are unused, and may fuse or reassociate computations, provided
+that the results remain within the tolerances of <<subclause-tolerances>>.
+
+=== Determinism
+
+// TODO: State which operators are permitted to be non-deterministic (random
+// number generation, and reductions whose order is unspecified in floating
+// point) and what a producer may assume. Without this clause, "within
+// tolerance" is not testable.
+
+=== Control flow
+
+Subgraphs appear as attributes of the `If`, `Loop` and `Scan` operators.
+
+// TODO: Specify the binding of loop-carried dependencies, the termination
+// condition, and the interaction between subgraph scoping and the acyclicity
+// requirement of <<model-structure>>.
+
+=== Errors
+
+A consumer that detects a violation of a requirement of this document SHALL
+report it and SHALL NOT produce a result. A consumer MAY continue validation in
+order to report further violations.

@@ -1,0 +1,42 @@
+== Versioning and compatibility
+
+=== Version axes
+
+ONNX has three independent version axes:
+
+IR version:: the version of the structural and serialization rules given in
+<<model-structure>> and <<serialization>>.
+
+Operator set version:: the version of an <<operator-set>>, per <<domain>>.
+
+Model version:: an identifier assigned by the <<producer>>, opaque to this
+document.
+
+=== Operator set evolution
+
+An operator set version SHALL NOT be changed once published.
+
+A new operator set version MAY add operators, MAY add optional inputs,
+outputs or attributes to an existing operator, and MAY widen a type
+constraint. It SHALL NOT narrow a type constraint, remove an operator, or
+change the semantics of an existing operator, other than by introducing a new
+version of that operator.
+
+=== Compatibility obligations
+
+A consumer that claims support for operator set version stem:[n] of a domain
+SHALL accept models declaring any version stem:[m <= n] of that domain, and
+SHALL evaluate each node according to the operator definition in force at
+version stem:[m].
+
+// TODO: The above states backward compatibility as an obligation. Current
+// runtimes do not universally meet it. Either the obligation is weakened, or
+// it is stated as written and the gap is recorded in Annex B as a known
+// divergence. The latter is recommended: a standard states the requirement,
+// and a conformance statement records what an implementation achieves.
+
+=== Deprecation
+
+An operator MAY be marked deprecated in an operator set version. Deprecation
+SHALL NOT remove the operator, and a consumer SHALL continue to evaluate
+deprecated operators.

@@ -1,0 +1,45 @@
+[.preface]
+== Foreword
+
+This document has been prepared by the ONNX Standardization Working Group.
+
+[IMPORTANT]
+.Status of this document
+====
+This is an *unofficial* working draft. It has no standing within the ONNX
+project, the Linux Foundation, IEC, ISO or any other standards development
+organization, and it MUST NOT be cited as a normative reference.
+
+It exists to demonstrate what a normative, Metanorma-authored ONNX
+specification would look like, as input to a discussion with the ONNX Steering
+Committee.
+====
+
+[.preface]
+== Introduction
+
+The Open Neural Network Exchange (ONNX) format is in wide industrial use as an
+interchange representation for machine learning models. Its present
+specification is maintained as a set of Markdown documents alongside the
+reference implementation, which is well suited to rapid evolution but does not
+provide the properties expected of a standard: a stable identifier, an
+unambiguous separation of normative from informative text, testable conformance
+requirements, and a controlled change process.
+
+This document restates the ONNX format as a normative specification. It is
+written in Metanorma so that it can be rendered in the house styles of
+successive publishers as ONNX moves along the intended path:
+
+. a specification published under a Linux Foundation Joint Development
+  Foundation (JDF) project, giving ONNX a specification process with an
+  explicit IPR regime;
+. subsequently, submission of that specification through a Publicly Available
+  Specification (PAS) or equivalent route towards an ISO or ISO/IEC deliverable.
+
+Accordingly this document follows ISO/IEC Directives, Part 2 drafting
+conventions from the outset, even though its current publisher is not an SDO.
+
+The technical content is intended to describe ONNX as it is, not as it might
+be. Where the reference implementation and the present prose specification
+disagree, that divergence is recorded rather than silently resolved; see
+Annex B.

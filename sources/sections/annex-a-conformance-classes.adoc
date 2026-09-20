@@ -1,0 +1,20 @@
+[appendix,obligation=normative]
+== Conformance statement
+
+A conformance statement claiming conformance to this document SHALL supply the
+information in <<tbl-conformance-statement>>.
+
+[[tbl-conformance-statement]]
+.Content of a conformance statement
+|===
+| Item | Obligation
+
+| Identity and version of the implementation | mandatory
+| Conformance classes claimed (see <<conformance>>) | mandatory
+| IR versions supported | mandatory
+| For each domain, the operator set versions supported | mandatory
+| For each operator set version, the operators not supported | mandatory
+| For each element type supported, the numerical tolerance achieved | mandatory
+| Known divergences from this document | mandatory
+| External data handling policy | conditional, if external data is supported
+|===

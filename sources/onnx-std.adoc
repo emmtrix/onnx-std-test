@@ -1,0 +1,50 @@
+= Open Neural Network Exchange (ONNX) --- Model representation and semantics
+:docnumber: 1
+:docidentifier: ONNX 1 (unofficial draft)
+:edition: 1
+:revdate: 2026-09-20
+:copyright-year: 2026
+:language: en
+:title: Open Neural Network Exchange (ONNX)
+:subtitle: Model representation and semantics
+:doctype: standard
+:docstage: preparatory
+:status: preparatory
+:committee: ONNX Standardization Working Group
+:mn-document-class: generic
+:customize: onnx.yml
+:mn-output-extensions: xml,html,pdf,rxl
+:data-uri-image:
+:imagesdir: images
+:toc:
+:sectanchors:
+:sectnums:
+:xrefstyle: short
+
+include::sections/00-preface.adoc[]
+
+include::sections/01-scope.adoc[]
+
+include::sections/02-normative-references.adoc[]
+
+include::sections/03-terms-and-definitions.adoc[]
+
+include::sections/04-conformance.adoc[]
+
+include::sections/05-type-system.adoc[]
+
+include::sections/06-model-structure.adoc[]
+
+include::sections/07-graph-semantics.adoc[]
+
+include::sections/08-operator-specification.adoc[]
+
+include::sections/09-serialization.adoc[]
+
+include::sections/10-versioning.adoc[]
+
+include::sections/annex-a-conformance-classes.adoc[]
+
+include::sections/annex-b-operator-set.adoc[]
+
+include::sections/bibliography.adoc[]
