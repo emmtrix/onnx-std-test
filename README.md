@@ -127,6 +127,16 @@ clauses of the draft, and how to refresh it.
 
 The copy is never built or published; it is reference material.
 
+## Where this is going structurally
+
+[`STRUCTURE.md`](STRUCTURE.md) proposes the structure the document should move
+to: a multi-part standard that separates a stable **Core** from the
+faster-moving **operator sets** and **conformance test vectors**, so that
+adding an operator does not force a new edition of the core.
+
+It is a proposal for discussion, not yet implemented; the document in
+`sources/` still has the ten-clause structure of the initial draft.
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for drafting conventions.
