@@ -54,12 +54,30 @@ scripts/check-errors.rb    Gates the build on Metanorma diagnostic severity
 .github/workflows/         CI: build HTML + PDF, publish as artifacts
 ```
 
+## Published site
+
+Every push to `main` builds the document and publishes it to GitHub Pages:
+
+**https://emmtrix.github.io/onnx-std-test/**
+
+The page links the standard as HTML (for reading), Word (for review and
+comments), Metanorma semantic XML and the Relaton bibliographic record.
+
+Nothing is published if the render is incomplete or the document has errors of
+severity 1 or worse — see `.github/workflows/pages.yml`.
+
+> **One-time setup:** this requires GitHub Pages to be enabled for the
+> repository with **Settings → Pages → Build and deployment → Source =
+> "GitHub Actions"**. Until that is set, the `deploy` job fails; the build
+> itself still runs.
+
 ## Building
 
 ```sh
 bundle install
 make          # semantic XML + HTML
 make doc      # also Word (.doc)
+make site     # the full site under _site/, as published to Pages
 make lint     # fail on Metanorma errors of severity <= 1
 make clean
 ```

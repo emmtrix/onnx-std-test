@@ -13,7 +13,7 @@
 :committee: ONNX Standardization Working Group
 :mn-document-class: generic
 :customize: onnx.yml
-:mn-output-extensions: xml,html,pdf,rxl
+:mn-output-extensions: xml,html,doc,rxl
 :data-uri-image:
 :imagesdir: images
 :toc:

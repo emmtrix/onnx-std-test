@@ -2,7 +2,7 @@
 #
 #   make            build semantic XML + HTML
 #   make doc        build HTML and Word (.doc)
-#   make site       build the browsable site under _site/
+#   make site       build the browsable site under _site/ and verify it
 #   make lint       fail if the last build reported errors above the
 #                   configured severity threshold (builds first if needed)
 #   make clean      remove build output
@@ -38,8 +38,38 @@ $(ERRFILE) html: $(SOURCES)
 doc: $(SOURCES)
 	$(METANORMA) compile -t $(FLAVOUR) -x xml,presentation,html,doc $(DOCUMENT)
 
+# Output formats are passed explicitly rather than left to the manifest:
+#   - the `generic` flavour has no PDF converter, and the default format set
+#     includes PDF, which aborts the build;
+#   - `presentation` must be listed, because it is the intermediate that the
+#     HTML and DOC converters read. Omitted, Metanorma writes it under a
+#     truncated filename, both converters fail with ENOENT on
+#     `onnx-std.presentation.xml`, and the site build still exits 0 — leaving a
+#     site whose document links all 404.
+SITE_EXT   := xml,presentation,html,doc,rxl
+SITE_DIR   := _site
+
+# Files the published site must contain. `metanorma site generate` exits 0 even
+# when a converter failed and wrote nothing, so the build is verified rather
+# than trusted: without this check a broken site deploys silently.
+SITE_FILES := index.html \
+              documents/onnx-std.html \
+              documents/onnx-std.doc \
+              documents/onnx-std.xml
+
 site:
-	$(METANORMA) site generate --agree-to-terms
+	$(METANORMA) site generate --agree-to-terms --continue-without-fonts \
+	  -x $(SITE_EXT)
+	@missing=0; \
+	for f in $(SITE_FILES); do \
+	  if [ ! -s "$(SITE_DIR)/$$f" ]; then \
+	    echo "site: missing or empty: $(SITE_DIR)/$$f" >&2; missing=1; \
+	  fi; \
+	done; \
+	if [ $$missing -ne 0 ]; then \
+	  echo "site: incomplete build — see above" >&2; exit 1; \
+	fi; \
+	echo "site: all expected documents present in $(SITE_DIR)"
 
 lint: $(ERRFILE)
 	@scripts/check-errors.rb $(ERRFILE) $(SEVERITY)

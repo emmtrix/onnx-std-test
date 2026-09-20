@@ -1,0 +1,54 @@
+name: pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Queue deployments rather than cancelling them: a half-finished Pages
+# deployment would leave the published site inconsistent.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: true
+
+      # `make site` renders the collection into _site/ and then verifies that
+      # every expected document is present: `metanorma site generate` exits 0
+      # even when a converter failed and wrote nothing.
+      - name: Build site
+        run: bundle exec make site
+
+      # The site render writes its own diagnostics, separate from those of the
+      # `build` workflow, so they are gated here too. Nothing is published if
+      # the document has errors of severity 1 or worse.
+      - name: Fail on Metanorma errors
+        run: bundle exec ruby scripts/check-errors.rb _site/documents/onnx-std.err.html 1
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
