@@ -21,8 +21,19 @@ jobs:
           ruby-version: "3.3"
           bundler-cache: true
 
-      - name: Build HTML and DOC
-        run: bundle exec make doc
+      # Fontist downloads the fonts named in sources/onnx.yml on first use.
+      # Caching them keeps PDF builds from re-fetching ~100 MB every run.
+      - name: Cache Metanorma fonts
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.fontist
+            ~/.metanorma/fonts
+          key: metanorma-fonts-${{ hashFiles('sources/onnx.yml') }}
+          restore-keys: metanorma-fonts-
+
+      - name: Build HTML, DOC and PDF
+        run: bundle exec make pdf
 
       - name: Fail on Metanorma errors
         run: bundle exec make lint
@@ -35,6 +46,7 @@ jobs:
           path: |
             sources/onnx-std.html
             sources/onnx-std.doc
+            sources/onnx-std.pdf
             sources/onnx-std.xml
             sources/onnx-std.err.html
           if-no-files-found: warn

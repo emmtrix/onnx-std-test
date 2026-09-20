@@ -60,8 +60,9 @@ Every push to `main` builds the document and publishes it to GitHub Pages:
 
 **https://emmtrix.github.io/onnx-std-test/**
 
-The page links the standard as HTML (for reading), Word (for review and
-comments), Metanorma semantic XML and the Relaton bibliographic record.
+The page links the standard as HTML (for reading), PDF (for circulation),
+Word (for review and comments), Metanorma semantic XML and the Relaton
+bibliographic record.
 
 Nothing is published if the render is incomplete or the document has errors of
 severity 1 or worse — see `.github/workflows/pages.yml`.
@@ -77,14 +78,20 @@ severity 1 or worse — see `.github/workflows/pages.yml`.
 bundle install
 make          # semantic XML + HTML
 make doc      # also Word (.doc)
+make pdf      # also PDF
 make site     # the full site under _site/, as published to Pages
 make lint     # fail on Metanorma errors of severity <= 1
 make clean
 ```
 
-Output lands next to the sources as `sources/onnx-std.{xml,html,doc}`. The
-`generic` flavour ships no PDF converter; PDF arrives with the move to a
-publisher flavour that carries PDF stylesheets (step 2 below).
+Output lands next to the sources as `sources/onnx-std.{xml,html,doc,pdf}`.
+`sources/onnx-std.err.html` is Metanorma's diagnostic report — read it after
+every build.
+
+PDF is rendered through `sources/onnx.standard.xsl`, the ONNX house style. The
+`generic` flavour ships no XSL-FO stylesheet, so this one is derived from
+CalConnect's and de-branded; its header records the provenance and the exact
+changes. The first PDF build downloads the fonts named in `sources/onnx.yml`.
 `sources/onnx-std.err.html` is Metanorma's diagnostic report — read it after
 every build.
 
