@@ -1,0 +1,4 @@
+[bibliography]
+== Bibliography
+
+* [[[onnxrepo,ONNX]]], _Open Neural Network Exchange_, https://onnx.ai

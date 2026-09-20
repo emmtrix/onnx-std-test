@@ -47,9 +47,9 @@ metanorma.yml              Metanorma manifest (site build)
 Gemfile                    Toolchain
 Makefile                   Build entry points
 sources/
-  onnx-std.adoc            Master document: metadata + includes
   onnx.yml                 Publisher identity for the `generic` flavour
-  sections/                One file per clause
+  onnx.standard.xsl        ONNX house style for PDF
+  part1/ part2/ part3/     One directory per part: master document + sections/
 scripts/check-errors.rb    Gates the build on Metanorma diagnostic severity
 scripts/vendor-onnx-docs.sh  Refreshes the vendored upstream copy
 upstream/onnx/             Verbatim upstream ONNX docs (complete) + .proto
@@ -62,9 +62,9 @@ Every push to `main` builds the document and publishes it to GitHub Pages:
 
 **https://emmtrix.github.io/onnx-std-test/**
 
-The page links the standard as HTML (for reading), PDF (for circulation),
-Word (for review and comments), Metanorma semantic XML and the Relaton
-bibliographic record.
+The page links each of the three parts as HTML (for reading), PDF (for
+circulation), Word (for review and comments), Metanorma semantic XML and the
+Relaton bibliographic record.
 
 Nothing is published if the render is incomplete or the document has errors of
 severity 1 or worse — see `.github/workflows/pages.yml`.
@@ -86,15 +86,15 @@ make lint     # fail on Metanorma errors of severity <= 1
 make clean
 ```
 
-Output lands next to the sources as `sources/onnx-std.{xml,html,doc,pdf}`.
-`sources/onnx-std.err.html` is Metanorma's diagnostic report — read it after
+Output lands next to each part, as `sources/part<N>/onnx-std-<N>.{xml,html,doc,pdf}`.
+Each part's `onnx-std-<N>.err.html` is Metanorma's diagnostic report — read it after
 every build.
 
 PDF is rendered through `sources/onnx.standard.xsl`, the ONNX house style. The
 `generic` flavour ships no XSL-FO stylesheet, so this one is derived from
 CalConnect's and de-branded; its header records the provenance and the exact
 changes. The first PDF build downloads the fonts named in `sources/onnx.yml`.
-`sources/onnx-std.err.html` is Metanorma's diagnostic report — read it after
+Each part's `onnx-std-<N>.err.html` is Metanorma's diagnostic report — read it after
 every build.
 
 ## State of the draft
@@ -126,6 +126,24 @@ version, what was and was not copied, the mapping from upstream documents to
 clauses of the draft, and how to refresh it.
 
 The copy is never built or published; it is reference material.
+
+## How the standard is divided
+
+ONNX 1 is drafted as a **multi-part standard**, separating a stable core from
+the faster-moving operator sets and conformance test vectors, so that adding an
+operator does not force a new edition of the core:
+
+| Part | Content | Changes with |
+|---|---|---|
+| **1 — Core** | Information model, types, semantics, inference, validation, numerical behaviour, encoding, versioning, security, conformance | the IR version |
+| **2 — Operator sets** | The operator definitions, per domain and opset version | every ONNX release |
+| **3 — Conformance test package** | Test vector format, selection, tolerances, reporting | Part 2 |
+
+Part 1 names no individual operator: it specifies the *form* an operator
+definition takes and the rules an operator set obeys. That is the seam that
+keeps the core still while the operator sets move.
+
+[`STRUCTURE.md`](STRUCTURE.md) records the rationale.
 
 ## Contributing
 

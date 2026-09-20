@@ -1,0 +1,16 @@
+== Terms and definitions
+
+For the purposes of this document, the terms and definitions given in
+<<onnx-part-1>> apply, together with the following.
+
+[[vector-outcome]]
+=== outcome
+
+result of applying one <<test-vector-t>> to an implementation, being one of
+_pass_, _fail_, _unsupported_ or _error_
+
+[[test-vector-t]]
+=== test vector
+
+model, together with input values, expected output values and the tolerance
+against which they are compared

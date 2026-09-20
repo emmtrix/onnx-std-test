@@ -1,0 +1,43 @@
+= Open Neural Network Exchange (ONNX) --- Part 3: Conformance test package
+:docnumber: 1
+:partnumber: 3
+:docidentifier: ONNX 1-3 (unofficial draft)
+:edition: 1
+:revdate: 2026-09-20
+:copyright-year: 2026
+:language: en
+:title: Open Neural Network Exchange (ONNX)
+:subtitle: Part 3: Conformance test package
+:doctype: standard
+:docstage: preparatory
+:status: preparatory
+:committee: ONNX Standardization Working Group
+:mn-document-class: generic
+:customize: ../onnx.yml
+:mn-output-extensions: xml,html,doc,pdf,rxl
+:data-uri-image:
+:imagesdir: images
+:toc:
+:sectanchors:
+:sectnums:
+:xrefstyle: short
+
+include::sections/00-preface.adoc[]
+
+include::sections/01-scope.adoc[]
+
+include::sections/02-normative-references.adoc[]
+
+include::sections/03-terms-and-definitions.adoc[]
+
+include::sections/04-vector-format.adoc[]
+
+include::sections/05-test-selection.adoc[]
+
+include::sections/06-tolerances.adoc[]
+
+include::sections/07-reporting.adoc[]
+
+include::sections/annex-a-test-vectors.adoc[]
+
+include::sections/bibliography.adoc[]

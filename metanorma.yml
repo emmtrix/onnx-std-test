@@ -1,8 +1,9 @@
 ---
 # Metanorma manifest for the (unofficial) ONNX Standard.
 #
-# This manifest drives `metanorma site generate`, which renders the browsable
-# site published to GitHub Pages.
+# ONNX 1 is a multi-part standard. The parts are separate documents because
+# they move at different speeds: Part 1 changes with the IR version, Part 2
+# with every ONNX release, and Part 3 tracks Part 2. See STRUCTURE.md.
 #
 # Note: the output formats are NOT configured here. An `extensions:` key in
 # this file is ignored by metanorma-cli 1.17, so the site build passes them on
@@ -10,7 +11,9 @@
 metanorma:
   source:
     files:
-      - sources/onnx-std.adoc
+      - sources/part1/onnx-std-1.adoc
+      - sources/part2/onnx-std-2.adoc
+      - sources/part3/onnx-std-3.adoc
   collection:
     organization: "ONNX Standardization Working Group"
     name: "ONNX Standard (unofficial draft)"

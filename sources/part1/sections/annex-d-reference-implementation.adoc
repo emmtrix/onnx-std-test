@@ -1,0 +1,15 @@
+[appendix,obligation=informative]
+== Correspondence with the ONNX reference implementation
+
+This document is a restatement of the ONNX format as documented by the ONNX
+project. It is not derived from the reference implementation's source, and the
+implementation is not reproduced here: it is large, it moves with every
+release, and a copy inside a standard would age badly.
+
+The documentation this part was written against is vendored in the repository
+under `upstream/onnx/`, at the release recorded in its provenance file, so that
+every statement in this document can be checked against a fixed tree.
+
+Where this document and the reference implementation disagree, the divergence
+is recorded in Annex C rather than resolved silently. Resolving such a
+divergence is a decision for the ONNX Steering Committee, not for the editor.

@@ -1,0 +1,20 @@
+== Scope
+
+This document specifies the operator sets of the Open Neural Network Exchange
+(ONNX) format: the operators of each domain, at each operator set version,
+in the form required by <<onnx-part-1>>.
+
+This document specifies:
+
+* the form an operator definition takes;
+* the operators of the default domain;
+* the operators of the `ai.onnx.ml` domain;
+* for each operator, its signature, attributes, type constraints, shape
+  inference, semantics and error conditions.
+
+This document does not specify:
+
+* the information model, type system, evaluation semantics, validation rules,
+  numerical obligations, encoding or versioning rules, which are in
+  <<onnx-part-1>>;
+* the conformance test vectors, which are in <<onnx-part-3>>.

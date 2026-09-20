@@ -39,8 +39,9 @@ They are not source comments. A reader of the PDF must see that a thin clause
 is a known, tracked gap rather than a finished requirement; a `// TODO:`
 comment renders to nothing and tells them nothing.
 
-Each note is also mirrored as a row in Annex B. A note without an Annex B row
-is incomplete: the annex is the consolidated view the Steering Committee reads.
+Each note is also covered by a row in Annex C of Part 1. A clause with a note
+and no row is incomplete: the annex is the consolidated view the Steering
+Committee reads, across all three parts.
 Both the notes and Annex B are draft apparatus and come out before publication.
 
 Three placement constraints, each learned from a failed build:
@@ -54,8 +55,13 @@ Three placement constraints, each learned from a failed build:
 
 ## Structure
 
-One clause per file under `sources/sections/`, named `NN-slug.adoc` in document
-order. Add the file to the include list in `sources/onnx-std.adoc`.
+One clause per file under `sources/part<N>/sections/`, named `NN-slug.adoc` in
+document order. Add the file to the include list in the part's master document,
+`sources/part<N>/onnx-std-<N>.adoc`.
+
+Put content in the part it belongs to. Part 1 must name no individual operator
+— that is what keeps it still while the operator sets move. A rule about
+operators in general belongs in Part 1; a rule about `Relu` belongs in Part 2.
 
 Clause numbering is generated. Never hard-code a clause number in prose — use a
 cross-reference, so that inserting a clause does not silently invalidate
@@ -70,7 +76,7 @@ make lint
 This builds the document and fails if Metanorma reports any diagnostic of
 severity 1 (error) or worse. Relaton bibliography lookups are severity 2-3 and
 do not fail the build, since they depend on network access, but check
-`sources/onnx-std.err.html` for new ones.
+each part's `onnx-std-<N>.err.html` for new ones.
 
 Commit only sources. Build output is ignored by `.gitignore`; rendered
 documents are published as CI artifacts.
@@ -124,7 +130,7 @@ closed a gap recorded there, or opened one.
 ## Changing the publisher flavour
 
 The publisher identity lives in `sources/onnx.yml` and in the
-`:mn-document-class:` attribute of `sources/onnx-std.adoc`. Moving to a Linux
+`:mn-document-class:` attribute of each part's master document. Moving to a Linux
 Foundation or ISO house style should touch those two places and nothing else.
 If a flavour change requires editing the document body, that is a defect in how
 the body is written — report it.

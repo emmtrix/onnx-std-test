@@ -3,6 +3,16 @@
 
 This document has been prepared by the ONNX Standardization Working Group.
 
+ONNX 1 consists of the following parts:
+
+* Part 1: Core (this document)
+* Part 2: Operator sets
+* Part 3: Conformance test package
+
+The division is deliberate. The core changes with the IR version, roughly once
+a year; the operator sets change with every ONNX release. Keeping them in one
+document would give the core a new edition each time an operator is added.
+
 [IMPORTANT]
 .Status of this document
 ====
@@ -39,7 +49,12 @@ successive publishers as ONNX moves along the intended path:
 Accordingly this document follows ISO/IEC Directives, Part 2 drafting
 conventions from the outset, even though its current publisher is not an SDO.
 
+This part specifies the framework: what a model is, what its values may be,
+what evaluating it means, and what an implementation must do to conform. It
+names no individual operator. The operator definitions themselves are in
+Part 2, and the test vectors that make conformance checkable are in Part 3.
+
 The technical content is intended to describe ONNX as it is, not as it might
 be. Where the reference implementation and the present prose specification
 disagree, that divergence is recorded rather than silently resolved; see
-Annex B.
+Annex C.

@@ -1,0 +1,18 @@
+== The ai.onnx.ml domain
+
+=== General
+
+The `ai.onnx.ml` domain carries the classical machine learning operators.
+
+[IMPORTANT]
+.Editorial note
+====
+Empty for the same reason as the default domain clause, and to be populated by
+the same means.
+
+One question is specific to this domain: whether it belongs in the same part as
+the default domain at all. It moves on a different and much slower cadence, and
+implementations commonly support one without the other. If conformance profiles
+separate them, as Clause 4 of <<onnx-part-1>> suggests, a separate part may
+follow the profiles better than a clause here does.
+====

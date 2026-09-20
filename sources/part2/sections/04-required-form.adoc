@@ -1,14 +1,14 @@
-== Operator specification
+[[required-form]]
+== Required form of an operator specification
 
 === General
 
-An <<operator>> is specified by its domain, its name, its signature, its
-attributes, its type constraints and its semantics.
+Every operator specified by this document SHALL be specified in the form given
+in <<tbl-operator-template>>.
 
-=== Required form of an operator specification
-
-Every operator specified by this document or by a conformant operator set
-SHALL be specified in the form given in <<tbl-operator-template>>.
+The form is normative. An operator definition that omits a mandatory element is
+not a definition for the purposes of <<onnx-part-1>>, and an implementation
+cannot be required to support it.
 
 [[tbl-operator-template]]
 .Required elements of an operator specification
@@ -23,13 +23,15 @@ SHALL be specified in the form given in <<tbl-operator-template>>.
 | Type constraints | mandatory | Named sets of admissible element types.
 | Shape inference | mandatory | The output shape as a function of input shapes and attributes.
 | Semantics | mandatory | The value of each output as a function of the inputs.
+| Determinism | conditional | Required if the operator is not deterministic; see Clause 11 of <<onnx-part-1>>.
 | Errors | mandatory | The conditions under which the operator is not defined.
+| Test vectors | mandatory | Reference to the vectors in <<onnx-part-3>> that check this operator.
 | Examples | optional | Informative.
 |===
 
 NOTE: The present ONNX operator documentation supplies most of these elements
-for most operators, but not all of them for all operators. Annex B records the
-gaps.
+for most operators, but not all of them for all operators. Annex C of
+<<onnx-part-1>> records the gaps.
 
 === Worked example of the required form
 
@@ -60,10 +62,13 @@ Semantics::
 For every index stem:[i] into `X`,
 stem:[Y_i = max(X_i, 0)].
 
+Determinism:: Deterministic.
+
 Errors::
 None. For floating-point element types, the result for a NaN input is
 stem:[NaN].
 
+Test vectors:: `ai.onnx/Relu/14` in <<onnx-part-3>>.
 ====
 
 [IMPORTANT]
@@ -72,13 +77,14 @@ stem:[NaN].
 Confirm the NaN behaviour of the example above against the reference
 implementation before the committee draft. stem:[max(NaN, 0)] is not well
 defined by <<ieee754>> without stating which of `maxNum` or `maximum` is
-intended.
+intended, and Clause 11 of <<onnx-part-1>> owes that decision once for all
+operators rather than per definition.
 ====
 
-=== Operator sets defined by this document
+=== Operator set versions
 
-[IMPORTANT]
-.Editorial note
-====
-This document currently specifies no operators normatively. The intended approach is that the operator set is a separate deliverable (a multi-part standard), with this Part 1 specifying the framework and Part 2 the default-domain operator set. Confirm the multi-part structure with the Steering Committee before populating this clause.
-====
+Each clause below specifies one domain. Within a domain, an operator definition
+is identified by its name together with the operator set version in which it
+took effect.
+
+The evolution rules an operator set obeys are in Clause 14 of <<onnx-part-1>>.

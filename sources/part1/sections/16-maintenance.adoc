@@ -1,0 +1,38 @@
+[[maintenance]]
+== Maintenance and extension
+
+=== Custom domains
+
+A model MAY use operators in a <<domain>> not defined by <<onnx-part-2>>.
+
+A consumer that does not implement such a domain SHALL report the operator as
+unsupported under <<conformance>>, and SHALL NOT evaluate the model.
+
+=== Experimental operators
+
+[IMPORTANT]
+.Editorial note
+====
+State whether this standard recognizes experimental operators at all. Upstream
+has a process for them; a standard that admits operators whose semantics may
+change is in tension with the stability its operator set rules promise. The
+likely answer is that experimental operators live in a separate domain and are
+outside conformance, but the Steering Committee should decide.
+====
+
+=== Adding an operator
+
+The procedure by which an operator enters an <<operator-set>> is specified in
+<<onnx-part-2>>. The constraints that procedure must respect are in
+<<versioning>>.
+
+=== Amending this document
+
+[IMPORTANT]
+.Editorial note
+====
+State the amendment process for this part, and its relationship to the release
+cadence of <<onnx-part-2>>. The division into parts exists so that an operator
+added upstream does not force a new edition of this part; the amendment process
+is what makes that real rather than aspirational.
+====

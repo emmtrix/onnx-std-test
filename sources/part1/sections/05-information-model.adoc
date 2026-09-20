@@ -1,0 +1,53 @@
+[[information-model]]
+== Information model
+
+=== General
+
+This clause introduces the entities of an ONNX <<model>> and their
+relationships. <<graph-structure>> states the constraints a well-formed graph
+satisfies; <<graph-semantics>> states what evaluating one means.
+
+=== Entities and their relationships
+
+A model contains exactly one top-level <<graph>>.
+
+A graph contains an ordered sequence of <<node,nodes>>, together with its
+declared inputs, outputs, initializers and value type information.
+
+A node invokes one <<operator>>, identified by <<domain>> and name, binds named
+values to that operator's formal inputs and outputs, and fixes its
+<<attribute,attributes>>.
+
+A value is produced by exactly one of: a graph input, an initializer, a node in
+the same graph, or an enclosing scope.
+
+=== Model
+
+A model SHALL declare, for every <<domain>> used by any node reachable from its
+top-level graph, the <<operator-set>> version of that domain that the model
+requires.
+
+A model SHALL declare the IR version against which it was produced.
+
+=== Names and scoping
+
+Names SHALL be non-empty. Within one graph, a name SHALL be bound at most once.
+
+[IMPORTANT]
+.Editorial note
+====
+Specify subgraph scoping precisely: which names a subgraph of an `If`, `Loop`
+or `Scan` node may capture from enclosing scopes, and whether shadowing is
+permitted. See also <<subgraph-scoping>>.
+====
+
+=== Metadata
+
+Metadata SHALL NOT affect the result of evaluating a model. A consumer MAY
+ignore any metadata it does not recognize.
+
+=== Domains as the extension point
+
+The <<domain>> is the sole extension point of the information model. An
+operator outside the domains defined by <<onnx-part-2>> is a custom operator;
+see <<maintenance>>.

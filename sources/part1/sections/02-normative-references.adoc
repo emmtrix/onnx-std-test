@@ -6,6 +6,12 @@ all of their content constitutes requirements of this document. For dated
 references, only the edition cited applies. For undated references, the latest
 edition of the referenced document (including any amendments) applies.
 
+* [[[onnx-part-2,ONNX 1-2]]], _Open Neural Network Exchange (ONNX) --- Part 2:
+  Operator sets_
+
+* [[[onnx-part-3,ONNX 1-3]]], _Open Neural Network Exchange (ONNX) --- Part 3:
+  Conformance test package_
+
 * [[[ieee754,IEEE 754-2019]]], _IEEE Standard for Floating-Point Arithmetic_
 
 * [[[iso10646,ISO/IEC 10646]]], _Information technology --- Universal Coded

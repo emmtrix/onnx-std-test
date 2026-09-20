@@ -1,0 +1,23 @@
+== The default domain
+
+=== General
+
+The default domain is denoted by the empty string, conventionally written
+`ai.onnx`.
+
+[IMPORTANT]
+.Editorial note
+====
+This clause is empty. Populating it means restating several hundred operator
+definitions, at every operator set version, in the form of <<required-form>>,
+and it is the bulk of the work this standard represents.
+
+It should not be written by hand. The operator definitions are generated
+upstream from the operator schemas in the reference implementation, and the
+same source can generate this clause. The decision to take first is whether
+this part is authored or generated; if generated, the generator and its input
+become part of the maintenance process and belong in Clause 16 of
+<<onnx-part-1>>.
+
+Until then, this part demonstrates the form, not the content.
+====

@@ -1,0 +1,28 @@
+[[external-data]]
+== External data
+
+=== General
+
+A tensor's contents MAY be stored outside the model file.
+
+=== Reference resolution
+
+[IMPORTANT]
+.Editorial note
+====
+Specify the resolution of external data references, including whether relative
+paths are permitted, what they are relative to, and how a consumer is to behave
+when a reference cannot be resolved. Path resolution is also the primary
+security surface of this document; see <<security>>.
+====
+
+=== Integrity
+
+[IMPORTANT]
+.Editorial note
+====
+State whether a model may carry a digest of its external data and whether a
+consumer is obliged to check it. Without this, external data silently changes
+the meaning of a model that is otherwise byte-identical, which undermines any
+claim that a model identifier denotes a fixed computation.
+====

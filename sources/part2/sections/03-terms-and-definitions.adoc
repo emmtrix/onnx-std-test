@@ -1,0 +1,8 @@
+== Terms and definitions
+
+For the purposes of this document, the terms and definitions given in
+<<onnx-part-1>> apply.
+
+NOTE: In particular *operator*, *domain*, *operator set*, *attribute*,
+*tensor*, *element type* and *shape* are defined in Clause 3 of
+<<onnx-part-1>> and are not restated here.

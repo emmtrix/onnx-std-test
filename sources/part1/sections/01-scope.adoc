@@ -1,0 +1,34 @@
+== Scope
+
+This document specifies the core of the Open Neural Network Exchange (ONNX)
+format: the information model, the type system, the evaluation semantics, the
+rules for shape and type inference and for model validation, the binary
+encoding, the versioning scheme, and the conformance requirements.
+
+This document specifies:
+
+* the entities of an ONNX model and their relationships;
+* the data types and shapes that values in a model may take;
+* the structure a graph must have to be well formed;
+* the evaluation semantics of a graph;
+* the obligations on shape and type inference;
+* what a validating implementation must detect;
+* the numerical behaviour an implementation must exhibit;
+* the binary serialization of a model and the handling of external data;
+* the versioning and compatibility rules governing the version axes;
+* the security considerations and resource limits that apply to untrusted
+  models;
+* the conformance classes and profiles that an implementation may claim.
+
+This document does not specify:
+
+* the definitions of individual operators, which are in <<onnx-part-2>>;
+* the conformance test vectors, which are in <<onnx-part-3>>;
+* the internal representation, scheduling or optimization strategy of a
+  runtime;
+* training procedures, optimizers or loss functions, except where they are
+  expressed as operators within a graph;
+* hardware requirements, performance characteristics or resource limits beyond
+  those stated in <<security>>;
+* the ONNX reference implementation, its API or its source distribution; see
+  Annex D for the correspondence.

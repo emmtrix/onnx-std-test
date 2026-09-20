@@ -1,0 +1,19 @@
+[appendix,obligation=normative]
+== Operator registry
+
+This annex lists every operator of every domain specified by this document,
+with the operator set versions in which each definition took effect, as an
+index into the clauses above.
+
+[IMPORTANT]
+.Editorial note
+====
+The registry is the machine-readable face of this part: a table of domain,
+operator, and the versions at which a definition exists. It is what a
+validating consumer checks a node against under Clause 10 of <<onnx-part-1>>,
+and what a conformance statement enumerates when it lists unsupported
+operators.
+
+It is to be generated together with the clauses it indexes, not maintained
+separately; a registry that can drift from the definitions is worse than none.
+====
