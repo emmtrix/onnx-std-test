@@ -24,10 +24,33 @@ for change belong in an issue.
 **Terms are defined once.** Clause 3 is the only place a term is defined. Use
 `<<term>>` to refer to it; do not restate the definition.
 
-**Editorial notes.** Open questions are marked in the source with a
-`// TODO:` comment explaining what is missing and what the options are, and are
-mirrored as a row in Annex B. A `TODO` without an Annex B row is incomplete:
-the annex is what the Steering Committee reads.
+**Editorial notes.** Open questions appear *in the document*, at the clause
+where the gap is, as:
+
+```adoc
+[IMPORTANT]
+.Editorial note
+====
+What is missing, and what the options are.
+====
+```
+
+They are not source comments. A reader of the PDF must see that a thin clause
+is a known, tracked gap rather than a finished requirement; a `// TODO:`
+comment renders to nothing and tells them nothing.
+
+Each note is also mirrored as a row in Annex B. A note without an Annex B row
+is incomplete: the annex is the consolidated view the Steering Committee reads.
+Both the notes and Annex B are draft apparatus and come out before publication.
+
+Three placement constraints, each learned from a failed build:
+
+- Do not put a note inside an `[example]` block. Its `====` delimiter closes
+  the example early and empties it. Put the note after the example.
+- Admonitions admit only paragraphs, no lists. Write options as separate
+  paragraphs.
+- A `[bibliography]` clause admits no admonition at all, only `NOTE:`. Clause 2
+  uses a note for that reason.
 
 ## Structure
 

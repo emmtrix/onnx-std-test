@@ -7,10 +7,11 @@ In this document, the key words "MUST", "MUST NOT", "REQUIRED", "SHALL",
 "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY" and "OPTIONAL" are to
 be interpreted as described in <<rfc2119>>.
 
-// TODO: ISO/IEC Directives Part 2 uses "shall/should/may/can" and disallows
-// RFC 2119 capitalisation. Retain RFC 2119 for the JDF stage; convert to
-// Directives Part 2 verbal forms before any ISO submission. Tracked as an
-// editorial migration task, not a technical one.
+[IMPORTANT]
+.Editorial note
+====
+ISO/IEC Directives Part 2 uses "shall/should/may/can" and disallows RFC 2119 capitalisation. Retain RFC 2119 for the JDF stage; convert to Directives Part 2 verbal forms before any ISO submission. Tracked as an editorial migration task, not a technical one.
+====
 
 === Conformance classes
 
@@ -48,11 +49,11 @@ approximation of an unsupported operator.
 [[subclause-tolerances]]
 === Numerical tolerances
 
-// TODO: State the tolerance model. The reference implementation's test suite
-// uses relative tolerance 1e-3 and absolute tolerance 1e-7 for float32, but
-// this is a test-harness convention rather than a specified requirement, and
-// it is not stated for float16, bfloat16 or the 8-bit float types. This clause
-// is the single largest gap between current practice and a testable standard.
+[IMPORTANT]
+.Editorial note
+====
+State the tolerance model. The reference implementation's test suite uses relative tolerance 1e-3 and absolute tolerance 1e-7 for float32, but this is a test-harness convention rather than a specified requirement, and it is not stated for float16, bfloat16 or the 8-bit float types. This clause is the single largest gap between current practice and a testable standard.
+====
 
 An evaluating consumer SHALL document the tolerance it achieves for each
 element type it supports.

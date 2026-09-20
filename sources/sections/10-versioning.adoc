@@ -29,11 +29,11 @@ SHALL accept models declaring any version stem:[m <= n] of that domain, and
 SHALL evaluate each node according to the operator definition in force at
 version stem:[m].
 
-// TODO: The above states backward compatibility as an obligation. Current
-// runtimes do not universally meet it. Either the obligation is weakened, or
-// it is stated as written and the gap is recorded in Annex B as a known
-// divergence. The latter is recommended: a standard states the requirement,
-// and a conformance statement records what an implementation achieves.
+[IMPORTANT]
+.Editorial note
+====
+The above states backward compatibility as an obligation. Current runtimes do not universally meet it. Either the obligation is weakened, or it is stated as written and the gap is recorded in Annex B as a known divergence. The latter is recommended: a standard states the requirement, and a conformance statement records what an implementation achieves.
+====
 
 === Deprecation
 

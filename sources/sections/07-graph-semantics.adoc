@@ -14,18 +14,21 @@ that the results remain within the tolerances of <<subclause-tolerances>>.
 
 === Determinism
 
-// TODO: State which operators are permitted to be non-deterministic (random
-// number generation, and reductions whose order is unspecified in floating
-// point) and what a producer may assume. Without this clause, "within
-// tolerance" is not testable.
+[IMPORTANT]
+.Editorial note
+====
+State which operators are permitted to be non-deterministic (random number generation, and reductions whose order is unspecified in floating point) and what a producer may assume. Without this clause, "within tolerance" is not testable.
+====
 
 === Control flow
 
 Subgraphs appear as attributes of the `If`, `Loop` and `Scan` operators.
 
-// TODO: Specify the binding of loop-carried dependencies, the termination
-// condition, and the interaction between subgraph scoping and the acyclicity
-// requirement of <<model-structure>>.
+[IMPORTANT]
+.Editorial note
+====
+Specify the binding of loop-carried dependencies, the termination condition, and the interaction between subgraph scoping and the acyclicity requirement of <<model-structure>>.
+====
 
 === Errors
 

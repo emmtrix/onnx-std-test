@@ -99,8 +99,10 @@ every build.
 
 The framework — scope, terms, conformance classes, versioning rules, the
 required form of an operator specification — is drafted. The technical clauses
-are deliberately partial, and every gap is marked with an editorial note in the
-source and summarised in **Annex B, "Known gaps and divergences"**.
+are deliberately partial. Every gap is flagged by an editorial note in the
+document itself, at the clause where it occurs, and summarised in **Annex B,
+"Known gaps and divergences"**. A reader of the published PDF sees which
+clauses are unfinished without having to consult the source.
 
 Annex B is the interesting part of this repository. It records the places where
 ONNX as it exists today does not yet supply what a normative standard needs —

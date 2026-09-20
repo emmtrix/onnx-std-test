@@ -41,18 +41,21 @@ An attribute value SHALL NOT refer to a value produced by dataflow.
 
 === Initializers
 
-// TODO: Clarify the relationship between initializers and graph inputs. Since
-// IR version 4 an initializer need not appear as a graph input, but models in
-// circulation rely on both readings, and consumer behaviour differs. Specify
-// one and state the compatibility rule for the other.
+[IMPORTANT]
+.Editorial note
+====
+Clarify the relationship between initializers and graph inputs. Since IR version 4 an initializer need not appear as a graph input, but models in circulation rely on both readings, and consumer behaviour differs. Specify one and state the compatibility rule for the other.
+====
 
 === Names and scoping
 
 Names SHALL be non-empty. Within one graph, a name SHALL be bound at most once.
 
-// TODO: Specify subgraph scoping precisely: which names a subgraph of an `If`,
-// `Loop` or `Scan` node may capture from enclosing scopes, and whether
-// shadowing is permitted.
+[IMPORTANT]
+.Editorial note
+====
+Specify subgraph scoping precisely: which names a subgraph of an `If`, `Loop` or `Scan` node may capture from enclosing scopes, and whether shadowing is permitted.
+====
 
 === Metadata
 

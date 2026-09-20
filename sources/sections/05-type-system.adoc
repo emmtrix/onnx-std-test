@@ -7,9 +7,11 @@ sequence types, map types or optional types.
 
 === Element types
 
-// TODO: Reproduce the element type enumeration normatively, including the
-// numeric tag of each type, which is part of the wire format and therefore
-// normative. Source: TensorProto.DataType.
+[IMPORTANT]
+.Editorial note
+====
+Reproduce the element type enumeration normatively, including the numeric tag of each type, which is part of the wire format and therefore normative. Source: TensorProto.DataType.
+====
 
 <<tbl-element-types>> lists the element types and their wire tags.
 
@@ -33,11 +35,11 @@ supplied; see the editorial note above.
 [[subclause-strings]]
 === String elements
 
-// TODO: The reference implementation treats STRING elements as arbitrary byte
-// strings, while much tooling assumes UTF-8. Decide whether this document
-// requires <<iso10646>> UTF-8 encoding or specifies octet strings with an
-// encoding attribute. This is a normative change either way and MUST be raised
-// with the Steering Committee.
+[IMPORTANT]
+.Editorial note
+====
+The reference implementation treats STRING elements as arbitrary byte strings, while much tooling assumes UTF-8. Decide whether this document requires <<iso10646>> UTF-8 encoding or specifies octet strings with an encoding attribute. This is a normative change either way and MUST be raised with the Steering Committee.
+====
 
 === Shapes
 
@@ -68,7 +70,8 @@ An optional value either holds a value of its element type or is absent.
 
 === Type inference
 
-// TODO: Type and shape inference is normative in practice: consumers rely on
-// it and producers may omit value_info. Specify (a) which operators are
-// required to be inferable, (b) whether inference is required to be exact, and
-// (c) the behaviour when inference fails.
+[IMPORTANT]
+.Editorial note
+====
+Type and shape inference is normative in practice: consumers rely on it and producers may omit value_info. Specify (a) which operators are required to be inferable, (b) whether inference is required to be exact, and (c) the behaviour when inference fails.
+====
