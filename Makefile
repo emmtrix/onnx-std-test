@@ -3,12 +3,14 @@
 #   make            build semantic XML + HTML
 #   make doc        build HTML and Word (.doc)
 #   make site       build the browsable site under _site/
-#   make lint       build and fail if Metanorma reports errors above the
-#                   configured severity threshold
+#   make lint       fail if the last build reported errors above the
+#                   configured severity threshold (builds first if needed)
 #   make clean      remove build output
 
 SHELL      := /bin/bash
 DOCUMENT   := sources/onnx-std.adoc
+SOURCES    := $(DOCUMENT) sources/onnx.yml $(wildcard sources/sections/*.adoc)
+ERRFILE    := sources/onnx-std.err.html
 FLAVOUR    := generic
 METANORMA  ?= metanorma
 
@@ -23,21 +25,24 @@ all: html
 deps:
 	bundle install
 
-html:
+# Metanorma writes its diagnostics to $(ERRFILE) on every render, so `lint`
+# depends on that file rather than on a phony build target: running `make doc`
+# and then `make lint` must not compile the document a second time.
+$(ERRFILE) html: $(SOURCES)
 	$(METANORMA) compile -t $(FLAVOUR) -x xml,presentation,html $(DOCUMENT)
 
 # The `generic` flavour ships no PDF converter (its output formats are
 # html, doc, xml, presentation and rxl). PDF becomes available on the move to a
 # publisher flavour that carries PDF stylesheets; until then, `doc` is the
 # review-friendly format.
-doc:
+doc: $(SOURCES)
 	$(METANORMA) compile -t $(FLAVOUR) -x xml,presentation,html,doc $(DOCUMENT)
 
 site:
 	$(METANORMA) site generate --agree-to-terms
 
-lint: html
-	@scripts/check-errors.rb sources/onnx-std.err.html $(SEVERITY)
+lint: $(ERRFILE)
+	@scripts/check-errors.rb $(ERRFILE) $(SEVERITY)
 
 clean:
 	rm -rf _site published
