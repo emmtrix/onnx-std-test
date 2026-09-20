@@ -101,6 +101,22 @@ stylesheet produces no PDF while the build still looks green. Publishing a
 document carrying another organization's name or copyright would misrepresent
 it.
 
+## The vendored upstream copy
+
+`upstream/onnx/` is a verbatim copy of the ONNX documentation the draft
+restates. Never edit it by hand — it is upstream's text, and a local edit would
+silently break the claim that it is a faithful baseline. To move to a newer
+upstream release:
+
+```sh
+scripts/vendor-onnx-docs.sh v1.24.0
+```
+
+That rewrites the directory and regenerates `SOURCE.txt`, so the commit diff is
+exactly the upstream change. Then update the version statements in
+`upstream/onnx/PROVENANCE.md` and re-read Annex B: a new release may have
+closed a gap recorded there, or opened one.
+
 ## Changing the publisher flavour
 
 The publisher identity lives in `sources/onnx.yml` and in the
