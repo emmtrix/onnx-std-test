@@ -51,6 +51,8 @@ sources/
   onnx.yml                 Publisher identity for the `generic` flavour
   sections/                One file per clause
 scripts/check-errors.rb    Gates the build on Metanorma diagnostic severity
+scripts/vendor-onnx-docs.sh  Refreshes the vendored upstream copy
+upstream/onnx/             Verbatim upstream ONNX docs (complete) + .proto
 .github/workflows/         CI: build HTML + PDF, publish as artifacts
 ```
 
@@ -110,6 +112,20 @@ unspecified numerical tolerances, an uncitable serialization format, two
 readings of the initializer rules, unstated determinism guarantees. These are
 questions for the Steering Committee, not editorial oversights, and none of
 them can be resolved by the editor alone.
+
+## What the draft is based on
+
+`upstream/onnx/` holds a verbatim copy of the ONNX documentation and Protocol
+Buffers schema that this draft restates — release **v1.23.0**, commit
+`ee3ccbd`. It is vendored rather than linked so that the baseline is fixed and
+auditable: a reader checking a statement in Annex B needs the tree that
+statement was written against, not whatever `main` holds today.
+
+See [`upstream/onnx/PROVENANCE.md`](upstream/onnx/PROVENANCE.md) for the exact
+version, what was and was not copied, the mapping from upstream documents to
+clauses of the draft, and how to refresh it.
+
+The copy is never built or published; it is reference material.
 
 ## Contributing
 

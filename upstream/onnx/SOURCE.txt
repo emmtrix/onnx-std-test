@@ -1,0 +1,6 @@
+repository: https://github.com/onnx/onnx.git
+ref:        v1.23.0
+commit:     ee3ccbd2b2344299d3a4506c2954a47b2181a485
+committed:  2026-09-18T14:19:41-04:00
+version:    1.23.0
+retrieved:  2026-09-20T17:57:37Z
