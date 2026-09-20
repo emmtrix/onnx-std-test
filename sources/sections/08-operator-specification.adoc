@@ -64,15 +64,21 @@ Errors::
 None. For floating-point element types, the result for a NaN input is
 stem:[NaN].
 
-// TODO: Confirm the NaN behaviour against the reference implementation before
-// the committee draft; `max(NaN, 0)` is not well defined by <<ieee754>>
-// without stating which of `maxNum` or `maximum` is intended.
+====
+
+[IMPORTANT]
+.Editorial note
+====
+Confirm the NaN behaviour of the example above against the reference
+implementation before the committee draft. stem:[max(NaN, 0)] is not well
+defined by <<ieee754>> without stating which of `maxNum` or `maximum` is
+intended.
 ====
 
 === Operator sets defined by this document
 
-// TODO: This document currently specifies no operators normatively. The
-// intended approach is that the operator set is a separate deliverable (a
-// multi-part standard), with this Part 1 specifying the framework and Part 2
-// the default-domain operator set. Confirm the multi-part structure with the
-// Steering Committee before populating this clause.
+[IMPORTANT]
+.Editorial note
+====
+This document currently specifies no operators normatively. The intended approach is that the operator set is a separate deliverable (a multi-part standard), with this Part 1 specifying the framework and Part 2 the default-domain operator set. Confirm the multi-part structure with the Steering Committee before populating this clause.
+====

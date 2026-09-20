@@ -17,7 +17,9 @@ edition of the referenced document (including any amendments) applies.
 * [[[rfc2119,IETF RFC 2119]]], _Key words for use in RFCs to Indicate
   Requirement Levels_
 
-// TODO: Protocol Buffers has no citable normative reference with a stable
-// identifier. Either (a) normatively include the required subset of the wire
-// format in Annex C, or (b) cite a dated Google release. Resolve before the
-// committee draft; see issue tracker.
+NOTE: Editorial. Protocol Buffers has no citable normative reference with a
+stable identifier. Either (a) normatively include the required subset of the
+wire format in an annex, or (b) cite a dated release. This is to be resolved
+before the committee draft; see also the editorial note in <<serialization>>.
+A bibliography clause admits no editorial note block, so this appears as a
+note.
