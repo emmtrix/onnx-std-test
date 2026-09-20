@@ -52,6 +52,10 @@ do not fail the build, since they depend on network access, but check
 Commit only sources. Build output is ignored by `.gitignore`; rendered
 documents are published as CI artifacts.
 
+`Gemfile.lock` *is* committed. A standards document must render identically
+from the same sources years apart, so the toolchain is pinned rather than
+resolved afresh on each build. Update it deliberately, in its own commit.
+
 ## Changing the publisher flavour
 
 The publisher identity lives in `sources/onnx.yml` and in the

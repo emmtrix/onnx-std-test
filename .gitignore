@@ -22,7 +22,6 @@ relaton/
 # Ruby
 .bundle/
 vendor/bundle/
-Gemfile.lock
 
 # Editors / OS
 .DS_Store
