@@ -43,3 +43,32 @@ doctypes:
 # Committee metadata surfaced on the cover page.
 committees:
   - "ONNX Standardization Working Group"
+
+# PDF output. The `generic` flavour supports PDF only when both a format list
+# including `pdf` and an XSL-FO stylesheet are configured; it ships neither by
+# default, which is why `metanorma compile -x pdf` otherwise reports
+# "pdf format is not supported for this standard".
+#
+# Listing `formats` replaces the default (html, doc); the base formats (xml,
+# presentation, rxl) are merged in by Metanorma regardless.
+formats:
+  - html
+  - doc
+  - pdf
+
+# Path is resolved relative to this file.
+pdf_stylesheet: onnx.standard.xsl
+
+# Fonts the PDF stylesheet needs, installed by fontist at build time. Without
+# STIX Two Math, mn2pdf aborts with
+# "Failed to read font file ... STIX2Math.otf"; it is the math font.
+#
+# The stylesheet also names CJK faces (Noto Sans/Serif JP, KR, SC, TC, HK and
+# their Mono variants). They are deliberately left out: they only apply to CJK
+# script, this document is English, and they are large to download on every
+# build. Add them here if a translation ever needs them.
+fonts_manifest:
+  Noto Sans:
+  Noto Serif:
+  Noto Sans Mono:
+  STIX Two Math:

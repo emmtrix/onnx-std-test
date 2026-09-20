@@ -1,7 +1,12 @@
 ---
 # Metanorma manifest for the (unofficial) ONNX Standard.
 #
-# This manifest drives `metanorma site generate` and the collection build.
+# This manifest drives `metanorma site generate`, which renders the browsable
+# site published to GitHub Pages.
+#
+# Note: the output formats are NOT configured here. An `extensions:` key in
+# this file is ignored by metanorma-cli 1.17, so the site build passes them on
+# the command line instead; see the `site` target in the Makefile.
 metanorma:
   source:
     files:

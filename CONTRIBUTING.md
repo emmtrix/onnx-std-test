@@ -56,6 +56,28 @@ documents are published as CI artifacts.
 from the same sources years apart, so the toolchain is pinned rather than
 resolved afresh on each build. Update it deliberately, in its own commit.
 
+## The PDF stylesheet
+
+`sources/onnx.standard.xsl` is the ONNX house style for PDF. It is a vendored,
+de-branded derivative of CalConnect's stylesheet, because Metanorma's `generic`
+flavour ships none. Its file header records where it came from and the four
+changes made to it; all four read the publisher identity from the document's
+bibdata, so changing `sources/onnx.yml` is still enough and this file needs no
+edit.
+
+If you update it from upstream, re-apply exactly those four changes and run:
+
+```sh
+make check-stylesheet
+```
+
+That verifies the file is well-formed XML and that no upstream publisher name
+survives in its body. Both have failed silently before: mn2pdf parses the
+stylesheet itself, and Metanorma exits 0 when that parse fails, so a broken
+stylesheet produces no PDF while the build still looks green. Publishing a
+document carrying another organization's name or copyright would misrepresent
+it.
+
 ## Changing the publisher flavour
 
 The publisher identity lives in `sources/onnx.yml` and in the

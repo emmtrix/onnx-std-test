@@ -12,6 +12,8 @@ sources/*.pdf
 sources/*.doc
 sources/*.rxl
 sources/*.err
+sources/*.xml_tmp
+sources/*.pdf_fonts_config.xml.out
 
 # Relaton cache
 .relaton/
