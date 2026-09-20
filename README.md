@@ -52,7 +52,7 @@ sources/
   sections/                One file per clause
 scripts/check-errors.rb    Gates the build on Metanorma diagnostic severity
 scripts/vendor-onnx-docs.sh  Refreshes the vendored upstream copy
-upstream/onnx/             Verbatim upstream ONNX docs + .proto (see PROVENANCE.md)
+upstream/onnx/             Verbatim upstream ONNX docs (complete) + .proto
 .github/workflows/         CI: build HTML + PDF, publish as artifacts
 ```
 

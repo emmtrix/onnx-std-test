@@ -43,10 +43,17 @@ version="$(cat "$tmp/onnx/VERSION_NUMBER")"
 rm -rf "$DEST/docs" "$DEST/proto"
 mkdir -p "$DEST/docs" "$DEST/proto"
 
-# Specification documents. `docs/docsgen/` is excluded: it is the Sphinx
-# website generator (conf.py, tutorials, images, minified JavaScript), not
-# specification text.
-( cd "$tmp/onnx/docs" && tar -c --exclude=docsgen . ) | ( cd "$DEST/docs" && tar -x )
+# The documentation tree, copied whole. Nothing is filtered.
+#
+# An earlier version of this script excluded docs/docsgen/ as "the Sphinx
+# website generator". That was wrong: alongside conf.py and the site assets,
+# that tree holds docsgen/source/intro/concepts.md and
+# docsgen/source/technical/{float4,float6,float8,int2,int4,kv_cache}.md — the
+# conceptual introduction and the reduced-precision type specifications, which
+# are among the documents Clause 5 and Annex B depend on most. Deciding what is
+# "specification text" turned out to be exactly the judgement a provenance copy
+# should not be making.
+( cd "$tmp/onnx/docs" && tar -c . ) | ( cd "$DEST/docs" && tar -x )
 
 # The Protocol Buffers schema. This is the actual normative serialization
 # definition that Clause 9 of the standard restates, so it is vendored with

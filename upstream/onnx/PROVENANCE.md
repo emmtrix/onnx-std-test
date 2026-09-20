@@ -27,19 +27,26 @@ upstream change the next refresh will show.
 
 | Path | Content |
 |---|---|
-| `docs/` | The upstream `docs/` tree, minus `docsgen/` |
+| `docs/` | The upstream `docs/` tree, complete — 77 Markdown/reStructuredText documents |
 | `proto/` | The Protocol Buffers schema from the upstream `onnx/` directory |
 | `LICENSE` | The upstream Apache-2.0 licence |
 | `VERSION_NUMBER` | The upstream version string |
 | `SOURCE.txt` | Machine-readable provenance, written by the refresh script |
 
-`docs/docsgen/` is excluded. It is the Sphinx website generator — `conf.py`,
-tutorials, images and a minified JavaScript library — not specification text.
-Nothing else is filtered; the 44 Markdown documents (34 at the top level, 10
-under `docs/proposals/`) and 8 `.proto` files are copied as they stand,
-including the ones with no bearing on the standard
-(release administration, CI pipelines, backend test coverage), so that the
-copy is plainly a copy rather than a selection someone has to second-guess.
+**Nothing is filtered.** The whole `docs/` tree is copied, including material
+with no bearing on the standard (release administration, CI pipelines, backend
+test coverage, the Sphinx `conf.py` and site assets).
+
+An earlier version of this copy excluded `docs/docsgen/` on the grounds that it
+was "the Sphinx website generator, not specification text". That was wrong.
+That tree also holds `docsgen/source/intro/concepts.md` — the conceptual
+introduction published as
+<https://onnx.ai/onnx/intro/concepts.html> — and
+`docsgen/source/technical/{float4,float6,float8,int2,int4,kv_cache}.md`, the
+reduced-precision type specifications. Those are among the documents Clause 5
+and Annex B lean on most. Deciding what counts as "specification text" is
+exactly the judgement a provenance copy should not be making, so it no longer
+makes it.
 
 The `.proto` files are vendored with the prose because they, not the prose, are
 the normative serialization definition that Clause 9 restates.
@@ -51,8 +58,10 @@ claim of completeness:
 
 | Upstream document | Clause of the draft |
 |---|---|
+| `docs/docsgen/source/intro/concepts.md` | 3 Terms and definitions, 6 Model structure (the conceptual overview) |
 | `docs/IR.md` | 6 Model structure, 7 Graph semantics |
 | `docs/ONNXTypes.md`, `docs/TypeDenotation.md`, `docs/DimensionDenotation.md` | 5 Type system |
+| `docs/docsgen/source/technical/float4.md`, `float6.md`, `float8.md`, `int2.md`, `int4.md` | 5.2 Element types, and the tolerance gap in Annex B |
 | `docs/ShapeInference.md`, `docs/ShapeAnnotationSemantics.md` | 5.6 Type inference |
 | `docs/Broadcasting.md` | 5 Type system, 8 Operator specification |
 | `docs/Operators.md`, `docs/Operators-ml.md`, `docs/OpConventions.md` | 8 Operator specification |
