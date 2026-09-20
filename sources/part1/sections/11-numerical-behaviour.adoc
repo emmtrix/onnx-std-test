@@ -1,0 +1,67 @@
+[[numerical]]
+== Numerical behaviour
+
+=== General
+
+This clause states the numerical obligations on an evaluating consumer. It
+applies to every operator of <<onnx-part-2>> unless that operator's definition
+states otherwise.
+
+=== Floating-point arithmetic
+
+Arithmetic on the `FLOAT` and `DOUBLE` element types SHALL follow <<ieee754>>
+for the corresponding binary formats, subject to the reassociation permitted by
+<<accumulation>>.
+
+=== Special values
+
+[IMPORTANT]
+.Editorial note
+====
+State the behaviour for NaN, the infinities and signed zero, per operator
+category rather than per operator. `max(NaN, 0)` is not well defined by
+<<ieee754>> without stating which of `maxNum` or `maximum` is intended, and
+that choice has to be made once here rather than repeated in every operator
+definition in <<onnx-part-2>>.
+====
+
+[[accumulation]]
+=== Accumulation and reassociation
+
+An implementation MAY reassociate and may accumulate in a wider precision than
+the element type, provided the result remains within the tolerance of
+<<tolerances>>.
+
+[IMPORTANT]
+.Editorial note
+====
+Reassociation and the tolerance are two statements of one obligation and must
+be written together: a tolerance loose enough to permit any accumulation order
+is too loose to be a conformance criterion, and one tight enough to pin the
+order forbids ordinary optimizations. State the permitted reassociation, then
+derive the tolerance from it.
+====
+
+[[tolerances]]
+=== Tolerances
+
+An evaluating consumer SHALL document the tolerance it achieves for each
+element type it supports.
+
+[IMPORTANT]
+.Editorial note
+====
+State the tolerance model. The reference implementation's test suite uses
+relative tolerance 1e-3 and absolute tolerance 1e-7 for float32, but this is a
+test-harness convention rather than a specified requirement, and it is not
+stated for float16, bfloat16 or the 8-bit and narrower float types. This clause
+is the single largest gap between current practice and a testable standard, and
+it is the clause <<onnx-part-3>> depends on: a test vector without a stated
+tolerance cannot be passed or failed.
+====
+
+=== Non-deterministic operators
+
+An operator whose definition in <<onnx-part-2>> declares it non-deterministic
+is exempt from <<tolerances>>. The conformance criterion for such an operator
+SHALL be stated in its definition.

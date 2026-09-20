@@ -1,0 +1,33 @@
+== Application of tolerances
+
+=== General
+
+A vector passes when every expected output value is reproduced within the
+tolerance stated for the vector.
+
+=== Source of the tolerance
+
+The tolerance is that of Clause 11 of <<onnx-part-1>> for the element type
+concerned, unless the vector states a tighter one.
+
+[IMPORTANT]
+.Editorial note
+====
+This clause cannot be completed before Clause 11 of <<onnx-part-1>> states a
+tolerance model; Annex C of that part records the absence as the largest
+blocking gap in the standard, and this clause is why it blocks. Without a
+tolerance there is no predicate that decides pass from fail, and a test package
+with no predicate is a collection of examples.
+====
+
+=== Comparison
+
+[IMPORTANT]
+.Editorial note
+====
+Specify the comparison itself: whether relative and absolute tolerances are
+combined conjunctively or disjunctively, how NaN compares to NaN, how the
+infinities compare, and whether an exact match is required for the integer and
+Boolean element types. These are small decisions individually and decide the
+outcome of vectors collectively.
+====

@@ -1,0 +1,51 @@
+[[serialization]]
+== Serialization
+
+=== General
+
+An ONNX <<model>> is serialized as a Protocol Buffers message.
+
+[IMPORTANT]
+.Editorial note
+====
+See the note in Clause 2. The normative status of the Protocol Buffers encoding
+must be settled: this document either cites a dated specification or reproduces
+the required subset of the wire format.
+====
+
+=== Encoding
+
+[IMPORTANT]
+.Editorial note
+====
+State which subset of the Protocol Buffers wire format a conforming encoder may
+emit and a conforming decoder must accept, including the treatment of unknown
+fields, repeated field ordering and the maximum message size. Protocol Buffers
+permits encodings that differ octet for octet while carrying the same content,
+which is why <<canonical-form>> is a separate question.
+====
+
+=== Message definitions
+
+The message definitions are given normatively in Annex B.
+
+[IMPORTANT]
+.Editorial note
+====
+Annex B currently reproduces the schema as source. The intended form is a table
+of fields per message, giving wire tag, type and obligation, with the schema
+source retained as an informative aid. A table states each field's obligation,
+which the schema cannot express, and survives a change of encoding.
+====
+
+[[canonical-form]]
+=== Canonical form
+
+[IMPORTANT]
+.Editorial note
+====
+Decide whether this document defines a canonical serialization. A canonical
+form is a prerequisite for signing and for reproducible model hashes, both of
+which have been requested by adopters, but Protocol Buffers does not guarantee
+a canonical encoding on its own.
+====

@@ -1,0 +1,48 @@
+[[inference]]
+== Shape and type inference
+
+=== General
+
+Shape and type inference derives the types and shapes of values that a
+<<model>> does not state explicitly.
+
+Inference is normative rather than a convenience: consumers rely on it, and a
+<<producer>> is permitted to omit value type information for values other than
+graph inputs and outputs.
+
+=== Obligations on operator definitions
+
+Every operator definition in <<onnx-part-2>> SHALL state the type and shape of
+each of its outputs as a function of the types and shapes of its inputs and of
+its attributes.
+
+=== Symbolic dimensions
+
+Where an output extent equals an input extent, the operator definition SHALL
+say so, so that a symbolic dimension propagates.
+
+[IMPORTANT]
+.Editorial note
+====
+Specify whether an implementation may introduce fresh symbolic names, and
+whether two distinct symbolic names may be proven equal. Upstream's symbolic
+shape inference does both in places; the standard has to decide what a
+conforming implementation may rely on.
+====
+
+=== Strictness and failure
+
+[IMPORTANT]
+.Editorial note
+====
+Specify (a) which operators are required to be inferable, (b) whether inference
+is required to be exact or may return unknown, and (c) the behaviour when
+inference fails: whether failure is a validation error, a warning, or
+permitted.
+====
+
+=== Relationship to validation
+
+Inference results are inputs to the type and shape checks of
+<<validation-clause>>. An inference that returns unknown SHALL NOT by itself
+cause a validation error.

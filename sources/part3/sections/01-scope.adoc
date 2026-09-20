@@ -1,0 +1,11 @@
+== Scope
+
+This document specifies the conformance test package for the Open Neural
+Network Exchange (ONNX) format: the format of a test vector, the rules for
+selecting vectors against a claimed conformance class or profile, the
+application of numerical tolerances, and the form of a conformance report.
+
+This document does not specify:
+
+* the requirements being tested, which are in <<onnx-part-1>>;
+* the operator definitions the vectors exercise, which are in <<onnx-part-2>>.

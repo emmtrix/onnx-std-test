@@ -50,9 +50,9 @@ jobs:
         with:
           name: onnx-std
           path: |
-            sources/onnx-std.html
-            sources/onnx-std.doc
-            sources/onnx-std.pdf
-            sources/onnx-std.xml
-            sources/onnx-std.err.html
+            sources/part*/onnx-std-*.html
+            sources/part*/onnx-std-*.doc
+            sources/part*/onnx-std-*.pdf
+            sources/part*/onnx-std-*.xml
+            sources/part*/onnx-std-*.err.html
           if-no-files-found: warn

@@ -1,0 +1,35 @@
+[[vector-format]]
+== Test vector format
+
+=== General
+
+A test vector consists of a model, one or more sets of input values, the
+corresponding expected output values, and the tolerance to be applied.
+
+=== Model
+
+The model of a test vector SHALL be a conforming model under <<onnx-part-1>>
+and SHALL declare the operator set version the vector exercises.
+
+=== Values
+
+[IMPORTANT]
+.Editorial note
+====
+Specify the encoding of input and expected output values. The reference
+implementation stores them as serialized tensor messages in a directory per
+test case; that is a workable choice and has the advantage of reusing the
+encoding the standard already specifies, but it must be stated normatively
+rather than inherited.
+
+Specify also how values for the reduced-precision element types are stored,
+since those are the types for which Part 1 has no stated tolerance.
+====
+
+=== Identification
+
+Each vector SHALL be identified by domain, operator, operator set version and
+a name unique within that triple.
+
+NOTE: The worked example in Clause 4 of <<onnx-part-2>> cites a vector in this
+form, as `ai.onnx/Relu/14`.

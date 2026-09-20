@@ -1,0 +1,84 @@
+[[conformance]]
+== Conformance
+
+=== Requirement terminology
+
+In this document, the key words "MUST", "MUST NOT", "REQUIRED", "SHALL",
+"SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY" and "OPTIONAL" are to
+be interpreted as described in <<rfc2119>>.
+
+[IMPORTANT]
+.Editorial note
+====
+ISO/IEC Directives Part 2 uses "shall/should/may/can" and disallows RFC 2119
+capitalisation. Retain RFC 2119 for the JDF stage; convert to Directives Part 2
+verbal forms before any ISO submission. Tracked as an editorial migration task,
+not a technical one.
+====
+
+=== Conformance classes
+
+This document defines the conformance classes listed in
+<<tbl-conformance-classes>>. An implementation claiming conformance to this
+document SHALL state which classes it claims and, for each class it claims, the
+<<operator-set>> versions it supports.
+
+[[tbl-conformance-classes]]
+.Conformance classes
+|===
+| Class | Applies to | Summary of obligations
+
+| Producer
+| A program that writes ONNX models
+| Emits only models that satisfy <<serialization>>, <<information-model>> and
+  <<graph-structure>>.
+
+| Validating consumer
+| A program that validates ONNX models
+| Detects and reports every condition classified as an error in
+  <<validation-clause>>.
+
+| Evaluating consumer
+| A runtime that executes ONNX models
+| Computes results within the tolerances of <<numerical>> for every operator in
+  the operator sets it claims.
+|===
+
+=== Conformance profiles
+
+A conformance profile names a subset of the requirements of this document and
+of <<onnx-part-2>> that an implementation may claim in place of full support.
+
+[IMPORTANT]
+.Editorial note
+====
+The profiles themselves are not yet defined. Candidates raised so far are a
+core inference profile excluding training and control flow, a profile
+restricted to statically shaped models, and a profile for the `ai.onnx.ml`
+domain. Profiles must be defined together with the test selection rules in
+<<onnx-part-3>>, since a profile that no test package can check is not a
+conformance claim. To be settled with the Steering Committee.
+====
+
+=== Operator set coverage
+
+A <<conforming-implementation>> is not required to support every operator
+defined in an operator set. It SHALL, however, report unambiguously which
+operators it does not support, and it SHALL NOT silently substitute an
+approximation of an unsupported operator.
+
+=== Conformance statement
+
+An implementation claiming conformance SHALL publish a conformance statement
+containing the information required by Annex A.
+
+=== Relationship to Parts 2 and 3
+
+This document specifies the form an operator definition takes and the rules an
+<<operator-set>> obeys; it defines no operator. Operator definitions are in
+<<onnx-part-2>>.
+
+A claim of conformance to this document alone is a claim about structure,
+encoding and validation. A claim about evaluation is necessarily also a claim
+against one or more operator sets of <<onnx-part-2>>, checked with the test
+vectors of <<onnx-part-3>>.

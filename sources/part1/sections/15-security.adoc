@@ -1,0 +1,62 @@
+[[security]]
+== Security and resource limits
+
+=== General
+
+A <<model>> is data from an untrusted source unless the consumer knows
+otherwise. This clause states the obligations that follow.
+
+[IMPORTANT]
+.Editorial note
+====
+This clause is new in this structure; the draft previously said nothing on the
+subject beyond a passing remark about external data. Upstream documents the
+external-data attack surface separately from the specification. A standard that
+is silent here is incomplete, and silence is also the answer most likely to be
+challenged in an ISO ballot.
+====
+
+=== Threat model
+
+[IMPORTANT]
+.Editorial note
+====
+State what a consumer is defending against: a model crafted to read files
+outside its directory, to exhaust memory or disk, to cause unbounded recursion
+through subgraphs, or to exploit a decoder. State also what is out of scope —
+this document cannot defend against an operator implementation's own defects.
+====
+
+=== External data and path resolution
+
+A consumer SHALL NOT resolve an external data reference to a location outside
+the directory containing the model, unless explicitly configured to do so.
+
+[IMPORTANT]
+.Editorial note
+====
+State this as a testable requirement: which path forms are rejected (absolute
+paths, parent-directory traversal, symbolic links, URLs), and whether rejection
+is a validation error under <<validation-clause>> or a runtime failure.
+====
+
+=== Resource bounds
+
+[IMPORTANT]
+.Editorial note
+====
+State the limits a conforming consumer may impose, and on what: total allocated
+memory, the extent of a single dimension, the depth of subgraph nesting, the
+number of loop iterations, the size of an external data file. A consumer that
+refuses a model for exceeding a documented limit is conforming; one that
+crashes is not. The limits are implementation-defined, but the obligation to
+document them and to fail cleanly is not.
+====
+
+=== Handling untrusted models
+
+A consumer SHALL validate a model under <<validation-clause>> before evaluating
+it.
+
+A consumer SHOULD make the resolution of external data an explicit, opt-in
+step when the model is untrusted.

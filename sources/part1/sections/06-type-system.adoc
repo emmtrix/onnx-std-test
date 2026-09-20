@@ -1,0 +1,108 @@
+== Type system
+
+=== General
+
+Every value in an ONNX <<graph>> has a type. Types are either tensor types,
+sequence types, map types or optional types.
+
+=== Element types
+
+[IMPORTANT]
+.Editorial note
+====
+Reproduce the element type enumeration normatively, including the numeric tag
+of each type, which is part of the wire format and therefore normative.
+Source: `TensorProto.DataType`.
+====
+
+<<tbl-element-types>> lists the element types and their wire tags.
+
+[[tbl-element-types]]
+.Element types
+|===
+| Tag | Name | Description
+
+| 1 | `FLOAT` | 32-bit binary floating point as specified in <<ieee754>>
+| 2 | `UINT8` | 8-bit unsigned integer
+| 3 | `INT8` | 8-bit two's complement integer
+| 7 | `INT64` | 64-bit two's complement integer
+| 8 | `STRING` | sequence of octets; see <<string-elements>>
+| 9 | `BOOL` | Boolean
+| 11 | `DOUBLE` | 64-bit binary floating point as specified in <<ieee754>>
+|===
+
+NOTE: <<tbl-element-types>> is abridged. The complete enumeration is to be
+supplied; see the editorial note above.
+
+=== Reduced-precision element types
+
+ONNX defines element types narrower than 8 bits, and floating-point types
+narrower than the <<ieee754>> binary formats.
+
+[IMPORTANT]
+.Editorial note
+====
+Specify the 4-bit and 6-bit floating-point types, the 2-bit and 4-bit integer
+types, and their packing into octets, which is part of the wire format. Upstream
+documents these separately from the main type documentation; they are the types
+for which <<numerical>> has no stated tolerance, which is the gap Annex C
+records as blocking.
+====
+
+[[string-elements]]
+=== String elements and character encoding
+
+[IMPORTANT]
+.Editorial note
+====
+The reference implementation treats `STRING` elements as arbitrary byte
+strings, while much tooling assumes UTF-8. Decide whether this document
+requires <<iso10646>> UTF-8 encoding or specifies octet strings with an
+encoding attribute. This is a normative change either way and MUST be raised
+with the Steering Committee.
+====
+
+=== Shapes and dimensions
+
+A shape is an ordered sequence of dimensions. Each dimension is one of:
+
+* a non-negative integer, denoting a fixed extent;
+* a symbolic name, denoting an extent that is equal wherever the same name
+  occurs within one <<graph>>;
+* unknown.
+
+A tensor with a shape of length zero is a scalar. A dimension of extent zero is
+permitted; a tensor having such a dimension contains no elements.
+
+=== Dimension denotation
+
+A dimension MAY carry a denotation, which ascribes a meaning to it, such as a
+batch or channel axis.
+
+A denotation SHALL NOT affect the result of evaluating a model.
+
+=== Composite types
+
+==== Sequence
+
+A sequence is an ordered, homogeneous collection of values of a single type.
+
+==== Map
+
+A map is an unordered association of keys of an integral or string element type
+to values of a single type.
+
+==== Optional
+
+An optional value either holds a value of its element type or is absent.
+
+=== Type equality and assignability
+
+[IMPORTANT]
+.Editorial note
+====
+State when two types are equal, and when a value of one type may be supplied
+where another is expected. Shape is part of the type, so this clause decides
+whether a tensor of unknown shape is assignable to a formal input of known
+shape, which in turn decides how much <<inference>> is obliged to prove.
+====

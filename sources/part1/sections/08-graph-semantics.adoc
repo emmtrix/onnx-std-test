@@ -1,0 +1,61 @@
+[[graph-semantics]]
+== Graph semantics
+
+=== Evaluation model
+
+Evaluating a <<graph>> means computing a value for each of its declared
+outputs, given a value for each of its declared inputs.
+
+=== Evaluation order and concurrency
+
+Evaluation is defined by the dataflow relation between nodes. This document
+does not prescribe an evaluation order beyond the constraint that a node's
+inputs are available before the node is evaluated; in particular, a
+<<conforming-implementation>> MAY evaluate nodes concurrently, may elide nodes
+whose outputs are unused, and may fuse or reassociate computations, provided
+that the results remain within the tolerances of <<numerical>>.
+
+=== Control flow
+
+The `If`, `Loop` and `Scan` operators evaluate subgraphs.
+
+[IMPORTANT]
+.Editorial note
+====
+Specify the evaluation semantics of each: the branch selection of `If`, the
+termination condition and loop-carried dependencies of `Loop`, and the scan
+axis handling of `Scan`. The structural constraints are in
+<<subgraph-scoping>>; this clause owes the semantics.
+====
+
+=== Functions
+
+An operator MAY be defined by a function body, that is, by a subgraph expressed
+in terms of other operators.
+
+[IMPORTANT]
+.Editorial note
+====
+State whether a function body is normative or merely a reference expansion: if
+normative, an implementation must reproduce its numerical behaviour; if a
+reference, an implementation may compute the operator directly, and the
+tolerance of <<numerical>> applies to the operator rather than to the
+expansion. Upstream treats it as the latter; this document should say so.
+====
+
+=== Determinism
+
+[IMPORTANT]
+.Editorial note
+====
+State which operators are permitted to be non-deterministic (random number
+generation, and reductions whose order is unspecified in floating point) and
+what a producer may assume. Without this clause, "within tolerance" is not
+testable.
+====
+
+=== Error semantics
+
+A consumer that detects a violation of a requirement of this document SHALL
+report it and SHALL NOT produce a result. A consumer MAY continue validation in
+order to report further violations.

@@ -1,0 +1,20 @@
+[appendix,obligation=normative]
+== Test vectors
+
+The vectors themselves are published as a separate artefact, in the format
+specified in <<vector-format>>, and are normative.
+
+[IMPORTANT]
+.Editorial note
+====
+The vectors are data, not prose, and are not reproduced in this document. This
+annex is to state where they are published, how a version of the package is
+identified, and what guarantees hold across versions — in particular whether a
+vector, once published, may change.
+
+The obvious starting corpus is the reference implementation's backend test
+data, which is vendored in documentation form at
+`upstream/onnx/docs/OnnxBackendTest.md`. Adopting it means deciding what its
+existing tolerances mean normatively, which returns to the open question in
+Clause 6.
+====

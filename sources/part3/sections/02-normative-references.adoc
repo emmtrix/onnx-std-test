@@ -1,0 +1,11 @@
+[bibliography]
+== Normative references
+
+The following documents are referred to in the text in such a way that some or
+all of their content constitutes requirements of this document.
+
+* [[[onnx-part-1,ONNX 1-1]]], _Open Neural Network Exchange (ONNX) --- Part 1:
+  Core_
+
+* [[[onnx-part-2,ONNX 1-2]]], _Open Neural Network Exchange (ONNX) --- Part 2:
+  Operator sets_

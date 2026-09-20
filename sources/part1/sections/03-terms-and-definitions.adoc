@@ -27,6 +27,10 @@ formal inputs and outputs and fixing its <<attribute,attributes>>
 named computation with a specified signature and semantics, identified by the
 pair of its <<domain>> and its name
 
+Note 1 to entry: Operators are defined in <<onnx-part-2>>. This document
+specifies the form such a definition takes and the rules it obeys, not the
+operators themselves.
+
 [[domain]]
 === domain
 
@@ -81,3 +85,21 @@ program that emits a <<model>>
 === consumer
 
 program that reads a <<model>> in order to evaluate, transform or inspect it
+
+[[validation]]
+=== validation
+
+determination of whether a <<model>> satisfies the requirements of this
+document, without evaluating it
+
+[[conformance-profile]]
+=== conformance profile
+
+named set of requirements, narrower than a conformance class, that an
+implementation may claim
+
+[[test-vector]]
+=== test vector
+
+model, together with input values and expected output values, published in
+<<onnx-part-3>> for the purpose of checking conformance

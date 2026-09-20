@@ -1,18 +1,19 @@
-= Open Neural Network Exchange (ONNX) --- Model representation and semantics
+= Open Neural Network Exchange (ONNX) --- Part 2: Operator sets
 :docnumber: 1
-:docidentifier: ONNX 1 (unofficial draft)
+:partnumber: 2
+:docidentifier: ONNX 1-2 (unofficial draft)
 :edition: 1
 :revdate: 2026-09-20
 :copyright-year: 2026
 :language: en
 :title: Open Neural Network Exchange (ONNX)
-:subtitle: Model representation and semantics
+:subtitle: Part 2: Operator sets
 :doctype: standard
 :docstage: preparatory
 :status: preparatory
 :committee: ONNX Standardization Working Group
 :mn-document-class: generic
-:customize: onnx.yml
+:customize: ../onnx.yml
 :mn-output-extensions: xml,html,doc,pdf,rxl
 :data-uri-image:
 :imagesdir: images
@@ -29,22 +30,14 @@ include::sections/02-normative-references.adoc[]
 
 include::sections/03-terms-and-definitions.adoc[]
 
-include::sections/04-conformance.adoc[]
+include::sections/04-required-form.adoc[]
 
-include::sections/05-type-system.adoc[]
+include::sections/05-default-domain.adoc[]
 
-include::sections/06-model-structure.adoc[]
+include::sections/06-ml-domain.adoc[]
 
-include::sections/07-graph-semantics.adoc[]
+include::sections/annex-a-operator-registry.adoc[]
 
-include::sections/08-operator-specification.adoc[]
-
-include::sections/09-serialization.adoc[]
-
-include::sections/10-versioning.adoc[]
-
-include::sections/annex-a-conformance-classes.adoc[]
-
-include::sections/annex-b-operator-set.adoc[]
+include::sections/annex-b-changelog.adoc[]
 
 include::sections/bibliography.adoc[]

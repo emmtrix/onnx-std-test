@@ -1,0 +1,14 @@
+[appendix,obligation=informative]
+== Changelog
+
+This annex records, for each operator set version, the operators added, the
+operators given a new definition, and the type constraints widened.
+
+[IMPORTANT]
+.Editorial note
+====
+To be generated from the registry in Annex A by comparing consecutive operator
+set versions, rather than maintained by hand. Upstream keeps an equivalent
+changelog; the vendored copy at `upstream/onnx/docs/Changelog.md` is the
+material this annex restates.
+====

@@ -1,0 +1,31 @@
+[.preface]
+== Foreword
+
+This document has been prepared by the ONNX Standardization Working Group.
+
+It is Part 2 of ONNX 1; Part 1 specifies the core and Part 3 the conformance
+test package.
+
+[IMPORTANT]
+.Status of this document
+====
+This is an *unofficial* working draft. It has no standing within the ONNX
+project, the Linux Foundation, IEC, ISO or any other standards development
+organization, and it MUST NOT be cited as a normative reference.
+====
+
+[.preface]
+== Introduction
+
+This part carries the operator definitions. It is separate from Part 1 because
+the two move at different speeds: the core changes with the IR version, roughly
+once a year, while the operator sets change with every ONNX release, by
+hundreds of entries.
+
+Separating them means an operator added upstream amends this part and leaves
+Part 1 untouched: implementers do not re-read the core, and a citation of the
+core does not go stale because an operator was added.
+
+The seam that makes this work is that Part 1 specifies the *form* an operator
+definition takes and the rules an operator set obeys, and names no operator.
+This part supplies the definitions in that form.

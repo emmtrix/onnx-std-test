@@ -1,0 +1,56 @@
+[[graph-structure]]
+== Graph structure
+
+=== Graph, inputs and outputs
+
+A <<graph>> SHALL declare its inputs, its outputs and, optionally, its
+initializers and value type information.
+
+=== Initializers
+
+[IMPORTANT]
+.Editorial note
+====
+Clarify the relationship between initializers and graph inputs. Since IR
+version 4 an initializer need not appear as a graph input, but models in
+circulation rely on both readings, and consumer behaviour differs. Specify one
+and state the compatibility rule for the other.
+====
+
+=== Nodes
+
+A <<node>> SHALL identify the <<operator>> it invokes by domain and name.
+
+The number and types of a node's inputs and outputs SHALL satisfy the signature
+of the operator as defined in the operator set version declared by the
+enclosing model.
+
+=== Attributes
+
+An <<attribute>> SHALL have a name that is unique within its node.
+
+An attribute value SHALL NOT refer to a value produced by dataflow.
+
+=== Topological constraints
+
+The nodes of a graph SHALL be topologically sorted: every node SHALL appear
+after the nodes producing the values it consumes.
+
+The graph SHALL be acyclic.
+
+Every value consumed by a node SHALL be produced by exactly one of: a graph
+input, an initializer, an earlier node in the same graph, or an enclosing
+scope.
+
+[[subgraph-scoping]]
+=== Subgraphs and scoping
+
+Subgraphs appear as attributes of the `If`, `Loop` and `Scan` operators.
+
+[IMPORTANT]
+.Editorial note
+====
+Specify the binding of loop-carried dependencies, the termination condition,
+and the interaction between subgraph scoping and the acyclicity requirement
+above.
+====

@@ -1,9 +1,8 @@
 # Proposed structure of the ONNX standard
 
-**Status: proposal, for discussion.** The document currently in `sources/` has
-the ten-clause structure of the initial draft. This file works out the detailed
-structure it should move to, with subclauses, and says why. Nothing here is
-implemented yet.
+**Status: implemented.** `sources/part1/`, `sources/part2/` and
+`sources/part3/` follow this structure. This file remains the rationale for it:
+what it takes from where, and what it deliberately does not take.
 
 It merges two inputs: the structure of the current draft, and a rough outline
 proposed in an earlier discussion. Where they disagree, the reasoning is given.
@@ -213,9 +212,18 @@ These are for the Steering Committee, not the editor:
    likely to be embedded in implementations, which may argue for a different
    licence from the prose.
 
-## If this is agreed
+## State of the implementation
 
-Restructuring is mechanical but large: ten clauses become sixteen across three
-documents, every cross-reference moves, and the sixteen editorial notes and the
-Annex B rows have to be re-anchored. It is better done in one pass, after the
-structure is settled, than incrementally.
+The skeleton is complete and builds: three documents, 16 + 6 + 7 clauses and
+seven annexes. The prose of the previous ten-clause draft has been carried
+across and re-anchored.
+
+What is drafted and what is not follows the same convention as before. Clauses
+carry an editorial note where content is owed, and Annex C of Part 1 records
+every such clause. The count rose from 16 notes to 44 across the three parts,
+which is not a regression: the new clauses — validation, security, inference,
+test vectors — are places the previous structure had no room to admit a gap in.
+
+The largest single piece of missing content is Clause 5 of Part 2, the operator
+definitions themselves. It should be generated from the upstream operator
+schemas rather than written by hand; that decision is recorded there.

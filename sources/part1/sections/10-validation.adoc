@@ -1,0 +1,64 @@
+[[validation-clause]]
+== Model validation
+
+=== General
+
+Validation determines whether a <<model>> satisfies the requirements of this
+document, without evaluating it.
+
+A validating consumer SHALL perform the checks of this clause and SHALL report
+every condition it classifies as an error.
+
+[IMPORTANT]
+.Editorial note
+====
+This clause is new in this structure. The draft previously defined a validating
+consumer conformance class and then never said what it must detect, which made
+the class unclaimable. The checks below are the intended shape of the clause;
+each needs to be stated as a testable condition and given a severity before the
+committee draft. Upstream's checker is the obvious source, but its behaviour is
+implementation rather than specification and diverges from the prose in places.
+====
+
+=== Structural checks
+
+A validating consumer SHALL detect:
+
+* a graph that is not acyclic;
+* a node that consumes a value with no producer;
+* a value produced more than once within one graph;
+* a name that is empty;
+* a node whose operator is not defined in any declared operator set.
+
+=== Type and shape checks
+
+A validating consumer SHALL detect a node whose input types do not satisfy the
+type constraints of its operator definition.
+
+[IMPORTANT]
+.Editorial note
+====
+State how far shape checking is obliged to go. Checking every statically known
+extent is stronger than upstream's checker performs; requiring nothing makes
+the check vacuous. The likely answer is that a mismatch between two statically
+known extents is an error and that unknown extents are not checked, but this
+must be decided together with <<inference>>.
+====
+
+=== Operator set checks
+
+A validating consumer SHALL detect:
+
+* a model that uses a domain it does not declare;
+* a node whose operator is not present in the declared version of its domain;
+* an attribute that is not defined for the operator, or a required attribute
+  that is absent.
+
+=== Severity and reporting
+
+Each condition detected SHALL be reported as an error or a warning. An error
+means the model does not conform to this document. A warning means the model
+conforms but relies on behaviour this document leaves open.
+
+A validating consumer SHOULD report all conditions it detects, not only the
+first.

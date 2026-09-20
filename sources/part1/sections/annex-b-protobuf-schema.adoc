@@ -1,0 +1,14 @@
+[appendix,obligation=normative]
+== Protocol Buffers schema
+
+[IMPORTANT]
+.Editorial note
+====
+This annex is to carry the message definitions normatively, as a table of
+fields per message giving wire tag, type and obligation, per the editorial note
+in <<serialization>>. It is empty pending the decision recorded there on the
+normative status of the Protocol Buffers encoding.
+
+The schema source this annex will restate is vendored in the repository at
+`upstream/onnx/proto/`, at the release recorded in its provenance.
+====

@@ -11,10 +11,13 @@ information in <<tbl-conformance-statement>>.
 
 | Identity and version of the implementation | mandatory
 | Conformance classes claimed (see <<conformance>>) | mandatory
+| Conformance profiles claimed, if any | mandatory
 | IR versions supported | mandatory
-| For each domain, the operator set versions supported | mandatory
+| For each domain, the operator set versions of <<onnx-part-2>> supported | mandatory
 | For each operator set version, the operators not supported | mandatory
 | For each element type supported, the numerical tolerance achieved | mandatory
+| Result of the test package of <<onnx-part-3>>, by version | mandatory
 | Known divergences from this document | mandatory
-| External data handling policy | conditional, if external data is supported
+| External data handling policy, including path resolution | conditional, if external data is supported
+| Documented resource limits (see <<security>>) | mandatory
 |===
