@@ -109,11 +109,15 @@ silently break the claim that it is a faithful baseline. To move to a newer
 upstream release:
 
 ```sh
-scripts/vendor-onnx-docs.sh v1.24.0
+scripts/vendor-onnx-docs.sh <release-tag>
 ```
 
+Pass a tag that exists — `git ls-remote --tags https://github.com/onnx/onnx.git`
+lists them. The `VERSION_NUMBER` file on `main` names the next, unreleased
+version and is not a checkout-able ref.
+
 That rewrites the directory and regenerates `SOURCE.txt`, so the commit diff is
-exactly the upstream change. Then update the version statements in
+the upstream change plus the new provenance header. Then update the version statements in
 `upstream/onnx/PROVENANCE.md` and re-read Annex B: a new release may have
 closed a gap recorded there, or opened one.
 

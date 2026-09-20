@@ -16,9 +16,12 @@ under that claim: a reader of Annex B who wants to check "the reference
 implementation's test suite uses relative tolerance 1e-3" needs the tree that
 sentence was written against, not whatever `main` holds when they read it.
 
-For the record, `main` was at `7671b22f21c96d5938a5c3f0825f3e16323a67c5`
-(VERSION_NUMBER 1.24.0) when this copy was taken, two days after v1.23.0. The
-difference between the two is the upstream change the next refresh will show.
+For the record, `main` was at `7671b22f21c96d5938a5c3f0825f3e16323a67c5` when
+this copy was taken, two days after v1.23.0. Its `VERSION_NUMBER` read `1.24.0`,
+which is the *development* version of the next release, not a released one:
+at the time of writing, v1.23.0 is the newest tag in the repository and no
+1.24 tag exists. The difference between the tag and that commit is the
+upstream change the next refresh will show.
 
 ## What is here
 
@@ -69,10 +72,17 @@ The standard drafted in `sources/` is a separate work.
 ## Refreshing
 
 ```sh
-scripts/vendor-onnx-docs.sh v1.24.0    # or whichever release
+scripts/vendor-onnx-docs.sh v1.23.0    # the current baseline
+scripts/vendor-onnx-docs.sh <tag>      # a newer release, once one is tagged
 ```
 
+Pass a release tag, not `main`. `VERSION_NUMBER` on `main` names the *next*
+release and is not a tag you can check out; `git ls-remote --tags
+https://github.com/onnx/onnx.git` shows what actually exists.
+
 The script rewrites this directory in place and regenerates `SOURCE.txt`, so
-the resulting commit diff is exactly the upstream change. Update the version
+the resulting commit diff is the upstream change plus the new provenance
+header. Re-running it on the same ref is otherwise a no-op: only the
+`retrieved:` timestamp moves. Update the version
 statements in this file when the ref changes, and re-read Annex B: an upstream
 release may have closed a gap recorded there, or opened a new one.

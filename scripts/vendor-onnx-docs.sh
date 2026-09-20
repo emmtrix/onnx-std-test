@@ -22,6 +22,17 @@ command -v git >/dev/null || { echo "git is required" >&2; exit 1; }
 tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
 
+# Fail early and usefully on a ref that does not exist. The version in
+# upstream's VERSION_NUMBER names the *next* release and is not a tag, which is
+# an easy mistake to make.
+if ! git ls-remote --exit-code --tags --heads "$REPO" "$REF" >/dev/null 2>&1; then
+  echo "error: '$REF' is neither a tag nor a branch of $REPO" >&2
+  echo "available release tags:" >&2
+  git ls-remote --tags --refs "$REPO" 2>/dev/null \
+    | awk -F'refs/tags/' '{print "  " $2}' | sort -V | tail -8 >&2
+  exit 1
+fi
+
 echo "Cloning $REPO at $REF ..."
 git clone --depth 1 --branch "$REF" "$REPO" "$tmp/onnx" --quiet
 
