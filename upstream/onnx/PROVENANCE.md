@@ -27,19 +27,25 @@ upstream change the next refresh will show.
 
 | Path | Content |
 |---|---|
-| `docs/` | The upstream `docs/` tree, complete — 77 Markdown/reStructuredText documents |
+| `docs/` | The upstream `docs/` tree, minus `proposals/` — 67 Markdown/reStructuredText documents |
 | `proto/` | The Protocol Buffers schema from the upstream `onnx/` directory |
 | `LICENSE` | The upstream Apache-2.0 licence |
 | `VERSION_NUMBER` | The upstream version string |
 | `SOURCE.txt` | Machine-readable provenance, written by the refresh script |
 
-**Nothing is filtered.** The whole `docs/` tree is copied, including material
-with no bearing on the standard (release administration, CI pipelines, backend
-test coverage, the Sphinx `conf.py` and site assets).
+`docs/proposals/` is left out by decision: it holds RFC-style proposals for
+changes that may never land, and this copy is meant to fix what ONNX *is*, not
+what has been suggested for it. Note the consequence — two documents that are
+kept, `IR.md` and `ShapeInference.md`, link into that directory (to the
+multi-device and symbolic-shape-inference proposals), and those two links are
+therefore dead in this copy. They resolve upstream.
 
-An earlier version of this copy excluded `docs/docsgen/` on the grounds that it
-was "the Sphinx website generator, not specification text". That was wrong.
-That tree also holds `docsgen/source/intro/concepts.md` — the conceptual
+Nothing else is filtered. The rest of `docs/` is copied whole, including
+material with no bearing on the standard (release administration, CI pipelines,
+backend test coverage, the Sphinx `conf.py` and site assets).
+
+An earlier version of this copy also excluded `docs/docsgen/`. That tree holds
+`docsgen/source/intro/concepts.md` — the conceptual
 introduction published as
 <https://onnx.ai/onnx/intro/concepts.html> — and
 `docsgen/source/technical/{float4,float6,float8,int2,int4,kv_cache}.md`, the
