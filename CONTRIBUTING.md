@@ -65,15 +65,18 @@ changes made to it; all four read the publisher identity from the document's
 bibdata, so changing `sources/onnx.yml` is still enough and this file needs no
 edit.
 
-If you update it from upstream, re-apply exactly those four changes and check:
+If you update it from upstream, re-apply exactly those four changes and run:
 
 ```sh
-sed '1,/^-->/d' sources/onnx.standard.xsl | grep -i 'calconnect\|Calendaring\|Consortium'
+make check-stylesheet
 ```
 
-That must return nothing. The file's own header names its source, so the
-check skips it. Publishing a document carrying another
-organization's name or copyright would misrepresent it.
+That verifies the file is well-formed XML and that no upstream publisher name
+survives in its body. Both have failed silently before: mn2pdf parses the
+stylesheet itself, and Metanorma exits 0 when that parse fails, so a broken
+stylesheet produces no PDF while the build still looks green. Publishing a
+document carrying another organization's name or copyright would misrepresent
+it.
 
 ## Changing the publisher flavour
 

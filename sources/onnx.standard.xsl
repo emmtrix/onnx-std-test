@@ -26,12 +26,10 @@
     4. Cover footer     - publisher read from bibdata, as in (1).
 
   Nothing else was changed. When updating this file from upstream, re-apply
-  exactly these four changes, then check that no publisher name survives in the
-  body of the stylesheet (this header names the source, so it is skipped):
-
-    sed '1,/^-->/d' sources/onnx.standard.xsl | grep -i 'calconnect'
-
-  substituting the real comment terminator for --> above.
+  exactly these four changes, then run `make check-stylesheet`, which
+  verifies that this file is well formed and that no publisher name
+  survives in its body. This header names the source on purpose and is
+  skipped by that check.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:mn="https://www.metanorma.org/ns/standoc" xmlns:mnx="https://www.metanorma.org/ns/xslt" xmlns:mathml="http://www.w3.org/1998/Math/MathML" xmlns:xalan="http://xml.apache.org/xalan" xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" xmlns:java="http://xml.apache.org/xalan/java" xmlns:redirect="http://xml.apache.org/xalan/redirect" exclude-result-prefixes="java xalan" extension-element-prefixes="redirect" version="1.0">
 
