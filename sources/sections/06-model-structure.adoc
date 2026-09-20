@@ -1,0 +1,60 @@
+[[model-structure]]
+== Model structure
+
+=== Model
+
+A <<model>> SHALL contain exactly one top-level <<graph>>.
+
+A model SHALL declare, for every <<domain>> used by any <<node>> reachable from
+its top-level graph, the <<operator-set>> version of that domain that the model
+requires.
+
+A model SHALL declare the IR version against which it was produced.
+
+=== Graph
+
+A graph SHALL declare its inputs, its outputs and, optionally, its
+initializers and value type information.
+
+The nodes of a graph SHALL be topologically sorted: every node SHALL appear
+after the nodes producing the values it consumes.
+
+The graph SHALL be acyclic.
+
+Every value consumed by a node SHALL be produced by exactly one of: a graph
+input, an initializer, an earlier node in the same graph, or an enclosing
+scope.
+
+=== Node
+
+A node SHALL identify the <<operator>> it invokes by domain and name.
+
+The number and types of a node's inputs and outputs SHALL satisfy the signature
+of the operator as defined in the operator set version declared by the
+enclosing model.
+
+=== Attributes
+
+An attribute SHALL have a name that is unique within its node.
+
+An attribute value SHALL NOT refer to a value produced by dataflow.
+
+=== Initializers
+
+// TODO: Clarify the relationship between initializers and graph inputs. Since
+// IR version 4 an initializer need not appear as a graph input, but models in
+// circulation rely on both readings, and consumer behaviour differs. Specify
+// one and state the compatibility rule for the other.
+
+=== Names and scoping
+
+Names SHALL be non-empty. Within one graph, a name SHALL be bound at most once.
+
+// TODO: Specify subgraph scoping precisely: which names a subgraph of an `If`,
+// `Loop` or `Scan` node may capture from enclosing scopes, and whether
+// shadowing is permitted.
+
+=== Metadata
+
+Metadata SHALL NOT affect the result of evaluating a model. A consumer MAY
+ignore any metadata it does not recognize.

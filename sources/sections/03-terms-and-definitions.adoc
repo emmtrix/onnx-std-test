@@ -1,0 +1,83 @@
+== Terms and definitions
+
+For the purposes of this document, the following terms and definitions apply.
+
+[[model]]
+=== model
+
+self-contained description of a computation, comprising a top-level <<graph>>,
+the <<operator-set>> versions it depends upon, and producer and metadata
+information
+
+[[graph]]
+=== graph
+
+directed acyclic graph of <<node,nodes>> together with its declared inputs,
+outputs, initializers and value type information
+
+[[node]]
+=== node
+
+single invocation of an <<operator>>, binding named values to the operator's
+formal inputs and outputs and fixing its <<attribute,attributes>>
+
+[[operator]]
+=== operator
+
+named computation with a specified signature and semantics, identified by the
+pair of its <<domain>> and its name
+
+[[domain]]
+=== domain
+
+namespace that disambiguates operator names
+
+Note 1 to entry: The empty string denotes the default ONNX domain.
+
+[[operator-set]]
+=== operator set
+[.alt]
+opset
+
+set of operator definitions belonging to one <<domain>>, identified by that
+domain and a monotonically increasing integer version
+
+[[attribute]]
+=== attribute
+
+named value that is fixed at the time the <<model>> is constructed and that
+does not participate in dataflow
+
+[[tensor]]
+=== tensor
+
+dense multidimensional array of elements of a single <<element-type>>, having a
+<<shape>>
+
+[[element-type]]
+=== element type
+
+member of the enumeration of scalar types that the elements of a <<tensor>> may
+take
+
+[[shape]]
+=== shape
+
+ordered sequence of dimensions of a <<tensor>>, each of which is a
+non-negative integer, a symbolic name, or unknown
+
+[[conforming-implementation]]
+=== conforming implementation
+
+implementation that satisfies all requirements of one or more of the
+conformance classes defined in <<conformance>>
+
+[[producer]]
+=== producer
+
+program that emits a <<model>>
+
+[[consumer]]
+=== consumer
+
+program that reads a <<model>> in order to evaluate, transform or inspect it

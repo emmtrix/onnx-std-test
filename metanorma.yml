@@ -1,0 +1,11 @@
+---
+# Metanorma manifest for the (unofficial) ONNX Standard.
+#
+# This manifest drives `metanorma site generate` and the collection build.
+metanorma:
+  source:
+    files:
+      - sources/onnx-std.adoc
+  collection:
+    organization: "ONNX Standardization Working Group"
+    name: "ONNX Standard (unofficial draft)"

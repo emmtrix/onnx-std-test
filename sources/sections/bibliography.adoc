@@ -1,0 +1,12 @@
+[bibliography]
+== Bibliography
+
+* [[[isodir2,ISO/IEC DIR 2]]]
+
+* [[[isopas,ISO/IEC JTC 1 PAS]]], _Publicly Available Specification (PAS)
+  transposition process_
+
+* [[[onnxrepo,ONNX]]], _Open Neural Network Exchange_, https://onnx.ai
+
+* [[[jdf,JDF]]], _Joint Development Foundation_,
+  https://www.jointdevelopment.org
