@@ -51,16 +51,6 @@ form a standard cannot adopt.
   them. They cannot be generated and have to be written per operator.
 | Blocking
 
-| <<ir-version-specified>>
-| This edition specifies IR version 14, which the upstream schema carries as
-  current with its publication date given as "TBD". Three things this document
-  specifies --- the two 6-bit floating-point types and the opaque type outside
-  the ONNX-ML build --- exist only in that unpublished version. A standard
-  cannot specify an unpublished version of its subject: either they are held
-  for an amendment and this edition specifies IR version 13, or 14 is published
-  first.
-| Blocking
-
 | <<reduced-precision>> (conversion)
 | Whether a conversion to a narrow floating-point type saturates or yields NaN
   is settled per operator, by an attribute of `Cast`, rather than per type, so
@@ -184,8 +174,8 @@ transcription rather than take it on trust, and so that a refresh of
 | <<packing>> (typed storage)
 | `onnx-ml.proto`, `TensorProto.int32_data`
 
-| <<tbl-ir-versions>> (IR version history)
-| `onnx-ml.proto`, `Version`
+| <<tbl-ir-versions>> (the IR version history)
+| `docs/Versioning.md`, "Released Versions"; `onnx-ml.proto`, `Version`
 
 | <<reduced-precision>> (narrow types and their packing)
 | `docs/docsgen/source/technical/`: `float4.md`, `float6.md`, `float8.md`,
