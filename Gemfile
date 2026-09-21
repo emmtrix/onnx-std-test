@@ -14,3 +14,8 @@ gem "metanorma-generic"
 # into the rendered HTML, but does not declare it as a dependency. Without it
 # every HTML/DOC render fails with `cannot load such file -- sassc-embedded`.
 gem "sassc-embedded"
+
+# Used by scripts/generate-operators.rb to convert the upstream operator prose
+# from Markdown to AsciiDoc. Hand-rolling that conversion is not worth it: the
+# prose carries tables, lists, code fences and inline HTML.
+gem "kramdown-asciidoc"

@@ -107,6 +107,31 @@ stylesheet produces no PDF while the build still looks green. Publishing a
 document carrying another organization's name or copyright would misrepresent
 it.
 
+## The generated operator clauses
+
+Clauses 5 and 6 of Part 2 — 222 operator definitions — are **generated**, not
+written:
+
+```sh
+make operators          # regenerate from upstream/onnx/
+make check-operators    # fail if the committed files differ
+```
+
+Never edit `sources/part2/sections/05-default-domain.adoc` or
+`06-ml-domain.adoc` by hand. CI runs `check-operators`, so an edit, or a
+refresh of `upstream/onnx/` without regenerating, fails the build instead of
+drifting silently.
+
+To change how an operator is rendered, change
+`scripts/generate-operators.rb`.
+
+The generator reports what the upstream source cannot supply. Clause 4 of
+Part 2 makes shape inference, determinism and error conditions mandatory
+elements of an operator definition, and the source states none of them, for any
+operator. That is reported on every run and recorded in Annex C of Part 1. It
+is the substance of the work remaining, and it cannot be generated — it has to
+be written per operator and agreed.
+
 ## The vendored upstream copy
 
 `upstream/onnx/` is a verbatim copy of the ONNX documentation the draft

@@ -224,6 +224,31 @@ every such clause. The count rose from 16 notes to 44 across the three parts,
 which is not a regression: the new clauses — validation, security, inference,
 test vectors — are places the previous structure had no room to admit a gap in.
 
-The largest single piece of missing content is Clause 5 of Part 2, the operator
-definitions themselves. It should be generated from the upstream operator
-schemas rather than written by hand; that decision is recorded there.
+Clauses 5 and 6 of Part 2 are generated from the vendored upstream
+documentation by `scripts/generate-operators.rb`: 222 operators, restated in
+the form Clause 4 requires. The authored-or-generated question is settled in
+favour of generated, and CI checks that the committed files match the
+generator.
+
+What remains is what generation cannot reach. The upstream source supplies no
+shape inference, no determinism statement and no error conditions — for any of
+the 222 operators — and Clause 4 makes all three mandatory. The generator
+reports the coverage on every run:
+
+```
+    Since version       222 / 222
+    Inputs              218 / 222
+    Outputs             218 / 222
+    Attributes          139 / 222
+    Type constraints    218 / 222
+  ! Shape inference       0 / 222
+    Semantics           222 / 222
+  ! Determinism           0 / 222
+  ! Errors                0 / 222
+    Test vectors        189 / 222
+```
+
+The four operators short of a signature are the deprecated ones: upstream stops
+documenting inputs, outputs and type constraints once an operator is
+deprecated, while Clause 14.5 of Part 1 requires consumers to keep evaluating
+it. Annex C records that.

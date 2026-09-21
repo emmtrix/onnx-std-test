@@ -52,6 +52,7 @@ sources/
   part1/ part2/ part3/     One directory per part: master document + sections/
 scripts/check-errors.rb    Gates the build on Metanorma diagnostic severity
 scripts/vendor-onnx-docs.sh  Refreshes the vendored upstream copy
+scripts/generate-operators.rb Generates the operator clauses of Part 2
 upstream/onnx/             Verbatim upstream ONNX docs (complete) + .proto
 .github/workflows/         CI: build HTML + PDF, publish as artifacts
 ```
@@ -82,6 +83,7 @@ make          # semantic XML + HTML
 make doc      # also Word (.doc)
 make pdf      # also PDF
 make site     # the full site under _site/, as published to Pages
+make operators  # regenerate Part 2's operator clauses from upstream
 make lint     # fail on Metanorma errors of severity <= 1
 make clean
 ```
@@ -136,7 +138,7 @@ operator does not force a new edition of the core:
 | Part | Content | Changes with |
 |---|---|---|
 | **1 — Core** | Information model, types, semantics, inference, validation, numerical behaviour, encoding, versioning, security, conformance | the IR version |
-| **2 — Operator sets** | The operator definitions, per domain and opset version | every ONNX release |
+| **2 — Operator sets** | 222 operator definitions, per domain and opset version, generated from upstream | every ONNX release |
 | **3 — Conformance test package** | Test vector format, selection, tolerances, reporting | Part 2 |
 
 Part 1 names no individual operator: it specifies the *form* an operator
