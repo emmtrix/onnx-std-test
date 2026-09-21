@@ -118,6 +118,7 @@ A model binds each of its nodes to an operator definition by the operator set
 version the model imports; see <<operator-set-import>>. How a consumer binds
 that definition to an implementation is outside the scope of this document.
 
+[[compatibility]]
 === Compatibility obligations
 
 A consumer that claims support for operator set version stem:[n] of a domain

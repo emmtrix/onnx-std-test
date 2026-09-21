@@ -132,6 +132,38 @@ operator. That is reported on every run and recorded in Annex C of Part 1. It
 is the substance of the work remaining, and it cannot be generated — it has to
 be written per operator and agreed.
 
+## The generated schema annex
+
+Annex B of Part 1 — 35 messages and 166 fields — is **generated** from the
+vendored Protocol Buffers schema:
+
+```sh
+make schema             # regenerate from upstream/onnx/proto/
+make check-schema       # fail if the committed file differs
+```
+
+Never edit `sources/part1/sections/annex-b-protobuf-schema.adoc` by hand. CI
+runs `check-schema`, on the same contract as the operator clauses.
+
+The annex states, per message, each field's wire tag, type and obligation. The
+obligation is the point of it: in the Protocol Buffers syntax this schema uses
+every field is syntactically optional, and which ones a producer must supply is
+carried in the comments, by the convention upstream's versioning document
+defines. The generator reads that convention — a field whose comment says it
+MUST be present for this version of the IR is mandatory — and 23 of the 166
+fields come out mandatory.
+
+The prose of the schema comments is deliberately **not** carried across. A
+field table states structure; where a comment carries a normative statement,
+that statement belongs in the clause it concerns, and the clauses are where
+those statements are. The schema source stays vendored as an informative aid.
+
+`scripts/generate-schema.rb` is not a Protocol Buffers parser and is not meant
+to be one. It reads the subset of proto2 these files use and **fails loudly**
+on anything it does not recognize inside a message body, rather than skipping
+it — so a schema change upstream shows up as a failed run rather than as a
+missing row.
+
 ## The vendored upstream copy
 
 `upstream/onnx/` is a verbatim copy of the ONNX documentation the draft

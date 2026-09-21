@@ -29,7 +29,7 @@ RUBY       ?= ruby
 SEVERITY   ?= 1
 
 .PHONY: all html doc pdf site lint clean deps check-stylesheet \
-        operators check-operators
+        operators check-operators schema check-schema
 
 all: html
 
@@ -69,6 +69,15 @@ operators:
 # rather than as silent drift.
 check-operators:
 	@$(RUBY) scripts/generate-operators.rb --check
+
+# Annex B of Part 1 is generated from the vendored Protocol Buffers schema:
+# 35 messages and 166 fields, restated as tables of wire tag, type and
+# obligation, which the schema source cannot express.
+schema:
+	@$(RUBY) scripts/generate-schema.rb
+
+check-schema:
+	@$(RUBY) scripts/generate-schema.rb --check
 
 # mn2pdf parses the stylesheet itself, and Metanorma exits 0 when that parse
 # fails — producing no PDF while the build looks successful. Check it first;
