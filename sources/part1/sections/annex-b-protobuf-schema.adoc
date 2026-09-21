@@ -5,17 +5,19 @@
 
 [[annex-schema]]
 [appendix,obligation=normative]
-== Protocol Buffers schema
+== Message definitions
 
 === General
 
-This annex states the message definitions of the serialized form: 35 messages and 166 fields.
+This annex states the message definitions of the serialized form: 35 messages and 166 fields. <<serialization>> states how the octets of a message are laid out; this annex says which fields there are.
 
-The tag of a field is normative; it identifies the field on the wire and SHALL NOT be reused. A field marked mandatory SHALL be present. A field marked optional MAY be absent, and a <<consumer,consumer>> SHALL accept a message in which it is. A field marked repeated holds zero or more values. A field marked deprecated SHALL NOT be written by a <<producer,producer>>, and a consumer that reads one SHALL ignore it.
+The tag of a field identifies it within its message and SHALL NOT be reused. The wire type is the encoding of its value, per <<tbl-wire-types>>; together the two make the field key (<<field-key>>).
+
+A field marked mandatory SHALL be present. A field marked optional MAY be absent, and a <<consumer,consumer>> SHALL accept a message in which it is. A field marked repeated holds zero or more values, and a <<producer,producer>> SHOULD write it in the form recorded here, packed or not; a consumer SHALL accept either (<<repeated-fields>>). A field marked deprecated SHALL NOT be written by a producer, and a consumer that reads one SHALL ignore it.
 
 The obligations are those in force at the IR version stated in <<ir-version-specified>>.
 
-NOTE: 23 of the 166 fields are mandatory. Protocol Buffers cannot express the distinction: in the syntax this schema uses every field is optional, and the obligation is carried in the comments. Stating it in a table is the reason this annex exists.
+NOTE: 23 of the 166 fields are mandatory. A schema cannot express the distinction: in the syntax this standard was derived from every field is optional, and the obligation is carried in the comments. Stating it in a table is the reason this annex exists.
 
 [[tbl-schema-sources]]
 .Subclauses of this annex and the schema file each restates
@@ -61,28 +63,28 @@ NOTE: 23 of the 166 fields are mandatory. Protocol Buffers cannot express the di
 
 [[tbl-schema-attributeproto]]
 .Fields of `AttributeProto`
-[cols="3,1,3,2"]
+[cols="3,1,1,3,2"]
 |===
-| Field | Tag | Type | Obligation
+| Field | Tag | Wire type | Type | Obligation
 
-| `name` | 1 | `string` | mandatory
-| `ref_attr_name` | 21 | `string` | optional
-| `doc_string` | 13 | `string` | optional
-| `type` | 20 | `AttributeType` | mandatory
-| `f` | 2 | `float` | mandatory
-| `i` | 3 | `int64` | optional
-| `s` | 4 | `bytes` | optional
-| `t` | 5 | `TensorProto` | optional
-| `g` | 6 | `GraphProto` | optional
-| `sparse_tensor` | 22 | `SparseTensorProto` | optional
-| `tp` | 14 | `TypeProto` | deprecated
-| `floats` | 7 | `float` | repeated
-| `ints` | 8 | `int64` | repeated
-| `strings` | 9 | `bytes` | repeated
-| `tensors` | 10 | `TensorProto` | repeated
-| `graphs` | 11 | `GraphProto` | repeated
-| `sparse_tensors` | 23 | `SparseTensorProto` | repeated
-| `type_protos` | 15 | `TypeProto` | repeated
+| `name` | 1 | 2 | `string` | mandatory
+| `ref_attr_name` | 21 | 2 | `string` | optional
+| `doc_string` | 13 | 2 | `string` | optional
+| `type` | 20 | 0 | `AttributeType` | mandatory
+| `f` | 2 | 5 | `float` | mandatory
+| `i` | 3 | 0 | `int64` | optional
+| `s` | 4 | 2 | `bytes` | optional
+| `t` | 5 | 2 | `TensorProto` | optional
+| `g` | 6 | 2 | `GraphProto` | optional
+| `sparse_tensor` | 22 | 2 | `SparseTensorProto` | optional
+| `tp` | 14 | 2 | `TypeProto` | deprecated
+| `floats` | 7 | 5 | `float` | repeated
+| `ints` | 8 | 0 | `int64` | repeated
+| `strings` | 9 | 2 | `bytes` | repeated
+| `tensors` | 10 | 2 | `TensorProto` | repeated
+| `graphs` | 11 | 2 | `GraphProto` | repeated
+| `sparse_tensors` | 23 | 2 | `SparseTensorProto` | repeated
+| `type_protos` | 15 | 2 | `TypeProto` | repeated
 |===
 
 Tags and names reserved in `AttributeProto`, which SHALL NOT be used: `12, 16 to 19`; `"v"`.
@@ -115,14 +117,14 @@ Tags and names reserved in `AttributeProto`, which SHALL NOT be used: `12, 16 to
 
 [[tbl-schema-valueinfoproto]]
 .Fields of `ValueInfoProto`
-[cols="3,1,3,2"]
+[cols="3,1,1,3,2"]
 |===
-| Field | Tag | Type | Obligation
+| Field | Tag | Wire type | Type | Obligation
 
-| `name` | 1 | `string` | mandatory
-| `type` | 2 | `TypeProto` | mandatory
-| `doc_string` | 3 | `string` | optional
-| `metadata_props` | 4 | `StringStringEntryProto` | repeated
+| `name` | 1 | 2 | `string` | mandatory
+| `type` | 2 | 2 | `TypeProto` | mandatory
+| `doc_string` | 3 | 2 | `string` | optional
+| `metadata_props` | 4 | 2 | `StringStringEntryProto` | repeated
 |===
 
 [[schema-nodeproto]]
@@ -130,20 +132,20 @@ Tags and names reserved in `AttributeProto`, which SHALL NOT be used: `12, 16 to
 
 [[tbl-schema-nodeproto]]
 .Fields of `NodeProto`
-[cols="3,1,3,2"]
+[cols="3,1,1,3,2"]
 |===
-| Field | Tag | Type | Obligation
+| Field | Tag | Wire type | Type | Obligation
 
-| `input` | 1 | `string` | repeated
-| `output` | 2 | `string` | repeated
-| `name` | 3 | `string` | optional
-| `op_type` | 4 | `string` | optional
-| `domain` | 7 | `string` | optional
-| `overload` | 8 | `string` | optional
-| `attribute` | 5 | `AttributeProto` | repeated
-| `doc_string` | 6 | `string` | optional
-| `metadata_props` | 9 | `StringStringEntryProto` | repeated
-| `device_configurations` | 10 | `NodeDeviceConfigurationProto` | repeated
+| `input` | 1 | 2 | `string` | repeated
+| `output` | 2 | 2 | `string` | repeated
+| `name` | 3 | 2 | `string` | optional
+| `op_type` | 4 | 2 | `string` | optional
+| `domain` | 7 | 2 | `string` | optional
+| `overload` | 8 | 2 | `string` | optional
+| `attribute` | 5 | 2 | `AttributeProto` | repeated
+| `doc_string` | 6 | 2 | `string` | optional
+| `metadata_props` | 9 | 2 | `StringStringEntryProto` | repeated
+| `device_configurations` | 10 | 2 | `NodeDeviceConfigurationProto` | repeated
 |===
 
 [[schema-intintlistentryproto]]
@@ -151,12 +153,12 @@ Tags and names reserved in `AttributeProto`, which SHALL NOT be used: `12, 16 to
 
 [[tbl-schema-intintlistentryproto]]
 .Fields of `IntIntListEntryProto`
-[cols="3,1,3,2"]
+[cols="3,1,1,3,2"]
 |===
-| Field | Tag | Type | Obligation
+| Field | Tag | Wire type | Type | Obligation
 
-| `key` | 1 | `int64` | optional
-| `value` | 2 | `int64` | repeated
+| `key` | 1 | 0 | `int64` | optional
+| `value` | 2 | 0 | `int64` | repeated
 |===
 
 [[schema-nodedeviceconfigurationproto]]
@@ -164,13 +166,13 @@ Tags and names reserved in `AttributeProto`, which SHALL NOT be used: `12, 16 to
 
 [[tbl-schema-nodedeviceconfigurationproto]]
 .Fields of `NodeDeviceConfigurationProto`
-[cols="3,1,3,2"]
+[cols="3,1,1,3,2"]
 |===
-| Field | Tag | Type | Obligation
+| Field | Tag | Wire type | Type | Obligation
 
-| `configuration_id` | 1 | `string` | mandatory
-| `sharding_spec` | 2 | `ShardingSpecProto` | repeated
-| `pipeline_stage` | 3 | `int32` | optional
+| `configuration_id` | 1 | 2 | `string` | mandatory
+| `sharding_spec` | 2 | 2 | `ShardingSpecProto` | repeated
+| `pipeline_stage` | 3 | 0 | `int32` | optional
 |===
 
 [[schema-shardingspecproto]]
@@ -178,14 +180,14 @@ Tags and names reserved in `AttributeProto`, which SHALL NOT be used: `12, 16 to
 
 [[tbl-schema-shardingspecproto]]
 .Fields of `ShardingSpecProto`
-[cols="3,1,3,2"]
+[cols="3,1,1,3,2"]
 |===
-| Field | Tag | Type | Obligation
+| Field | Tag | Wire type | Type | Obligation
 
-| `tensor_name` | 1 | `string` | mandatory
-| `device` | 2 | `int64` | repeated
-| `index_to_device_group_map` | 3 | `IntIntListEntryProto` | repeated
-| `sharded_dim` | 4 | `ShardedDimProto` | repeated
+| `tensor_name` | 1 | 2 | `string` | mandatory
+| `device` | 2 | 0 | `int64` | repeated
+| `index_to_device_group_map` | 3 | 2 | `IntIntListEntryProto` | repeated
+| `sharded_dim` | 4 | 2 | `ShardedDimProto` | repeated
 |===
 
 [[schema-shardeddimproto]]
@@ -193,12 +195,12 @@ Tags and names reserved in `AttributeProto`, which SHALL NOT be used: `12, 16 to
 
 [[tbl-schema-shardeddimproto]]
 .Fields of `ShardedDimProto`
-[cols="3,1,3,2"]
+[cols="3,1,1,3,2"]
 |===
-| Field | Tag | Type | Obligation
+| Field | Tag | Wire type | Type | Obligation
 
-| `axis` | 1 | `int64` | mandatory
-| `simple_sharding` | 2 | `SimpleShardedDimProto` | repeated
+| `axis` | 1 | 0 | `int64` | mandatory
+| `simple_sharding` | 2 | 2 | `SimpleShardedDimProto` | repeated
 |===
 
 [[schema-simpleshardeddimproto]]
@@ -206,13 +208,13 @@ Tags and names reserved in `AttributeProto`, which SHALL NOT be used: `12, 16 to
 
 [[tbl-schema-simpleshardeddimproto]]
 .Fields of `SimpleShardedDimProto`
-[cols="3,1,3,2"]
+[cols="3,1,1,3,2"]
 |===
-| Field | Tag | Type | Obligation
+| Field | Tag | Wire type | Type | Obligation
 
-| `dim_value` | 1 | `int64` | one of the group
-| `dim_param` | 2 | `string` | one of the group
-| `num_shards` | 3 | `int64` | mandatory
+| `dim_value` | 1 | 0 | `int64` | one of the group
+| `dim_param` | 2 | 2 | `string` | one of the group
+| `num_shards` | 3 | 0 | `int64` | mandatory
 |===
 
 Exactly one of `dim_value`, `dim_param` SHALL be present, being the group `dim`.
@@ -222,14 +224,14 @@ Exactly one of `dim_value`, `dim_param` SHALL be present, being the group `dim`.
 
 [[tbl-schema-traininginfoproto]]
 .Fields of `TrainingInfoProto`
-[cols="3,1,3,2"]
+[cols="3,1,1,3,2"]
 |===
-| Field | Tag | Type | Obligation
+| Field | Tag | Wire type | Type | Obligation
 
-| `initialization` | 1 | `GraphProto` | optional
-| `algorithm` | 2 | `GraphProto` | optional
-| `initialization_binding` | 3 | `StringStringEntryProto` | repeated
-| `update_binding` | 4 | `StringStringEntryProto` | repeated
+| `initialization` | 1 | 2 | `GraphProto` | optional
+| `algorithm` | 2 | 2 | `GraphProto` | optional
+| `initialization_binding` | 3 | 2 | `StringStringEntryProto` | repeated
+| `update_binding` | 4 | 2 | `StringStringEntryProto` | repeated
 |===
 
 [[schema-modelproto]]
@@ -237,22 +239,22 @@ Exactly one of `dim_value`, `dim_param` SHALL be present, being the group `dim`.
 
 [[tbl-schema-modelproto]]
 .Fields of `ModelProto`
-[cols="3,1,3,2"]
+[cols="3,1,1,3,2"]
 |===
-| Field | Tag | Type | Obligation
+| Field | Tag | Wire type | Type | Obligation
 
-| `ir_version` | 1 | `int64` | optional
-| `opset_import` | 8 | `OperatorSetIdProto` | repeated
-| `producer_name` | 2 | `string` | optional
-| `producer_version` | 3 | `string` | optional
-| `domain` | 4 | `string` | optional
-| `model_version` | 5 | `int64` | optional
-| `doc_string` | 6 | `string` | optional
-| `graph` | 7 | `GraphProto` | optional
-| `metadata_props` | 14 | `StringStringEntryProto` | repeated
-| `training_info` | 20 | `TrainingInfoProto` | repeated
-| `functions` | 25 | `FunctionProto` | repeated
-| `configuration` | 26 | `DeviceConfigurationProto` | repeated
+| `ir_version` | 1 | 0 | `int64` | optional
+| `opset_import` | 8 | 2 | `OperatorSetIdProto` | repeated
+| `producer_name` | 2 | 2 | `string` | optional
+| `producer_version` | 3 | 2 | `string` | optional
+| `domain` | 4 | 2 | `string` | optional
+| `model_version` | 5 | 0 | `int64` | optional
+| `doc_string` | 6 | 2 | `string` | optional
+| `graph` | 7 | 2 | `GraphProto` | optional
+| `metadata_props` | 14 | 2 | `StringStringEntryProto` | repeated
+| `training_info` | 20 | 2 | `TrainingInfoProto` | repeated
+| `functions` | 25 | 2 | `FunctionProto` | repeated
+| `configuration` | 26 | 2 | `DeviceConfigurationProto` | repeated
 |===
 
 [[schema-deviceconfigurationproto]]
@@ -260,13 +262,13 @@ Exactly one of `dim_value`, `dim_param` SHALL be present, being the group `dim`.
 
 [[tbl-schema-deviceconfigurationproto]]
 .Fields of `DeviceConfigurationProto`
-[cols="3,1,3,2"]
+[cols="3,1,1,3,2"]
 |===
-| Field | Tag | Type | Obligation
+| Field | Tag | Wire type | Type | Obligation
 
-| `name` | 1 | `string` | mandatory
-| `num_devices` | 2 | `int32` | mandatory
-| `device` | 3 | `string` | repeated
+| `name` | 1 | 2 | `string` | mandatory
+| `num_devices` | 2 | 0 | `int32` | mandatory
+| `device` | 3 | 2 | `string` | repeated
 |===
 
 [[schema-stringstringentryproto]]
@@ -274,12 +276,12 @@ Exactly one of `dim_value`, `dim_param` SHALL be present, being the group `dim`.
 
 [[tbl-schema-stringstringentryproto]]
 .Fields of `StringStringEntryProto`
-[cols="3,1,3,2"]
+[cols="3,1,1,3,2"]
 |===
-| Field | Tag | Type | Obligation
+| Field | Tag | Wire type | Type | Obligation
 
-| `key` | 1 | `string` | optional
-| `value` | 2 | `string` | optional
+| `key` | 1 | 2 | `string` | optional
+| `value` | 2 | 2 | `string` | optional
 |===
 
 [[schema-tensorannotation]]
@@ -287,12 +289,12 @@ Exactly one of `dim_value`, `dim_param` SHALL be present, being the group `dim`.
 
 [[tbl-schema-tensorannotation]]
 .Fields of `TensorAnnotation`
-[cols="3,1,3,2"]
+[cols="3,1,1,3,2"]
 |===
-| Field | Tag | Type | Obligation
+| Field | Tag | Wire type | Type | Obligation
 
-| `tensor_name` | 1 | `string` | optional
-| `quant_parameter_tensor_names` | 2 | `StringStringEntryProto` | repeated
+| `tensor_name` | 1 | 2 | `string` | optional
+| `quant_parameter_tensor_names` | 2 | 2 | `StringStringEntryProto` | repeated
 |===
 
 [[schema-graphproto]]
@@ -300,20 +302,20 @@ Exactly one of `dim_value`, `dim_param` SHALL be present, being the group `dim`.
 
 [[tbl-schema-graphproto]]
 .Fields of `GraphProto`
-[cols="3,1,3,2"]
+[cols="3,1,1,3,2"]
 |===
-| Field | Tag | Type | Obligation
+| Field | Tag | Wire type | Type | Obligation
 
-| `node` | 1 | `NodeProto` | repeated
-| `name` | 2 | `string` | optional
-| `initializer` | 5 | `TensorProto` | repeated
-| `sparse_initializer` | 15 | `SparseTensorProto` | repeated
-| `doc_string` | 10 | `string` | optional
-| `input` | 11 | `ValueInfoProto` | repeated
-| `output` | 12 | `ValueInfoProto` | repeated
-| `value_info` | 13 | `ValueInfoProto` | repeated
-| `quantization_annotation` | 14 | `TensorAnnotation` | repeated
-| `metadata_props` | 16 | `StringStringEntryProto` | repeated
+| `node` | 1 | 2 | `NodeProto` | repeated
+| `name` | 2 | 2 | `string` | optional
+| `initializer` | 5 | 2 | `TensorProto` | repeated
+| `sparse_initializer` | 15 | 2 | `SparseTensorProto` | repeated
+| `doc_string` | 10 | 2 | `string` | optional
+| `input` | 11 | 2 | `ValueInfoProto` | repeated
+| `output` | 12 | 2 | `ValueInfoProto` | repeated
+| `value_info` | 13 | 2 | `ValueInfoProto` | repeated
+| `quantization_annotation` | 14 | 2 | `TensorAnnotation` | repeated
+| `metadata_props` | 16 | 2 | `StringStringEntryProto` | repeated
 |===
 
 Tags and names reserved in `GraphProto`, which SHALL NOT be used: `3, 4, 6 to 9`; `"ir_version", "producer_version", "producer_tag", "domain"`.
@@ -323,25 +325,25 @@ Tags and names reserved in `GraphProto`, which SHALL NOT be used: `3, 4, 6 to 9`
 
 [[tbl-schema-tensorproto]]
 .Fields of `TensorProto`
-[cols="3,1,3,2"]
+[cols="3,1,1,3,2"]
 |===
-| Field | Tag | Type | Obligation
+| Field | Tag | Wire type | Type | Obligation
 
-| `dims` | 1 | `int64` | repeated
-| `data_type` | 2 | `int32` | optional
-| `segment` | 3 | `Segment` | optional
-| `float_data` | 4 | `float` | repeated
-| `int32_data` | 5 | `int32` | repeated
-| `string_data` | 6 | `bytes` | repeated
-| `int64_data` | 7 | `int64` | repeated
-| `name` | 8 | `string` | optional
-| `doc_string` | 12 | `string` | optional
-| `raw_data` | 9 | `bytes` | optional
-| `external_data` | 13 | `StringStringEntryProto` | repeated
-| `data_location` | 14 | `DataLocation` | optional
-| `double_data` | 10 | `double` | repeated
-| `uint64_data` | 11 | `uint64` | repeated
-| `metadata_props` | 16 | `StringStringEntryProto` | repeated
+| `dims` | 1 | 0 | `int64` | repeated
+| `data_type` | 2 | 0 | `int32` | optional
+| `segment` | 3 | 2 | `Segment` | optional
+| `float_data` | 4 | 2 | `float` | repeated, packed
+| `int32_data` | 5 | 2 | `int32` | repeated, packed
+| `string_data` | 6 | 2 | `bytes` | repeated
+| `int64_data` | 7 | 2 | `int64` | repeated, packed
+| `name` | 8 | 2 | `string` | optional
+| `doc_string` | 12 | 2 | `string` | optional
+| `raw_data` | 9 | 2 | `bytes` | optional
+| `external_data` | 13 | 2 | `StringStringEntryProto` | repeated
+| `data_location` | 14 | 0 | `DataLocation` | optional
+| `double_data` | 10 | 2 | `double` | repeated, packed
+| `uint64_data` | 11 | 2 | `uint64` | repeated, packed
+| `metadata_props` | 16 | 2 | `StringStringEntryProto` | repeated
 |===
 
 [[tbl-schema-tensorproto-datatype]]
@@ -396,12 +398,12 @@ Tags and names reserved in `GraphProto`, which SHALL NOT be used: `3, 4, 6 to 9`
 
 [[tbl-schema-tensorproto-segment]]
 .Fields of `TensorProto.Segment`
-[cols="3,1,3,2"]
+[cols="3,1,1,3,2"]
 |===
-| Field | Tag | Type | Obligation
+| Field | Tag | Wire type | Type | Obligation
 
-| `begin` | 1 | `int64` | optional
-| `end` | 2 | `int64` | optional
+| `begin` | 1 | 0 | `int64` | optional
+| `end` | 2 | 0 | `int64` | optional
 |===
 
 [[schema-sparsetensorproto]]
@@ -409,13 +411,13 @@ Tags and names reserved in `GraphProto`, which SHALL NOT be used: `3, 4, 6 to 9`
 
 [[tbl-schema-sparsetensorproto]]
 .Fields of `SparseTensorProto`
-[cols="3,1,3,2"]
+[cols="3,1,1,3,2"]
 |===
-| Field | Tag | Type | Obligation
+| Field | Tag | Wire type | Type | Obligation
 
-| `values` | 1 | `TensorProto` | optional
-| `indices` | 2 | `TensorProto` | optional
-| `dims` | 3 | `int64` | repeated
+| `values` | 1 | 2 | `TensorProto` | optional
+| `indices` | 2 | 2 | `TensorProto` | optional
+| `dims` | 3 | 0 | `int64` | repeated
 |===
 
 [[schema-tensorshapeproto]]
@@ -423,11 +425,11 @@ Tags and names reserved in `GraphProto`, which SHALL NOT be used: `3, 4, 6 to 9`
 
 [[tbl-schema-tensorshapeproto]]
 .Fields of `TensorShapeProto`
-[cols="3,1,3,2"]
+[cols="3,1,1,3,2"]
 |===
-| Field | Tag | Type | Obligation
+| Field | Tag | Wire type | Type | Obligation
 
-| `dim` | 1 | `Dimension` | repeated
+| `dim` | 1 | 2 | `Dimension` | repeated
 |===
 
 [[schema-tensorshapeproto-dimension]]
@@ -435,13 +437,13 @@ Tags and names reserved in `GraphProto`, which SHALL NOT be used: `3, 4, 6 to 9`
 
 [[tbl-schema-tensorshapeproto-dimension]]
 .Fields of `TensorShapeProto.Dimension`
-[cols="3,1,3,2"]
+[cols="3,1,1,3,2"]
 |===
-| Field | Tag | Type | Obligation
+| Field | Tag | Wire type | Type | Obligation
 
-| `dim_value` | 1 | `int64` | one of the group
-| `dim_param` | 2 | `string` | one of the group
-| `denotation` | 3 | `string` | optional
+| `dim_value` | 1 | 0 | `int64` | one of the group
+| `dim_param` | 2 | 2 | `string` | one of the group
+| `denotation` | 3 | 2 | `string` | optional
 |===
 
 Exactly one of `dim_value`, `dim_param` SHALL be present, being the group `value`.
@@ -451,17 +453,17 @@ Exactly one of `dim_value`, `dim_param` SHALL be present, being the group `value
 
 [[tbl-schema-typeproto]]
 .Fields of `TypeProto`
-[cols="3,1,3,2"]
+[cols="3,1,1,3,2"]
 |===
-| Field | Tag | Type | Obligation
+| Field | Tag | Wire type | Type | Obligation
 
-| `tensor_type` | 1 | `Tensor` | one of the group
-| `sequence_type` | 4 | `Sequence` | one of the group
-| `map_type` | 5 | `Map` | one of the group
-| `optional_type` | 9 | `Optional` | one of the group
-| `sparse_tensor_type` | 8 | `SparseTensor` | one of the group
-| `opaque_type` | 7 | `Opaque` | one of the group
-| `denotation` | 6 | `string` | optional
+| `tensor_type` | 1 | 2 | `Tensor` | one of the group
+| `sequence_type` | 4 | 2 | `Sequence` | one of the group
+| `map_type` | 5 | 2 | `Map` | one of the group
+| `optional_type` | 9 | 2 | `Optional` | one of the group
+| `sparse_tensor_type` | 8 | 2 | `SparseTensor` | one of the group
+| `opaque_type` | 7 | 2 | `Opaque` | one of the group
+| `denotation` | 6 | 2 | `string` | optional
 |===
 
 Exactly one of `tensor_type`, `sequence_type`, `map_type`, `optional_type`, `sparse_tensor_type`, `opaque_type` SHALL be present, being the group `value`.
@@ -471,12 +473,12 @@ Exactly one of `tensor_type`, `sequence_type`, `map_type`, `optional_type`, `spa
 
 [[tbl-schema-typeproto-tensor]]
 .Fields of `TypeProto.Tensor`
-[cols="3,1,3,2"]
+[cols="3,1,1,3,2"]
 |===
-| Field | Tag | Type | Obligation
+| Field | Tag | Wire type | Type | Obligation
 
-| `elem_type` | 1 | `int32` | mandatory
-| `shape` | 2 | `TensorShapeProto` | optional
+| `elem_type` | 1 | 0 | `int32` | mandatory
+| `shape` | 2 | 2 | `TensorShapeProto` | optional
 |===
 
 [[schema-typeproto-sequence]]
@@ -484,11 +486,11 @@ Exactly one of `tensor_type`, `sequence_type`, `map_type`, `optional_type`, `spa
 
 [[tbl-schema-typeproto-sequence]]
 .Fields of `TypeProto.Sequence`
-[cols="3,1,3,2"]
+[cols="3,1,1,3,2"]
 |===
-| Field | Tag | Type | Obligation
+| Field | Tag | Wire type | Type | Obligation
 
-| `elem_type` | 1 | `TypeProto` | mandatory
+| `elem_type` | 1 | 2 | `TypeProto` | mandatory
 |===
 
 [[schema-typeproto-map]]
@@ -496,12 +498,12 @@ Exactly one of `tensor_type`, `sequence_type`, `map_type`, `optional_type`, `spa
 
 [[tbl-schema-typeproto-map]]
 .Fields of `TypeProto.Map`
-[cols="3,1,3,2"]
+[cols="3,1,1,3,2"]
 |===
-| Field | Tag | Type | Obligation
+| Field | Tag | Wire type | Type | Obligation
 
-| `key_type` | 1 | `int32` | mandatory
-| `value_type` | 2 | `TypeProto` | mandatory
+| `key_type` | 1 | 0 | `int32` | mandatory
+| `value_type` | 2 | 2 | `TypeProto` | mandatory
 |===
 
 [[schema-typeproto-optional]]
@@ -509,11 +511,11 @@ Exactly one of `tensor_type`, `sequence_type`, `map_type`, `optional_type`, `spa
 
 [[tbl-schema-typeproto-optional]]
 .Fields of `TypeProto.Optional`
-[cols="3,1,3,2"]
+[cols="3,1,1,3,2"]
 |===
-| Field | Tag | Type | Obligation
+| Field | Tag | Wire type | Type | Obligation
 
-| `elem_type` | 1 | `TypeProto` | mandatory
+| `elem_type` | 1 | 2 | `TypeProto` | mandatory
 |===
 
 [[schema-typeproto-sparsetensor]]
@@ -521,12 +523,12 @@ Exactly one of `tensor_type`, `sequence_type`, `map_type`, `optional_type`, `spa
 
 [[tbl-schema-typeproto-sparsetensor]]
 .Fields of `TypeProto.SparseTensor`
-[cols="3,1,3,2"]
+[cols="3,1,1,3,2"]
 |===
-| Field | Tag | Type | Obligation
+| Field | Tag | Wire type | Type | Obligation
 
-| `elem_type` | 1 | `int32` | mandatory
-| `shape` | 2 | `TensorShapeProto` | optional
+| `elem_type` | 1 | 0 | `int32` | mandatory
+| `shape` | 2 | 2 | `TensorShapeProto` | optional
 |===
 
 [[schema-typeproto-opaque]]
@@ -534,12 +536,12 @@ Exactly one of `tensor_type`, `sequence_type`, `map_type`, `optional_type`, `spa
 
 [[tbl-schema-typeproto-opaque]]
 .Fields of `TypeProto.Opaque`
-[cols="3,1,3,2"]
+[cols="3,1,1,3,2"]
 |===
-| Field | Tag | Type | Obligation
+| Field | Tag | Wire type | Type | Obligation
 
-| `domain` | 1 | `string` | optional
-| `name` | 2 | `string` | optional
+| `domain` | 1 | 2 | `string` | optional
+| `name` | 2 | 2 | `string` | optional
 |===
 
 Tags and names reserved in `TypeProto.Opaque`, which SHALL NOT be used: `3`; `"parameters"`.
@@ -549,12 +551,12 @@ Tags and names reserved in `TypeProto.Opaque`, which SHALL NOT be used: `3`; `"p
 
 [[tbl-schema-operatorsetidproto]]
 .Fields of `OperatorSetIdProto`
-[cols="3,1,3,2"]
+[cols="3,1,1,3,2"]
 |===
-| Field | Tag | Type | Obligation
+| Field | Tag | Wire type | Type | Obligation
 
-| `domain` | 1 | `string` | mandatory
-| `version` | 2 | `int64` | mandatory
+| `domain` | 1 | 2 | `string` | mandatory
+| `version` | 2 | 0 | `int64` | mandatory
 |===
 
 [[schema-operatorstatus]]
@@ -575,22 +577,22 @@ Tags and names reserved in `TypeProto.Opaque`, which SHALL NOT be used: `3`; `"p
 
 [[tbl-schema-functionproto]]
 .Fields of `FunctionProto`
-[cols="3,1,3,2"]
+[cols="3,1,1,3,2"]
 |===
-| Field | Tag | Type | Obligation
+| Field | Tag | Wire type | Type | Obligation
 
-| `name` | 1 | `string` | optional
-| `input` | 4 | `string` | repeated
-| `output` | 5 | `string` | repeated
-| `attribute` | 6 | `string` | repeated
-| `attribute_proto` | 11 | `AttributeProto` | repeated
-| `node` | 7 | `NodeProto` | repeated
-| `doc_string` | 8 | `string` | optional
-| `opset_import` | 9 | `OperatorSetIdProto` | repeated
-| `domain` | 10 | `string` | optional
-| `overload` | 13 | `string` | optional
-| `value_info` | 12 | `ValueInfoProto` | repeated
-| `metadata_props` | 14 | `StringStringEntryProto` | repeated
+| `name` | 1 | 2 | `string` | optional
+| `input` | 4 | 2 | `string` | repeated
+| `output` | 5 | 2 | `string` | repeated
+| `attribute` | 6 | 2 | `string` | repeated
+| `attribute_proto` | 11 | 2 | `AttributeProto` | repeated
+| `node` | 7 | 2 | `NodeProto` | repeated
+| `doc_string` | 8 | 2 | `string` | optional
+| `opset_import` | 9 | 2 | `OperatorSetIdProto` | repeated
+| `domain` | 10 | 2 | `string` | optional
+| `overload` | 13 | 2 | `string` | optional
+| `value_info` | 12 | 2 | `ValueInfoProto` | repeated
+| `metadata_props` | 14 | 2 | `StringStringEntryProto` | repeated
 |===
 
 Tags and names reserved in `FunctionProto`, which SHALL NOT be used: `2`; `"since_version"`; `3`; `"status"`.
@@ -602,14 +604,14 @@ Tags and names reserved in `FunctionProto`, which SHALL NOT be used: `2`; `"sinc
 
 [[tbl-schema-operatorproto]]
 .Fields of `OperatorProto`
-[cols="3,1,3,2"]
+[cols="3,1,1,3,2"]
 |===
-| Field | Tag | Type | Obligation
+| Field | Tag | Wire type | Type | Obligation
 
-| `op_type` | 1 | `string` | mandatory
-| `since_version` | 2 | `int64` | mandatory
-| `status` | 3 | `OperatorStatus` | optional
-| `doc_string` | 10 | `string` | optional
+| `op_type` | 1 | 2 | `string` | mandatory
+| `since_version` | 2 | 0 | `int64` | mandatory
+| `status` | 3 | 0 | `OperatorStatus` | optional
+| `doc_string` | 10 | 2 | `string` | optional
 |===
 
 [[schema-operatorsetproto]]
@@ -617,19 +619,19 @@ Tags and names reserved in `FunctionProto`, which SHALL NOT be used: `2`; `"sinc
 
 [[tbl-schema-operatorsetproto]]
 .Fields of `OperatorSetProto`
-[cols="3,1,3,2"]
+[cols="3,1,1,3,2"]
 |===
-| Field | Tag | Type | Obligation
+| Field | Tag | Wire type | Type | Obligation
 
-| `magic` | 1 | `string` | mandatory
-| `ir_version` | 2 | `int64` | mandatory
-| `ir_version_prerelease` | 3 | `string` | optional
-| `ir_build_metadata` | 7 | `string` | optional
-| `domain` | 4 | `string` | optional
-| `opset_version` | 5 | `int64` | optional
-| `doc_string` | 6 | `string` | optional
-| `operator` | 8 | `OperatorProto` | repeated
-| `functions` | 9 | `FunctionProto` | repeated
+| `magic` | 1 | 2 | `string` | mandatory
+| `ir_version` | 2 | 0 | `int64` | mandatory
+| `ir_version_prerelease` | 3 | 2 | `string` | optional
+| `ir_build_metadata` | 7 | 2 | `string` | optional
+| `domain` | 4 | 2 | `string` | optional
+| `opset_version` | 5 | 0 | `int64` | optional
+| `doc_string` | 6 | 2 | `string` | optional
+| `operator` | 8 | 2 | `OperatorProto` | repeated
+| `functions` | 9 | 2 | `FunctionProto` | repeated
 |===
 
 === Map and sequence messages
@@ -639,17 +641,17 @@ Tags and names reserved in `FunctionProto`, which SHALL NOT be used: `2`; `"sinc
 
 [[tbl-schema-sequenceproto]]
 .Fields of `SequenceProto`
-[cols="3,1,3,2"]
+[cols="3,1,1,3,2"]
 |===
-| Field | Tag | Type | Obligation
+| Field | Tag | Wire type | Type | Obligation
 
-| `name` | 1 | `string` | optional
-| `elem_type` | 2 | `int32` | optional
-| `tensor_values` | 3 | `TensorProto` | repeated
-| `sparse_tensor_values` | 4 | `SparseTensorProto` | repeated
-| `sequence_values` | 5 | `SequenceProto` | repeated
-| `map_values` | 6 | `MapProto` | repeated
-| `optional_values` | 7 | `OptionalProto` | repeated
+| `name` | 1 | 2 | `string` | optional
+| `elem_type` | 2 | 0 | `int32` | optional
+| `tensor_values` | 3 | 2 | `TensorProto` | repeated
+| `sparse_tensor_values` | 4 | 2 | `SparseTensorProto` | repeated
+| `sequence_values` | 5 | 2 | `SequenceProto` | repeated
+| `map_values` | 6 | 2 | `MapProto` | repeated
+| `optional_values` | 7 | 2 | `OptionalProto` | repeated
 |===
 
 [[tbl-schema-sequenceproto-datatype]]
@@ -671,15 +673,15 @@ Tags and names reserved in `FunctionProto`, which SHALL NOT be used: `2`; `"sinc
 
 [[tbl-schema-mapproto]]
 .Fields of `MapProto`
-[cols="3,1,3,2"]
+[cols="3,1,1,3,2"]
 |===
-| Field | Tag | Type | Obligation
+| Field | Tag | Wire type | Type | Obligation
 
-| `name` | 1 | `string` | optional
-| `key_type` | 2 | `int32` | optional
-| `keys` | 3 | `int64` | repeated
-| `string_keys` | 4 | `bytes` | repeated
-| `values` | 5 | `SequenceProto` | optional
+| `name` | 1 | 2 | `string` | optional
+| `key_type` | 2 | 0 | `int32` | optional
+| `keys` | 3 | 0 | `int64` | repeated
+| `string_keys` | 4 | 2 | `bytes` | repeated
+| `values` | 5 | 2 | `SequenceProto` | optional
 |===
 
 [[schema-optionalproto]]
@@ -687,17 +689,17 @@ Tags and names reserved in `FunctionProto`, which SHALL NOT be used: `2`; `"sinc
 
 [[tbl-schema-optionalproto]]
 .Fields of `OptionalProto`
-[cols="3,1,3,2"]
+[cols="3,1,1,3,2"]
 |===
-| Field | Tag | Type | Obligation
+| Field | Tag | Wire type | Type | Obligation
 
-| `name` | 1 | `string` | optional
-| `elem_type` | 2 | `int32` | optional
-| `tensor_value` | 3 | `TensorProto` | optional
-| `sparse_tensor_value` | 4 | `SparseTensorProto` | optional
-| `sequence_value` | 5 | `SequenceProto` | optional
-| `map_value` | 6 | `MapProto` | optional
-| `optional_value` | 7 | `OptionalProto` | optional
+| `name` | 1 | 2 | `string` | optional
+| `elem_type` | 2 | 0 | `int32` | optional
+| `tensor_value` | 3 | 2 | `TensorProto` | optional
+| `sparse_tensor_value` | 4 | 2 | `SparseTensorProto` | optional
+| `sequence_value` | 5 | 2 | `SequenceProto` | optional
+| `map_value` | 6 | 2 | `MapProto` | optional
+| `optional_value` | 7 | 2 | `OptionalProto` | optional
 |===
 
 [[tbl-schema-optionalproto-datatype]]
@@ -714,6 +716,6 @@ Tags and names reserved in `FunctionProto`, which SHALL NOT be used: `2`; `"sinc
 | `OPTIONAL` | 5
 |===
 
-=== Schema source
+=== Derivation
 
-The schema source is vendored in the repository at `upstream/onnx/proto/`, at the release recorded in `upstream/onnx/SOURCE.txt`. It is an informative aid: where a comment in it carries a normative statement, that statement is in the clause it belongs to and not in this annex.
+The tables above are derived from the Protocol Buffers schema of the ONNX reference implementation, vendored in the repository at `upstream/onnx/proto/` at the release recorded in `upstream/onnx/SOURCE.txt`. That schema is an informative aid, not a normative reference: the tables above are normative, and where a comment in the schema carries a normative statement, that statement is in the clause it belongs to. See <<protobuf-relationship>>.

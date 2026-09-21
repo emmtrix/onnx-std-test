@@ -164,6 +164,36 @@ on anything it does not recognize inside a message body, rather than skipping
 it — so a schema change upstream shows up as a failed run rather than as a
 missing row.
 
+## The binary encoding
+
+Clause 12 of Part 1 specifies the octets of a model directly: the
+variable-length integer, the field key, the four primitive encodings, the two
+forms of a repeated field, and how to skip a field the reader does not know.
+The point of stating it is that the format can be implemented from this
+standard alone. Protocol Buffers is **not** a normative reference — it has no
+citable specification with a stable identifier, which is what made this a
+blocking gap — and an implementation may still be built on a Protocol Buffers
+library, which Clause 12.7 says explicitly.
+
+That only means something if what the clause says is what implementations
+actually write:
+
+```sh
+make check-encoding
+```
+
+`scripts/check-encoding.rb` restates the rules of the clause as a small
+encoder and compares its output, byte for byte, against the Protocol Buffers
+runtime — every scalar type the schema uses, both field key lengths, both
+forms of a repeated field, and the literal octets of the clause's own worked
+examples. The nested-message case is a bootstrap: it builds a message
+descriptor by encoding a `FileDescriptorProto` with its own encoder and hands
+it to the reference library, which rejects it or produces the wrong fields if
+the encoding is wrong.
+
+CI runs it. Edit Clause 12 and the check will tell you whether the edit is
+true.
+
 ## The vendored upstream copy
 
 `upstream/onnx/` is a verbatim copy of the ONNX documentation the draft

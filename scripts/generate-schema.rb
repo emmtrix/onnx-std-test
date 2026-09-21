@@ -23,6 +23,7 @@
 # informative aid Annex B points at.
 
 require "optparse"
+require "set"
 
 ROOT = File.expand_path("..", __dir__)
 
@@ -42,7 +43,8 @@ TARGET = "sources/part1/sections/annex-b-protobuf-schema.adoc"
 
 MANDATORY = /MUST be present (?:in|for) this version of the IR/i.freeze
 
-Field = Struct.new(:label, :type, :name, :tag, :mandatory, :oneof, :deprecated)
+Field = Struct.new(:label, :type, :name, :tag, :mandatory, :oneof, :deprecated,
+                   :packed)
 Enum  = Struct.new(:name, :values)
 Msg   = Struct.new(:name, :fields, :enums, :reserved)
 
@@ -127,12 +129,14 @@ def parse(path)
       type  = Regexp.last_match(2).strip
       name  = Regexp.last_match(3)
       tag   = Regexp.last_match(4).to_i
+      options = Regexp.last_match(5).to_s
       text  = comment.join(" ")
       owner = current.call or raise "#{path}:#{lineno}: field outside a message"
       owner.fields << Field.new(
         label, type, name, tag,
         text.match?(MANDATORY), oneof,
-        text.match?(/\bdeprecated\b/i)
+        text.match?(/\bdeprecated\b/i),
+        options.include?("packed")
       )
       comment.clear
     else
@@ -146,9 +150,26 @@ end
 
 # --------------------------------------------------------------------- emit
 
+# Clause 12.2.1. A field's wire type follows from its type, and from whether a
+# repeated field of a numeric type is written packed.
+SCALAR_WIRE_TYPES = {
+  "int32" => 0, "int64" => 0, "uint32" => 0, "uint64" => 0, "bool" => 0,
+  "double" => 1,
+  "string" => 2, "bytes" => 2,
+  "float" => 5,
+}.freeze
+
+def wire_type(field, enums)
+  return 2 if field.packed # a packed repeated field is length-delimited
+
+  SCALAR_WIRE_TYPES[field.type] ||
+    (enums.include?(field.type) ? 0 : 2) # an enumeration is a varint; anything
+                                         # else names a message
+end
+
 def obligation(field)
   return "deprecated" if field.deprecated
-  return "repeated" if field.label == "repeated"
+  return field.packed ? "repeated, packed" : "repeated" if field.label == "repeated"
   return "one of the group" if field.label == "oneof"
 
   field.mandatory ? "mandatory" : "optional"
@@ -162,7 +183,7 @@ def anchor(name)
   "schema-#{name.downcase.tr('.', '-')}"
 end
 
-def render_message(msg)
+def render_message(msg, enums)
   out = []
   out << "[[#{anchor(msg.name)}]]"
   out << "==== #{msg.name}"
@@ -171,12 +192,13 @@ def render_message(msg)
   unless msg.fields.empty?
     out << "[[tbl-#{anchor(msg.name)}]]"
     out << ".Fields of `#{msg.name}`"
-    out << '[cols="3,1,3,2"]'
+    out << '[cols="3,1,1,3,2"]'
     out << "|==="
-    out << "| Field | Tag | Type | Obligation"
+    out << "| Field | Tag | Wire type | Type | Obligation"
     out << ""
     msg.fields.each do |f|
-      out << "| `#{f.name}` | #{f.tag} | #{adoc_type(f.type)} | #{obligation(f)}"
+      out << "| `#{f.name}` | #{f.tag} | #{wire_type(f, enums)} | " \
+             "#{adoc_type(f.type)} | #{obligation(f)}"
     end
     out << "|==="
     out << ""
@@ -212,6 +234,12 @@ def render_message(msg)
 end
 
 def render(groups)
+  # Every enumeration defined anywhere, so that a field naming one is known to
+  # be a varint rather than an embedded message.
+  enum_names = groups.flat_map do |g|
+    g[:messages].flat_map { |m| m.enums.map { |e| [e.name, e.name.split(".").last] } }
+  end.flatten.to_set
+
   counts = groups.sum { |g| g[:messages].length }
   fields = groups.sum { |g| g[:messages].sum { |m| m.fields.length } }
   mandatory = groups.sum do |g|
@@ -226,28 +254,37 @@ def render(groups)
   out << ""
   out << "[[annex-schema]]"
   out << "[appendix,obligation=normative]"
-  out << "== Protocol Buffers schema"
+  out << "== Message definitions"
   out << ""
   out << "=== General"
   out << ""
   out << "This annex states the message definitions of the serialized form: " \
-         "#{counts} messages and #{fields} fields."
+         "#{counts} messages and #{fields} fields. <<serialization>> states " \
+         "how the octets of a message are laid out; this annex says which " \
+         "fields there are."
   out << ""
-  out << "The tag of a field is normative; it identifies the field on the " \
-         "wire and SHALL NOT be reused. A field marked mandatory SHALL be " \
-         "present. A field marked optional MAY be absent, and a " \
-         "<<consumer,consumer>> SHALL accept a message in which it is. A field marked " \
-         "repeated holds zero or more values. A field marked deprecated " \
-         "SHALL NOT be written by a <<producer,producer>>, and a consumer that reads " \
-         "one SHALL ignore it."
+  out << "The tag of a field identifies it within its message and SHALL NOT " \
+         "be reused. The wire type is the encoding of its value, per " \
+         "<<tbl-wire-types>>; together the two make the field key " \
+         "(<<field-key>>)."
+  out << ""
+  out << "A field marked mandatory SHALL be present. A field marked optional " \
+         "MAY be absent, and a <<consumer,consumer>> SHALL accept a message " \
+         "in which it is. A field marked repeated holds zero or more values, " \
+         "and a <<producer,producer>> SHOULD write it in the form recorded " \
+         "here, packed or not; a consumer SHALL accept either " \
+         "(<<repeated-fields>>). A field marked deprecated SHALL NOT be " \
+         "written by a producer, and a consumer that reads one SHALL ignore " \
+         "it."
   out << ""
   out << "The obligations are those in force at the IR version stated in " \
          "<<ir-version-specified>>."
   out << ""
-  out << "NOTE: #{mandatory} of the #{fields} fields are mandatory. Protocol " \
-         "Buffers cannot express the distinction: in the syntax this schema " \
-         "uses every field is optional, and the obligation is carried in the " \
-         "comments. Stating it in a table is the reason this annex exists."
+  out << "NOTE: #{mandatory} of the #{fields} fields are mandatory. A schema " \
+         "cannot express the distinction: in the syntax this standard was " \
+         "derived from every field is optional, and the obligation is " \
+         "carried in the comments. Stating it in a table is the reason this " \
+         "annex exists."
   out << ""
   out << "[[tbl-schema-sources]]"
   out << ".Subclauses of this annex and the schema file each restates"
@@ -264,16 +301,19 @@ def render(groups)
   groups.each do |g|
     out << "=== #{g[:title]}"
     out << ""
-    g[:messages].each { |m| out << render_message(m) }
+    g[:messages].each { |m| out << render_message(m, enum_names) }
   end
 
-  out << "=== Schema source"
+  out << "=== Derivation"
   out << ""
-  out << "The schema source is vendored in the repository at " \
-         "`upstream/onnx/proto/`, at the release recorded in " \
-         "`upstream/onnx/SOURCE.txt`. It is an informative aid: where a " \
-         "comment in it carries a normative statement, that statement is in " \
-         "the clause it belongs to and not in this annex."
+  out << "The tables above are derived from the Protocol Buffers schema of " \
+         "the ONNX reference implementation, vendored in the repository at " \
+         "`upstream/onnx/proto/` at the release recorded in " \
+         "`upstream/onnx/SOURCE.txt`. That schema is an informative aid, not " \
+         "a normative reference: the tables above are normative, and where a " \
+         "comment in the schema carries a normative statement, that " \
+         "statement is in the clause it belongs to. See " \
+         "<<protobuf-relationship>>."
   out << ""
 
   out.join("\n").gsub(/\n{3,}/, "\n\n")

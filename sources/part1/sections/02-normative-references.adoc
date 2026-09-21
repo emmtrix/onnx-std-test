@@ -26,9 +26,8 @@ edition of the referenced document (including any amendments) applies.
 * [[[rfc2119,IETF RFC 2119]]], _Key words for use in RFCs to Indicate
   Requirement Levels_
 
-NOTE: Editorial. Protocol Buffers has no citable normative reference with a
-stable identifier. Either (a) normatively include the required subset of the
-wire format in an annex, or (b) cite a dated release. This is to be resolved
-before the committee draft; see also the editorial note in <<serialization>>.
-A bibliography clause admits no editorial note block, so this appears as a
-note.
+NOTE: Protocol Buffers is deliberately not a normative reference. It has no
+citable specification with a stable identifier, and this document therefore
+states the binary encoding itself, in <<serialization>>, rather than citing
+one. An implementation may still be built on a Protocol Buffers library; see
+<<protobuf-relationship>>.
