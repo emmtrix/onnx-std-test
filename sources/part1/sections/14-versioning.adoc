@@ -3,6 +3,8 @@
 
 === Version axes
 
+==== General
+
 ONNX has three independent version axes:
 
 IR version:: the version of the structural and serialization rules given in
@@ -13,6 +15,33 @@ published in <<onnx-part-2>>.
 
 Model version:: an identifier assigned by the <<producer>>, opaque to this
 document.
+
+[[ir-version-specified]]
+==== The IR version this edition specifies
+
+This edition specifies IR version 14, as published in ONNX release 1.23.0.
+
+<<tbl-ir-versions>> is the version history.
+
+[[tbl-ir-versions]]
+.IR versions, the release each was published in, and what each introduced
+[cols="1,1,4"]
+|===
+| IR version | ONNX release | Introduced
+
+| 8  | 1.10.0 | the sparse tensor and optional types; model-local functions
+| 9  | 1.14.0 | attribute default values in a function; the four FP8 types
+| 10 | 1.16.0 | `UINT4` and `INT4`; the function overload; metadata properties
+| 11 | 1.18.0 | `FLOAT4E2M1`; multi-device configuration
+| 12 | 1.19.0 | `FLOAT8E8M0`
+| 13 | 1.20.0 | `UINT2` and `INT2`
+| 14 | 1.23.0 | `FLOAT6E2M3` and `FLOAT6E3M2`; the opaque type outside the ONNX-ML build
+|===
+
+NOTE: The release is the publication event. The schema source carries a
+publication date against each IR version as well, and for IR version 14 it
+still reads "TBD" although 1.23.0 shipped it; the date in the schema is not
+maintained and is not relied on here.
 
 === IR version evolution
 

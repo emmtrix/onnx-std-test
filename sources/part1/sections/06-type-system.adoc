@@ -144,33 +144,19 @@ leading bits; the two differ in sign as well as in magnitude. State one.
 [[packing]]
 ==== Packing
 
-A tensor whose element type is narrower than eight bits SHALL be stored as a
-bit stream, the elements in order, each element occupying the next free bits of
-the current octet counting from its least significant bit.
+A tensor carries its elements either as an octet string, called raw storage
+here, or in a field typed for its elements, called typed storage. The two pack
+a narrow element type differently, and a tensor uses one or the other, not
+both.
 
-For a 4-bit element type, two elements occupy one octet: the first in the four
-least significant bits, the second in the four most significant bits. For
-consecutive elements `x` and `y`, the octet `z` is
+In raw storage, the elements SHALL be a bit stream, in order, each element
+occupying the next free bits of the current octet counting from its least
+significant bit. The storage size in octets of a tensor of `N` elements of a
+type of width `w` bits SHALL be the least integer not less than `N * w / 8`.
+Any bits of the final octet not occupied by an element SHALL be zero, and a
+consumer SHALL ignore them.
 
-[%unnumbered]
-----
-z = ((y & 0x0F) << 4) | (x & 0x0F)
-----
-
-and the elements are recovered as `x = z & 0x0F` and `y = (z >> 4) & 0x0F`.
-
-For a 2-bit element type, four elements occupy one octet, the element at index
-`i` of the group occupying bits `2i` and `2i + 1`.
-
-For a 6-bit element type, the codes are packed into a contiguous bit stream in
-the same direction; an element therefore MAY span two octets.
-
-The storage size in octets of a tensor of `N` elements of a type of width `w`
-bits SHALL be the least integer not less than `N * w / 8`. Any bits of the
-final octet not occupied by an element SHALL be zero, and a consumer SHALL
-ignore them.
-
-.Storage size
+.Storage size in raw storage
 [example]
 ====
 A tensor of 7 `INT4` elements occupies 4 octets, of which the four most
@@ -178,6 +164,27 @@ significant bits of the fourth octet are padding. A tensor of 7 `FLOAT6E2M3`
 elements occupies 6 octets, of which the two most significant bits of the sixth
 octet are padding.
 ====
+
+In typed storage, a narrow element type uses a sequence of 32-bit integers, and
+<<tbl-typed-storage>> states how many elements each integer carries and which
+of its bits they occupy. Every other bit of such an integer SHALL be zero.
+
+[[tbl-typed-storage]]
+.Narrow element types in typed storage
+[cols="2,1,4"]
+|===
+| Element width | Elements per integer | Bits occupied
+
+| 2 bits | 4 | bits 0 to 1, 2 to 3, 4 to 5 and 6 to 7, in element order
+| 4 bits | 2 | bits 0 to 3 and 4 to 7, in element order
+| 6 bits | 1 | bits 0 to 5
+|===
+
+A producer SHOULD use raw storage for a 6-bit element type. Typed storage costs
+at least one octet per element there, so it is not a packing at all.
+
+A floating-point element type narrower than 32 bits SHALL be written to typed
+storage as the unsigned integer whose bits are those of the element.
 
 [[string-elements]]
 === String elements and character encoding

@@ -171,6 +171,12 @@ transcription rather than take it on trust, and so that a refresh of
 | <<element-types>> (complete enumeration)
 | `onnx-ml.proto`, `TensorProto.DataType`
 
+| <<packing>> (typed storage)
+| `onnx-ml.proto`, `TensorProto.int32_data`
+
+| <<tbl-ir-versions>> (the IR version history)
+| `docs/Versioning.md`, "Released Versions"; `onnx-ml.proto`, `Version`
+
 | <<reduced-precision>> (narrow types and their packing)
 | `docs/docsgen/source/technical/`: `float4.md`, `float6.md`, `float8.md`,
   `int2.md`, `int4.md`

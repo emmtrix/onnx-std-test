@@ -224,7 +224,7 @@ every such clause. The count rose from 16 notes to 44 across the three parts,
 which was not a regression: the new clauses — validation, security, inference,
 test vectors — are places the previous structure had no room to admit a gap in.
 
-A pass over the vendored upstream documentation has since closed 18 gaps,
+A pass over the vendored upstream documentation has since closed 20 gaps,
 taking Part 1 from 34 editorial notes to 24 and the three parts together from
 44 to 34. (Twelve notes went; two new ones came, both in the narrow-type
 conversion rules, where reading the source closely raised a question the
