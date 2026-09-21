@@ -3,40 +3,248 @@
 
 === General
 
-An ONNX <<model,model>> is serialized as a Protocol Buffers message.
+An ONNX <<model,model>> is serialized as a sequence of octets. This clause
+specifies that sequence: the encoding of each kind of value, the framing of the
+fields of a message, and the treatment of a field a <<consumer,consumer>> does
+not recognize. <<annex-schema>> states the messages and their fields.
+
+The encoding is specified here in full. A <<producer,producer>> or consumer can
+be implemented from this document alone, and this document does not require any
+other specification in order to be implemented.
+
+NOTE: The encoding defined here is the one a Protocol Buffers implementation
+produces for the schema from which <<annex-schema>> is derived. Using such an
+implementation is therefore a convenient way to satisfy this clause, and the
+way most existing tools do satisfy it, but it is an implementation choice and
+not a requirement. See <<protobuf-relationship>>.
+
+[[primitive-encodings]]
+=== Primitive encodings
+
+==== General
+
+Four encodings carry every value. <<tbl-wire-types>> names them and gives the
+wire type of each, which is the number that identifies the encoding in a field
+key (<<field-framing>>).
+
+[[tbl-wire-types]]
+.Primitive encodings and their wire types
+[cols="1,2,4"]
+|===
+| Wire type | Encoding | Used for
+
+| 0 | variable-length integer | `int32`, `int64`, `uint64`, `bool`, enumerations
+| 1 | 64-bit                  | `double`
+| 2 | length-delimited        | `string`, `bytes`, embedded messages, packed repeated fields
+| 5 | 32-bit                  | `float`
+|===
+
+The wire types 3 and 4 SHALL NOT appear. A consumer that encounters one SHALL
+reject the model.
+
+NOTE: Wire types 3 and 4 delimit a construct the format no longer uses. They
+are excluded so that a consumer can skip an unrecognized field by its wire type
+alone, which <<unknown-fields>> requires.
+
+[[varint]]
+==== Variable-length integer
+
+A variable-length integer encodes a non-negative integer as a sequence of
+octets. The integer is divided into groups of seven bits, least significant
+group first. Each group occupies the seven low-order bits of one octet. The
+high-order bit of an octet is 1 where a further octet follows and 0 in the last
+octet.
+
+The value encoded is at most stem:[2^64 - 1], so the sequence is at most ten
+octets. A consumer SHALL reject a sequence of more than ten octets.
+
+.Variable-length integers
+[example]
+====
+1 is `01`. 300 is `ac 02`: the groups are stem:[300 = 44 + 2 * 128], the first
+octet carries 44 with the continuation bit set, the second carries 2.
+====
+
+[[signed-integers]]
+==== Signed integers
+
+A value of a signed integer type is encoded as the variable-length integer of
+its representation as a 64-bit two's complement integer.
+
+A negative value therefore occupies ten octets, whatever its magnitude and
+whether its type is `int32` or `int64`.
+
+.A negative integer
+[example]
+====
+-1 is `ff ff ff ff ff ff ff ff ff 01`, being the encoding of
+stem:[2^64 - 1].
+====
+
+A consumer reading a field of type `int32` SHALL reject a value outside the
+range of a 32-bit two's complement integer.
+
+==== Fixed-width values
+
+A 32-bit value is four octets, least significant octet first. A value of type
+`float` is the binary32 representation of <<ieee754>> in that order.
+
+A 64-bit value is eight octets, least significant octet first. A value of type
+`double` is the binary64 representation of <<ieee754>> in that order.
+
+The octets are those of the representation, so a signalling NaN, a quiet NaN
+and a negative zero are each preserved exactly.
+
+[[length-delimited]]
+==== Length-delimited values
+
+A length-delimited value is a variable-length integer giving a length in
+octets, followed by that many octets.
+
+The octets are:
+
+* for `string`, the UTF-8 encoding of the character sequence, as specified in
+  <<iso10646>>, without a byte order mark;
+* for `bytes`, the octets themselves;
+* for an embedded message, the encoding of that message under this clause;
+* for a packed repeated field, the encodings of its elements, in order, each
+  without a field key (<<repeated-fields>>).
+
+A consumer SHALL reject a length that extends beyond the end of the enclosing
+message.
+
+[[field-framing]]
+=== Fields
+
+[[field-key]]
+==== Field key
+
+Each field is preceded by a field key, which is the variable-length integer of
+
+[stem]
+++++
+(t xx 8) + w
+++++
+
+where stem:[t] is the tag of the field, as given in <<annex-schema>>, and
+stem:[w] is its wire type, from <<tbl-wire-types>>.
+
+A tag is at least 1. A field whose tag is at most 15 therefore has a key of one
+octet, and one whose tag is at least 16 has a key of two or more.
+
+.Field keys
+[example]
+====
+The field of tag 1 and wire type 0 has the key `08`. The field of tag 20 and
+wire type 0 has the key `a0 01`.
+====
+
+==== Order and repetition of fields
+
+The fields of a message MAY appear in any order. A producer SHOULD write them
+in order of increasing tag.
+
+Where a field that is not repeated appears more than once, the value is that of
+the last occurrence, save that occurrences of an embedded message field are
+merged, field by field, under this same rule.
+
+[[repeated-fields]]
+==== Repeated fields
+
+A repeated field is encoded in one of two forms.
+
+In the packed form, the field appears once, with wire type 2, and its
+length-delimited value holds the encodings of the elements in order, each
+without a field key. Only a repeated field whose elements are of a type with
+wire type 0, 1 or 5 may take this form.
+
+In the unpacked form, the field key and value appear once per element, in
+order.
+
+A producer SHOULD write a repeated field in the form <<annex-schema>> records
+for it.
+
+A consumer SHALL accept both forms for any repeated field, and SHALL accept a
+field that appears in both forms in one message, concatenating the elements in
+order of appearance.
+
+.The two forms
+[example]
+====
+A repeated `int64` field of tag 5 holding 1 and 300 is `2a 03 01 ac 02` packed,
+and `28 01 28 ac 02` unpacked.
+====
+
+[[unknown-fields]]
+=== Unrecognized fields
+
+A consumer that encounters a field whose tag it does not recognize SHALL skip
+it and SHALL continue reading the message. The length to skip is determined by
+the wire type in the field key alone:
+
+* wire type 0: read the variable-length integer and discard it;
+* wire type 1: skip eight octets;
+* wire type 5: skip four octets;
+* wire type 2: read the length and skip that many octets.
+
+A consumer SHALL NOT reject a model for carrying a field it does not
+recognize.
+
+NOTE: This is what allows a model written against a later IR version to be read
+by a consumer written against an earlier one, so far as the fields they have in
+common allow. <<versioning>> states when that is enough for the model to be
+evaluated.
+
+A consumer MAY retain the octets of a field it does not recognize. A consumer
+that rewrites a model and does not retain them SHALL NOT represent the result
+as the same model.
+
+=== Limits
+
+A consumer MAY impose a maximum size on a message and on the model as a whole.
+A consumer that does so SHALL document the limit and SHALL report a model
+exceeding it under <<validation-clause>>; see <<resource-bounds>>.
 
 [IMPORTANT]
 .Editorial note
 ====
-See the note in Clause 2. The normative status of the Protocol Buffers encoding
-must be settled: this document either cites a dated specification or reproduces
-the required subset of the wire format.
-====
-
-=== Encoding
-
-[IMPORTANT]
-.Editorial note
-====
-State which subset of the Protocol Buffers wire format a conforming encoder may
-emit and a conforming decoder must accept, including the treatment of unknown
-fields, repeated field ordering and the maximum message size. Protocol Buffers
-permits encodings that differ octet for octet while carrying the same content,
-which is why <<canonical-form>> is a separate question.
+No maximum is stated here. The reference implementation applies one of 2
+gigabytes to a single message, which is also the point beyond which a length
+does not fit the field it is read into in some implementations, and the
+external data mechanism of <<external-data>> exists so that a model can exceed
+it. State whether this document fixes that maximum or leaves it
+implementation-defined; if it is fixed, <<annex-schema>> has to say which
+messages it applies to.
 ====
 
 === Message definitions
 
-The message definitions are given normatively in <<annex-schema>>, as a table
-of fields per message giving wire tag, type and obligation.
+The messages, their fields, and for each field its tag, wire type and
+obligation are given normatively in <<annex-schema>>.
 
-A field's tag identifies it on the wire. A tag SHALL NOT be reused for a
+A tag identifies a field within its message. A tag SHALL NOT be reused for a
 different field, and a tag recorded as reserved SHALL NOT be used at all.
 
-NOTE: The obligation is what the schema source cannot express, and is the
-reason the annex is a table rather than the source. In the Protocol Buffers
-syntax this schema uses, every field is syntactically optional; which ones a
-producer must supply is carried in the comments.
+NOTE: The obligation is what a schema cannot express, and is the reason
+<<annex-schema>> is a table rather than a schema. In the schema this standard
+was derived from, every field is syntactically optional.
+
+[[protobuf-relationship]]
+=== Relationship to Protocol Buffers
+
+The encoding of <<primitive-encodings>> to <<unknown-fields>> is that of
+Protocol Buffers, restricted to the constructs <<annex-schema>> uses. An
+implementation MAY therefore be built on a Protocol Buffers library, by
+compiling a schema whose messages, fields, tags and types are those of
+<<annex-schema>>.
+
+This document does not require that, and does not depend on any specification
+of Protocol Buffers. Where the two differ, this document governs a model
+claimed to conform to it.
+
+NOTE: The restriction is substantial and is what makes the encoding short
+enough to state here. Groups are excluded; no field uses a zig-zag encoded or
+fixed-width integer type; and the schema uses seven scalar types in all.
 
 [[canonical-form]]
 === Canonical form
@@ -44,8 +252,10 @@ producer must supply is carried in the comments.
 [IMPORTANT]
 .Editorial note
 ====
-Decide whether this document defines a canonical serialization. A canonical
-form is a prerequisite for signing and for reproducible model hashes, both of
-which have been requested by adopters, but Protocol Buffers does not guarantee
-a canonical encoding on its own.
+Decide whether this document defines a canonical serialization. This clause
+admits encodings that differ octet for octet while carrying the same content:
+fields may appear in any order, a repeated field may be packed or not, and a
+signed value may be written in fewer octets than ten only where it is
+non-negative. A canonical form is a prerequisite for signing and for
+reproducible model hashes, both of which have been requested by adopters.
 ====

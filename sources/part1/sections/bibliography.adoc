@@ -6,6 +6,9 @@
 * [[[isopas,ISO/IEC JTC 1 PAS]]], _Publicly Available Specification (PAS)
   transposition process_
 
+* [[[protobuf,Protocol Buffers]]], _Protocol Buffers_,
+  https://protobuf.dev
+
 * [[[onnxrepo,ONNX]]], _Open Neural Network Exchange_, https://onnx.ai
 
 * [[[jdf,JDF]]], _Joint Development Foundation_,

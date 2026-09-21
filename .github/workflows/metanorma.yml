@@ -47,6 +47,12 @@ jobs:
       - name: Check generated schema annex
         run: bundle exec make check-schema
 
+      # Clause 12 of Part 1 states the binary encoding itself. This checks it
+      # against a reference implementation, so the clause cannot drift from
+      # what implementations write.
+      - name: Check the binary encoding
+        run: bundle exec make check-encoding
+
       - name: Check PDF stylesheet
         run: bundle exec ruby scripts/check-stylesheet.rb
 

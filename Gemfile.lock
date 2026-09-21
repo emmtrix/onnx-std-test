@@ -1176,6 +1176,7 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
+  google-protobuf
   kramdown-asciidoc
   metanorma-cli (~> 1.12)
   metanorma-generic

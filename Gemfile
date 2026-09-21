@@ -15,6 +15,12 @@ gem "metanorma-generic"
 # every HTML/DOC render fails with `cannot load such file -- sassc-embedded`.
 gem "sassc-embedded"
 
+# Used by scripts/check-encoding.rb as the reference implementation the binary
+# encoding of Clause 12 is checked against. It arrives transitively through the
+# Metanorma toolchain; declared here because the check depends on it directly,
+# and an undeclared dependency has already broken this build twice.
+gem "google-protobuf"
+
 # Used by scripts/generate-operators.rb to convert the upstream operator prose
 # from Markdown to AsciiDoc. Hand-rolling that conversion is not worth it: the
 # prose carries tables, lists, code fences and inline HTML.

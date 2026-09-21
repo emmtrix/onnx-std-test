@@ -29,7 +29,7 @@ RUBY       ?= ruby
 SEVERITY   ?= 1
 
 .PHONY: all html doc pdf site lint clean deps check-stylesheet \
-        operators check-operators schema check-schema
+        operators check-operators schema check-schema check-encoding
 
 all: html
 
@@ -78,6 +78,12 @@ schema:
 
 check-schema:
 	@$(RUBY) scripts/generate-schema.rb --check
+
+# Clause 12 of Part 1 specifies the binary encoding directly, so that the
+# format can be implemented from the standard alone. This checks the rules it
+# states, byte for byte, against a reference implementation.
+check-encoding:
+	@$(RUBY) scripts/check-encoding.rb
 
 # mn2pdf parses the stylesheet itself, and Metanorma exits 0 when that parse
 # fails — producing no PDF while the build looks successful. Check it first;
