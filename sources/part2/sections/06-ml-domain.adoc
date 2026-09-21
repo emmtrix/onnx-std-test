@@ -41,7 +41,10 @@ them.
 
 Select elements of the input tensor based on the indices passed.
 
+[%unnumbered]
+----
  The indices are applied to the last axes of the tensor.
+----
 
 Domain::
 `ai.onnx.ml`
@@ -138,7 +141,8 @@ Shape inference, determinism, errors. See the editorial note at the head of this
 
 Converts strings to integers and vice versa.
 
-....
+[%unnumbered]
+----
 Two sequences of equal length are used to map between integers and strings,
 with strings and integers at the same index detailing the mapping.
 
@@ -148,7 +152,7 @@ should be defined.
 
 If the string default value is set, it will convert integers to strings.
 If the int default value is set, it will convert strings to integers.
-....
+----
 
 Domain::
 `ai.onnx.ml`
@@ -183,7 +187,8 @@ Shape inference, determinism, errors. See the editorial note at the head of this
 
 Uses an index mapping to convert a dictionary to an array.
 
-....
+[%unnumbered]
+----
 Given a dictionary, each key is looked up in the vocabulary attribute corresponding to
 the key type. The index into the vocabulary array at which the key is found is then
 used to index the output 1-D tensor 'Y' and insert into it the value found in the dictionary 'X'.
@@ -196,7 +201,7 @@ Any keys not present in the input dictionary, will be zero in the output array.
 
 For example: if the ``string_vocabulary`` parameter is set to ``["a", "c", "b", "z"]``,
 then an input of ``{"a": 4, "c": 8}`` will produce an output of ``[4, 8, 0, 0]``.
-....
+----
 
 Domain::
 `ai.onnx.ml`
@@ -229,12 +234,13 @@ Shape inference, determinism, errors. See the editorial note at the head of this
 
 Concatenates input tensors into one continuous output.
 
-....
+[%unnumbered]
+----
 All input shapes are 2-D and are concatenated along the second dimension. 1-D tensors are treated as [1,C].
 Inputs are copied to the output maintaining the order of the input arguments.
 
 All inputs must be integers or floats, while the output will be all floating point values.
-....
+----
 
 Domain::
 `ai.onnx.ml`
@@ -265,7 +271,8 @@ Shape inference, determinism, errors. See the editorial note at the head of this
 
 Replaces inputs that equal one value with another, leaving all other elements alone.
 
-....
+[%unnumbered]
+----
 This operator is typically used to replace missing values in situations where they have a canonical
 representation, such as -1, 0, NaN, or some extreme value.
 
@@ -275,7 +282,7 @@ width of the tensor element type. One and only one of the replaced_value_float o
 which one depends on whether floats or integers are being processed.
 
 The imputed_value attribute length can be 1 element, or it can have one element per input feature. In other words, if the input tensor has the shape [*,F], then the length of the attribute array may be 1 or F. If it is 1, then it is broadcast along the last dimension and applied to each feature.
-....
+----
 
 Domain::
 `ai.onnx.ml`
@@ -309,7 +316,8 @@ Shape inference, determinism, errors. See the editorial note at the head of this
 
 Maps each element in the input tensor to another value.
 
-....
+[%unnumbered]
+----
 The mapping is determined by the two parallel attributes, 'keys_*' and
 'values_*' attribute. The i-th value in the specified 'keys_*' attribute
 would be mapped to the i-th value in the specified 'values_*' attribute. It
@@ -331,7 +339,7 @@ are the same. Notice that only one of 'keys_*'/'values_*' can be set.
 
 Float keys with value 'NaN' match any input 'NaN' value regardless of bit
 value. If a key is repeated, the last key takes precedence.
-....
+----
 
 Domain::
 `ai.onnx.ml`
@@ -413,7 +421,8 @@ Shape inference, determinism, errors. See the editorial note at the head of this
 
 Generalized linear regression evaluation.
 
-....
+[%unnumbered]
+----
 If targets is set to 1 (default) then univariate regression is performed.
 
 If targets is set to M then M sets of coefficients must be passed in as a sequence
@@ -421,7 +430,7 @@ and M results will be output for each input n in N.
 
 The coefficients array is of length n, and the coefficients for each target are contiguous.
 Intercepts are optional but if provided must match the number of targets.
-....
+----
 
 Domain::
 `ai.onnx.ml`
@@ -456,7 +465,8 @@ Shape inference, determinism, errors. See the editorial note at the head of this
 Normalize the input.  There are three normalization modes, which have the corresponding formulas,
     defined using element-wise infix operators '/' and '^' and tensor-wide functions 'max' and 'sum':
 
-....
+[%unnumbered]
+----
 Max: Y = X / max(X)
 
 L1:  Y = X / sum(X)
@@ -468,7 +478,7 @@ In all modes, if the divisor is zero, Y == X.
 
 For batches, that is, [N,C] tensors, normalization is done along the C axis. In other words, each row
 of the batch is normalized independently.
-....
+----
 
 Domain::
 `ai.onnx.ml`
@@ -501,7 +511,8 @@ Replace each input element with an array of ones and zeros, where a single
     one is placed at the index of the category that was passed in. The total category count
     will determine the size of the extra dimension of the output array Y.
 
-....
+[%unnumbered]
+----
 For example, if we pass a tensor with a single value of 4, and a category count of 8,
 the output will be a tensor with ``[0,0,0,0,1,0,0,0]``.
 
@@ -509,7 +520,7 @@ This operator assumes every input feature is from the same set of categories.
 
 If the input is a tensor of float, int32, or double, the data will be cast
 to integers and the cats_int64s category list will be used for the lookups.
-....
+----
 
 Domain::
 `ai.onnx.ml`
@@ -651,7 +662,8 @@ Tree Ensemble operator.  Returns the regressed values for each input in a batch.
     Inputs have dimensions `[N, F]` where `N` is the input batch size and `F` is the number of input features.
     Outputs have dimensions `[N, num_targets]` where `N` is the batch size and `num_targets` is the number of targets, which is a configurable attribute.
 
-....
+[%unnumbered]
+----
 The encoding of this attribute is split along interior nodes and the leaves of the trees. Notably, attributes with the prefix `nodes_*` are associated with interior nodes, and attributes with the prefix `leaf_*` are associated with leaves.
 The attributes `nodes_*` must all have the same length and encode a sequence of tuples, as defined by taking all the `nodes_*` fields at a given position.
 
@@ -661,7 +673,7 @@ This operator can be used to implement both the previous `TreeEnsembleRegressor`
 The `TreeEnsembleRegressor` node maps directly to this node and requires changing how the nodes are represented.
 The `TreeEnsembleClassifier` node can be implemented by adding a `ArgMax` node after this node to determine the top class.
 To encode class labels, a `LabelEncoder` or `GatherND` operator may be used.
-....
+----
 
 Domain::
 `ai.onnx.ml`
@@ -710,7 +722,8 @@ This operator is DEPRECATED. Please use TreeEnsemble with provides similar funct
     To encode class labels, use a LabelEncoder operator.
     Tree Ensemble classifier. Returns the top class for each of N inputs.
 
-....
+[%unnumbered]
+----
 The attributes named 'nodes_X' form a sequence of tuples, associated by
 index into the sequences, which must all be of equal length. These tuples
 define the nodes.
@@ -723,7 +736,7 @@ One and only one of classlabels_strings or classlabels_int64s
 will be defined. The class_ids are indices into this list.
 All fields ending with __as_tensor_ can be used instead of the
 same parameter without the suffix if the element type is double and not float.
-....
+----
 
 Domain::
 `ai.onnx.ml`
@@ -761,7 +774,8 @@ Shape inference, determinism, errors. See the editorial note at the head of this
 This operator is DEPRECATED. Please use TreeEnsemble instead which provides the same
     functionality.
 
-....
+[%unnumbered]
+----
 Tree Ensemble regressor.  Returns the regressed values for each input in N.
 
 All args with nodes_ are fields of a tuple of tree nodes, and
@@ -779,7 +793,7 @@ same parameter without the suffix if the element type is double and not float.
 All trees must have their node ids start at 0 and increment by 1.
 
 Mode enum is BRANCH_LEQ, BRANCH_LT, BRANCH_GTE, BRANCH_GT, BRANCH_EQ, BRANCH_NEQ, LEAF
-....
+----
 
 Domain::
 `ai.onnx.ml`
@@ -816,12 +830,13 @@ Shape inference, determinism, errors. See the editorial note at the head of this
 
 Creates a map from the input and the attributes.
 
-....
+[%unnumbered]
+----
 The values are provided by the input tensor, while the keys are specified by the attributes.
 Must provide keys in either classlabels_strings or classlabels_int64s (but not both).
 
 The columns of the tensor correspond one-by-one to the keys specified by the attributes. There must be as many columns as keys.
-....
+----
 
 Domain::
 `ai.onnx.ml`

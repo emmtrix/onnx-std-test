@@ -59,6 +59,20 @@ formats:
 # Path is resolved relative to this file.
 pdf_stylesheet: onnx.standard.xsl
 
+# Our own HTML cover page, copied from html_generic_titlepage.html of
+# metanorma-generic 3.5.0 with one block changed.
+#
+# The stock template hard-codes the postal address, e-mail address and website
+# of Ribose Inc., the maintainer of the Metanorma toolchain, into the copyright
+# notice, and the generic flavour emits them verbatim under whatever publisher
+# name the document carries. Published as-is, every HTML part of this standard
+# named a company with no connection to it as the place to request rights.
+# Ours says what this draft is and points at the repository instead. The Word
+# and PDF cover pages carry no address and are untouched.
+#
+# Path is relative to this file, like pdf_stylesheet above.
+htmlcoverpage: onnx.titlepage.html
+
 # Fonts the PDF stylesheet needs, installed by fontist at build time. Without
 # STIX Two Math, mn2pdf aborts with
 # "Failed to read font file ... STIX2Math.otf"; it is the math font.

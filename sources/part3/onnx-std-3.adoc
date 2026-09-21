@@ -6,8 +6,14 @@
 :revdate: 2026-09-20
 :copyright-year: 2026
 :language: en
-:title: Open Neural Network Exchange (ONNX)
-:subtitle: Part 3: Conformance test package
+// The main title carries the part designation, as an ISO multi-part
+// standard's does. The collection index at the site root renders only the
+// main title, so without it all three parts appear there under the same
+// name and nothing says which is Core, which the operator sets and which
+// the tests. `title-part-en` below keeps the part name available on its
+// own for the bibliographic record.
+:title: Open Neural Network Exchange (ONNX) — Part 3: Conformance test package
+:title-part-en: Conformance test package
 :doctype: standard
 :docstage: preparatory
 :status: preparatory

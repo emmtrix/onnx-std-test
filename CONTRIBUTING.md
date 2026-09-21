@@ -155,7 +155,11 @@ closed a gap recorded there, or opened one.
 ## Changing the publisher flavour
 
 The publisher identity lives in `sources/onnx.yml` and in the
-`:mn-document-class:` attribute of each part's master document. Moving to a Linux
+`:mn-document-class:` attribute of each part's master document. `onnx.yml`
+points at two templates that exist only because the stock ones are not ours to
+publish under: `onnx.standard.xsl` for the PDF, and `onnx.titlepage.html` for
+the HTML cover, whose stock version hard-codes the Metanorma maintainer's
+postal address into the copyright notice. Moving to a Linux
 Foundation or ISO house style should touch those two places and nothing else.
 If a flavour change requires editing the document body, that is a defect in how
 the body is written — report it.
