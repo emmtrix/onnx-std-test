@@ -3,7 +3,7 @@
 
 === General
 
-Validation determines whether a <<model>> satisfies the requirements of this
+Validation determines whether a <<model,model>> satisfies the requirements of this
 document, without evaluating it.
 
 A validating consumer SHALL perform the checks of this clause and SHALL report

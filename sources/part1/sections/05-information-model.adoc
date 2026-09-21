@@ -3,18 +3,18 @@
 
 === General
 
-This clause introduces the entities of an ONNX <<model>> and their
+This clause introduces the entities of an ONNX <<model,model>> and their
 relationships. <<graph-structure>> states the constraints a well-formed graph
 satisfies; <<graph-semantics>> states what evaluating one means.
 
 === Entities and their relationships
 
-A model contains exactly one top-level <<graph>>.
+A model contains exactly one top-level <<graph,graph>>.
 
 A graph contains an ordered sequence of <<node,nodes>>, together with its
 declared inputs, outputs, initializers and value type information.
 
-A node invokes one <<operator>>, identified by <<domain>> and name, binds named
+A node invokes one <<operator,operator>>, identified by <<domain,domain>> and name, binds named
 values to that operator's formal inputs and outputs, and fixes its
 <<attribute,attributes>>.
 
@@ -62,7 +62,7 @@ the same graph, or an enclosing scope.
 
 | Model version
 | optional
-| An identifier assigned by the <<producer>>, opaque to this document.
+| An identifier assigned by the <<producer,producer>>, opaque to this document.
 
 | Documentation string
 | optional
@@ -79,11 +79,11 @@ organization responsible for the model.
 [[operator-set-import]]
 ==== Operator set imports
 
-An <<operator-set>> is identified by a pair of a <<domain>> and a version. The
+An <<operator-set,operator set>> is identified by a pair of a <<domain,domain>> and a version. The
 version is a positive integer that increases monotonically as versions of that
 operator set are published.
 
-A model SHALL declare, for every <<domain>> used by any node reachable from its
+A model SHALL declare, for every <<domain,domain>> used by any node reachable from its
 top-level graph, the operator set version of that domain that the model
 requires. The default domain is denoted by the empty domain name and is
 imported implicitly.
@@ -93,7 +93,7 @@ reverse domain name based on the identity of the organization responsible for
 it.
 
 Every operator invoked by a node SHALL be declared by one of the operator sets
-the model imports. A <<consumer>> that does not implement every operator of
+the model imports. A <<consumer,consumer>> that does not implement every operator of
 every imported operator set SHALL reject the model; see <<conformance>>.
 
 [[names-and-scoping]]
@@ -194,7 +194,7 @@ without regard to case.
 
 === Domains as the extension point
 
-The <<domain>> is the sole extension point of the information model. An
+The <<domain,domain>> is the sole extension point of the information model. An
 operator outside the domains defined by <<onnx-part-2>> is a custom operator;
 see <<maintenance>>. A custom domain MAY also introduce value types of its own;
 see <<opaque-types>>.

@@ -21,7 +21,7 @@ not a technical one.
 This document defines the conformance classes listed in
 <<tbl-conformance-classes>>. An implementation claiming conformance to this
 document SHALL state which classes it claims and, for each class it claims, the
-<<operator-set>> versions it supports.
+<<operator-set,operator set>> versions it supports.
 
 [[tbl-conformance-classes]]
 .Conformance classes
@@ -62,7 +62,7 @@ conformance claim. To be settled with the Steering Committee.
 
 === Operator set coverage
 
-A <<conforming-implementation>> is not required to support every operator
+A <<conforming-implementation,conforming implementation>> is not required to support every operator
 defined in an operator set. It SHALL, however, report unambiguously which
 operators it does not support, and it SHALL NOT silently substitute an
 approximation of an unsupported operator.
@@ -75,7 +75,7 @@ containing the information required by Annex A.
 === Relationship to Parts 2 and 3
 
 This document specifies the form an operator definition takes and the rules an
-<<operator-set>> obeys; it defines no operator. Operator definitions are in
+<<operator-set,operator set>> obeys; it defines no operator. Operator definitions are in
 <<onnx-part-2>>.
 
 A claim of conformance to this document alone is a claim about structure,

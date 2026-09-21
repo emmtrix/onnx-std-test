@@ -2,7 +2,7 @@
 
 === General
 
-Every value in an ONNX <<graph>> has a type. Types are either tensor types,
+Every value in an ONNX <<graph,graph>> has a type. Types are either tensor types,
 sparse tensor types, sequence types, map types, optional types or opaque types.
 
 Primitive numeric, string and Boolean types SHALL be used only as the element
@@ -68,7 +68,7 @@ interchange formats, and integer element types narrower than eight bits. This
 subclause states their value encoding and their packing into octets. The
 packing is part of the wire format and is therefore normative.
 
-Support for these types is not required of every <<conforming-implementation>>;
+Support for these types is not required of every <<conforming-implementation,conforming implementation>>;
 see <<conformance>>.
 
 ==== Narrow floating-point formats
@@ -218,7 +218,7 @@ A tensor type whose shape is absent denotes a tensor of unknown rank. This is
 distinct from a tensor of rank zero, and distinct from a tensor whose rank is
 known and whose extents are unknown.
 
-The inputs and outputs of a top-level <<graph>> SHALL have a shape, so that
+The inputs and outputs of a top-level <<graph,graph>> SHALL have a shape, so that
 their rank is stated, even where the individual extents are not.
 
 [[dimension-variables]]
@@ -227,7 +227,7 @@ their rank is stated, even where the individual extents are not.
 A dimension variable is a name. Two occurrences of the same dimension variable
 SHALL denote the same extent at evaluation.
 
-Dimension variables are scoped to the <<model>>, not to a graph: an occurrence
+Dimension variables are scoped to the <<model,model>>, not to a graph: an occurrence
 in a subgraph and an occurrence in an enclosing graph denote the same extent.
 This is what allows a model to relate an extent inside a subgraph to an extent
 outside it.
@@ -300,7 +300,7 @@ the rule above is satisfied without appeal to the value of the variable.
 
 A type MAY carry a type denotation, and a dimension MAY carry a dimension
 denotation. A denotation ascribes a meaning to a type or an axis for the
-benefit of a <<producer>> or a <<consumer>>.
+benefit of a <<producer,producer>> or a <<consumer,consumer>>.
 
 A denotation SHALL NOT affect the result of evaluating a model. A consumer MAY
 ignore a denotation, and MAY reject a model whose denotations are inconsistent
@@ -376,7 +376,7 @@ the same mechanism as an unsupplied operator input, which is described in
 [[opaque-types]]
 ==== Opaque
 
-An opaque type is identified by a pair of a <<domain>> and a name. The name is
+An opaque type is identified by a pair of a <<domain,domain>> and a name. The name is
 required; an absent or empty domain denotes the default domain.
 
 The meaning of an opaque type is defined by the operators of its domain, and

@@ -3,7 +3,7 @@
 
 === General
 
-An ONNX <<model>> is serialized as a Protocol Buffers message.
+An ONNX <<model,model>> is serialized as a Protocol Buffers message.
 
 [IMPORTANT]
 .Editorial note

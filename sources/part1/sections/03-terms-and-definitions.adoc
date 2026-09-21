@@ -1,12 +1,13 @@
 == Terms and definitions
 
-For the purposes of this document, the following terms and definitions apply.
+// Metanorma inserts the "For the purposes of this document ..." sentence
+// itself; stating it here as well printed it twice.
 
 [[model]]
 === model
 
-self-contained description of a computation, comprising a top-level <<graph>>,
-the <<operator-set>> versions it depends upon, and producer and metadata
+self-contained description of a computation, comprising a top-level <<graph,graph>>,
+the <<operator-set,operator set>> versions it depends upon, and producer and metadata
 information
 
 [[graph]]
@@ -18,24 +19,24 @@ outputs, initializers and value type information
 [[node]]
 === node
 
-single invocation of an <<operator>>, binding named values to the operator's
+single invocation of an <<operator,operator>>, binding named values to the operator's
 formal inputs and outputs and fixing its <<attribute,attributes>>
 
 [[initializer]]
 === initializer
 
-named tensor value carried in a <<graph>>, being either a constant of that
+named tensor value carried in a <<graph,graph>>, being either a constant of that
 graph or the default value of an input of it
 
 [[subgraph]]
 === subgraph
 
-<<graph>> that is the value of an <<attribute>> of a <<node>>
+<<graph,graph>> that is the value of an <<attribute,attribute>> of a <<node,node>>
 
 [[function]]
 === function
 
-<<operator>> together with an implementation of it in terms of other operators
+<<operator,operator>> together with an implementation of it in terms of other operators
 
 Note 1 to entry: The implementation is a fallback, not a definition of the
 operator's numerical behaviour; see <<functions>>.
@@ -43,14 +44,14 @@ operator's numerical behaviour; see <<functions>>.
 [[dimension-variable]]
 === dimension variable
 
-name denoting an extent that is not fixed when a <<model>> is written, and that
+name denoting an extent that is not fixed when a <<model,model>> is written, and that
 is the same wherever the name occurs in that model
 
 [[operator]]
 === operator
 
 named computation with a specified signature and semantics, identified by the
-pair of its <<domain>> and its name
+pair of its <<domain,domain>> and its name
 
 Note 1 to entry: Operators are defined in <<onnx-part-2>>. This document
 specifies the form such a definition takes and the rules it obeys, not the
@@ -68,31 +69,31 @@ Note 1 to entry: The empty string denotes the default ONNX domain.
 [.alt]
 opset
 
-set of operator definitions belonging to one <<domain>>, identified by that
+set of operator definitions belonging to one <<domain,domain>>, identified by that
 domain and a monotonically increasing integer version
 
 [[attribute]]
 === attribute
 
-named value that is fixed at the time the <<model>> is constructed and that
+named value that is fixed at the time the <<model,model>> is constructed and that
 does not participate in dataflow
 
 [[tensor]]
 === tensor
 
-dense multidimensional array of elements of a single <<element-type>>, having a
-<<shape>>
+dense multidimensional array of elements of a single <<element-type,element type>>, having a
+<<shape,shape>>
 
 [[element-type]]
 === element type
 
-member of the enumeration of scalar types that the elements of a <<tensor>> may
+member of the enumeration of scalar types that the elements of a <<tensor,tensor>> may
 take
 
 [[shape]]
 === shape
 
-ordered sequence of dimensions of a <<tensor>>, each of which is a
+ordered sequence of dimensions of a <<tensor,tensor>>, each of which is a
 non-negative integer, a symbolic name, or unknown
 
 [[conforming-implementation]]
@@ -104,17 +105,17 @@ conformance classes defined in <<conformance>>
 [[producer]]
 === producer
 
-program that emits a <<model>>
+program that emits a <<model,model>>
 
 [[consumer]]
 === consumer
 
-program that reads a <<model>> in order to evaluate, transform or inspect it
+program that reads a <<model,model>> in order to evaluate, transform or inspect it
 
 [[validation]]
 === validation
 
-determination of whether a <<model>> satisfies the requirements of this
+determination of whether a <<model,model>> satisfies the requirements of this
 document, without evaluating it
 
 [[conformance-profile]]

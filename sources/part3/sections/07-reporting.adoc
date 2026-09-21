@@ -12,7 +12,7 @@ A conformance report SHALL state:
 * the identity and version of the implementation;
 * the version of this package used;
 * the conformance class and profile claimed;
-* for each vector, its identifier and its <<vector-outcome>>;
+* for each vector, its identifier and its <<vector-outcome,outcome>>;
 * for each vector with the outcome _fail_, the achieved deviation.
 
 === Relationship to the conformance statement

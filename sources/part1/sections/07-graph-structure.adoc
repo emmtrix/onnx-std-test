@@ -3,7 +3,7 @@
 
 === Graph, inputs and outputs
 
-A <<graph>> SHALL have a name, and SHALL declare its inputs, its outputs and,
+A <<graph,graph>> SHALL have a name, and SHALL declare its inputs, its outputs and,
 optionally, its initializers and value type information.
 
 A top-level graph SHALL declare the name, type and shape of each of its inputs
@@ -24,7 +24,7 @@ An initializer is a named tensor value carried in the graph. The order of the
 initializers of a graph is not significant.
 
 Where an initializer has the same name as an input of the same graph, it
-specifies a default value for that input. A <<consumer>> MAY allow the caller
+specifies a default value for that input. A <<consumer,consumer>> MAY allow the caller
 to supply a value for that input, overriding the initializer, and MAY allow the
 caller to omit it, in which case the value of the initializer is used.
 
@@ -54,7 +54,7 @@ so under what compatibility rule; see <<versioning>>.
 
 ==== General
 
-A <<node>> SHALL identify the <<operator>> it invokes by domain and name.
+A <<node,node>> SHALL identify the <<operator,operator>> it invokes by domain and name.
 
 The number and types of a node's inputs and outputs, and the set and types of
 its attributes, SHALL satisfy the signature of the operator as defined in the
@@ -95,7 +95,7 @@ a type, and the operators that construct and destruct it are defined in
 
 === Attributes
 
-An <<attribute>> SHALL have a name that is unique within its node.
+An <<attribute,attribute>> SHALL have a name that is unique within its node.
 
 An attribute value SHALL NOT refer to a value produced by dataflow: it is fixed
 when the graph is constructed.
