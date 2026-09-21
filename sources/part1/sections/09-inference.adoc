@@ -10,6 +10,7 @@ Inference is normative rather than a convenience: consumers rely on it, and a
 <<producer>> is permitted to omit value type information for values other than
 graph inputs and outputs.
 
+[[inference-obligations]]
 === Obligations on operator definitions
 
 Every operator definition in <<onnx-part-2>> SHALL state the type and shape of
@@ -21,24 +22,39 @@ its attributes.
 Where an output extent equals an input extent, the operator definition SHALL
 say so, so that a symbolic dimension propagates.
 
-[IMPORTANT]
-.Editorial note
-====
-Specify whether an implementation may introduce fresh symbolic names, and
-whether two distinct symbolic names may be proven equal. Upstream's symbolic
-shape inference does both in places; the standard has to decide what a
-conforming implementation may rely on.
-====
+An implementation MAY introduce a fresh dimension variable for an extent it
+cannot determine, and every occurrence of that variable denotes the same extent
+as any other (<<dimension-variables>>).
+
+An implementation SHALL NOT conclude that two distinct dimension variables
+denote the same extent, and SHALL NOT conclude that a dimension variable
+denotes any particular integer.
+
+NOTE: It follows that inference does not compute over extents. Concatenating a
+tensor of extent 5 with one of extent 7 gives 12; concatenating one of extent 5
+with one of extent stem:[N] gives a fresh variable, not stem:[N + 5].
 
 === Strictness and failure
 
+Inference is not required to be exact. Where an implementation cannot determine
+the type or the shape of a value, it SHALL yield unknown for that value rather
+than a value that is not entailed by the model.
+
+An inference that yields unknown SHALL NOT of itself be a failure, and SHALL
+NOT prevent evaluation.
+
+An inference that yields a result contradicting a type or shape the model
+states for the same value SHALL be reported under <<validation-clause>>.
+
 [IMPORTANT]
 .Editorial note
 ====
-Specify (a) which operators are required to be inferable, (b) whether inference
-is required to be exact or may return unknown, and (c) the behaviour when
-inference fails: whether failure is a validation error, a warning, or
-permitted.
+What remains unstated is which operators are required to be inferable at all.
+Upstream does not require an inference function of every operator, and where
+one is absent the values downstream of that operator are simply unknown. Under
+<<inference-obligations>> this document requires one of every operator, which
+is the stronger position and the one a standard should take; the gap between
+the two is what Annex C records.
 ====
 
 === Relationship to validation

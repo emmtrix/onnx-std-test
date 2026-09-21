@@ -221,8 +221,28 @@ across and re-anchored.
 What is drafted and what is not follows the same convention as before. Clauses
 carry an editorial note where content is owed, and Annex C of Part 1 records
 every such clause. The count rose from 16 notes to 44 across the three parts,
-which is not a regression: the new clauses — validation, security, inference,
+which was not a regression: the new clauses — validation, security, inference,
 test vectors — are places the previous structure had no room to admit a gap in.
+
+A pass over the vendored upstream documentation has since closed 18 gaps,
+taking Part 1 from 34 editorial notes to 24 and the three parts together from
+44 to 34. (Twelve notes went; two new ones came, both in the narrow-type
+conversion rules, where reading the source closely raised a question the
+previous note had not seen.) The clauses concerned are the ones where ONNX does
+state a rule and this document simply had not yet said so: the complete
+element type enumeration, the narrow types and their packing, broadcasting,
+denotation, opaque types, the model and its operator set imports, namespaces and subgraph
+visibility, metadata keys, initializers, variadic and unsupplied inputs and
+outputs, functions, the model as a stateless function, external data resolution,
+the security threat model and path resolution, IR and operator set evolution,
+inference strictness, and the status of experimental operators. Annex C now
+carries a second table naming, for each, the upstream document it was taken
+from, so that the transcription can be checked rather than trusted.
+
+What is left in the first table is what ONNX does not state at all, or states
+in a form a standard cannot adopt: tolerances, the Protocol Buffers citation
+and wire subset, canonical form, determinism per operator, control-flow
+semantics, type equality, and the testable form of the validation checks.
 
 Clauses 5 and 6 of Part 2 are generated from the vendored upstream
 documentation by `scripts/generate-operators.rb`: 222 operators, restated in

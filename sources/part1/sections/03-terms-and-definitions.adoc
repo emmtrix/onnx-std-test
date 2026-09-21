@@ -21,6 +21,31 @@ outputs, initializers and value type information
 single invocation of an <<operator>>, binding named values to the operator's
 formal inputs and outputs and fixing its <<attribute,attributes>>
 
+[[initializer]]
+=== initializer
+
+named tensor value carried in a <<graph>>, being either a constant of that
+graph or the default value of an input of it
+
+[[subgraph]]
+=== subgraph
+
+<<graph>> that is the value of an <<attribute>> of a <<node>>
+
+[[function]]
+=== function
+
+<<operator>> together with an implementation of it in terms of other operators
+
+Note 1 to entry: The implementation is a fallback, not a definition of the
+operator's numerical behaviour; see <<functions>>.
+
+[[dimension-variable]]
+=== dimension variable
+
+name denoting an extent that is not fixed when a <<model>> is written, and that
+is the same wherever the name occurs in that model
+
 [[operator]]
 === operator
 

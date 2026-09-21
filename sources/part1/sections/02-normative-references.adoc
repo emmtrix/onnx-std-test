@@ -14,6 +14,9 @@ edition of the referenced document (including any amendments) applies.
 
 * [[[ieee754,IEEE 754-2019]]], _IEEE Standard for Floating-Point Arithmetic_
 
+* [[[iso9899,ISO/IEC 9899]]], _Information technology --- Programming languages
+  --- C_
+
 * [[[iso10646,ISO/IEC 10646]]], _Information technology --- Universal Coded
   Character Set (UCS)_
 

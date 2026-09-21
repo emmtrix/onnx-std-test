@@ -1,6 +1,8 @@
 [appendix,obligation=informative]
 == Known gaps and divergences
 
+=== Open gaps
+
 This annex records, for the working group's use, the points at which the
 present ONNX specification and its reference implementation do not yet supply
 what a normative standard requires. It is informative and is expected to shrink
@@ -10,6 +12,11 @@ Every clause carrying an editorial note has at least one row here. A row may
 cover several related notes in the same clause; a clause with a note and no row
 is an omission.
 
+NOTE: A gap recorded here is a gap in the source material, not a clause left
+unwritten out of inattention. Where the ONNX documentation states a rule, this
+document states it; the rows below are what it does not state, or states in a
+form a standard cannot adopt.
+
 [cols="1,3,1"]
 .Known gaps between current ONNX practice and this document
 |===
@@ -17,8 +24,9 @@ is an omission.
 
 | <<tolerances>>
 | No specified numerical tolerance; the test suite's tolerances are a harness
-  convention and are not defined for the reduced-precision element types.
-  <<onnx-part-3>> cannot pass or fail a vector without them.
+  convention. <<reduced-precision>> now states the conversion and saturation
+  rules of the narrow types, but a tolerance does not follow from them, and
+  <<onnx-part-3>> cannot pass or fail a vector without one.
 | Blocking
 
 | Clause 2, <<serialization>>
@@ -30,40 +38,50 @@ is an omission.
   testable conditions with severities.
 | Blocking
 
-| <<security>>
-| Threat model, path resolution rules and resource bounds are unwritten.
+| Annex B
+| The Protocol Buffers schema is not yet restated normatively as a table of
+  fields with obligations. <<versioning>> now requires that annex to identify
+  the fields each IR version makes mandatory, which the schema source cannot
+  express.
+| Blocking
+
+| <<onnx-part-2>> Clauses 5, 6
+| The generated operator clauses supply shape inference, determinism and error
+  conditions for 0 of 222 operators: the upstream documentation states none of
+  them. They cannot be generated and have to be written per operator.
+| Blocking
+
+| <<reduced-precision>> (conversion)
+| Whether a conversion to a narrow floating-point type saturates or yields NaN
+  is settled per operator, by an attribute of `Cast`, rather than per type, so
+  one model can convert the same pair of types both ways. And the result of
+  converting an out-of-range value to a narrow integer type is unstated: the
+  source says the value is truncated without saying to what.
 | Major
 
 | <<string-elements>>
 | `STRING` elements are octet strings in the implementation and UTF-8 by
-  assumption in much tooling.
+  assumption in much tooling. The upstream documentation does not settle it.
 | Major
 
-| Clause 6 (reduced precision)
-| The sub-8-bit float and integer types and their packing are unspecified here.
+| Clause 6 (type equality)
+| When two types are equal, and when a value of one type may be supplied where
+  another is expected, is unstated; this bounds what <<inference>> must prove.
+  The upstream documentation does not state it either.
 | Major
 
-| <<inference>>
-| Type and shape inference is relied upon normatively but specified only by
-  implementation.
-| Major
-
-| Clause 7 (initializers)
-| Two readings of the initializer/graph-input relationship are in circulation.
+| <<graph-semantics>> (control flow)
+| The evaluation semantics of `If`, `Loop` and `Scan` are unwritten here. The
+  structural rules are now in <<subgraph-scoping>>; upstream states the
+  semantics only in the operator definitions, which is to say in
+  <<onnx-part-2>>, so Clause 8 of this part and Clause 5 of that one have to be
+  reconciled.
 | Major
 
 | <<graph-semantics>> (determinism)
-| No statement of which operators may be non-deterministic.
-| Major
-
-| <<graph-semantics>> (control flow, functions)
-| The semantics of `If`, `Loop` and `Scan`, and the normative status of
-  function bodies, are unwritten.
-| Major
-
-| <<versioning>> (compatibility)
-| Backward compatibility is stated as an obligation here; runtimes do not
-  universally meet it.
+| No statement of which operators may be non-deterministic. <<graph-semantics>>
+  now requires a model to be a stateless function save where an operator is
+  permitted to be otherwise; the set of such operators is still unstated.
 | Major
 
 | <<numerical>> (special values, reassociation)
@@ -71,8 +89,35 @@ is an omission.
   the tolerance cannot be derived until they are.
 | Major
 
-| <<external-data>>
-| Reference resolution and integrity are unspecified.
+| <<versioning>> (compatibility)
+| Backward compatibility is stated as an obligation here; runtimes do not
+  universally meet it.
+| Major
+
+| <<versioning>>, <<onnx-part-2>>
+| Clause 14.5 requires a consumer to keep evaluating a deprecated operator, but
+  upstream stops documenting the inputs, outputs and type constraints of one
+  once deprecated. Four operators are in that state, so their signature cannot
+  be implemented from the documentation at all.
+| Major
+
+| Clause 12 (encoding)
+| The admissible subset of the Protocol Buffers wire format --- unknown fields,
+  repeated field ordering, maximum message size --- is unstated.
+| Major
+
+| <<external-integrity>>
+| The digest an external reference may carry is SHA-1, which is not fit for
+  data from an untrusted source, and it covers the file rather than the octets
+  a reference selects. Resolution itself is now specified in
+  <<external-reference>>.
+| Major
+
+| <<inference>>
+| Which operators are required to be inferable is unstated.
+  <<inference-obligations>> requires an inference function of every operator;
+  upstream requires one of none, and leaves the values downstream of an
+  operator without one unknown. The two positions have to be reconciled.
 | Major
 
 | Clause 4 (profiles)
@@ -83,53 +128,102 @@ is an omission.
 | No canonical serialization, blocking model signing and reproducible hashes.
 | Minor
 
-| <<maintenance>>
-| The status of experimental operators, and the amendment process, are
-  unwritten.
+| <<maintenance>> (amendment)
+| The amendment process for this part, and its relationship to the release
+  cadence of <<onnx-part-2>>, is unwritten. The status of experimental
+  operators is now settled in <<maintenance>>.
 | Minor
 
-| Annex B
-| The Protocol Buffers schema is not yet restated normatively as a table of
-  fields with obligations.
-| Blocking
+| <<initializers>>
+| The relationship between an initializer and a graph input is now specified
+  for models produced against IR version 4 and later. Whether this document
+  admits the earlier reading, under which one name in a subgraph could be both,
+  is unsettled.
+| Minor
 
-| <<information-model>>, <<graph-structure>>
-| Subgraph scoping — which names a subgraph may capture, and whether shadowing
-  is permitted — is unspecified structurally, independently of the control-flow
-  semantics above.
-| Major
-
-| Clause 6 (type equality)
-| When two types are equal, and when a value of one type may be supplied where
-  another is expected, is unstated; this bounds what <<inference>> must prove.
-| Major
-
-| Clause 12 (encoding)
-| The admissible subset of the Protocol Buffers wire format — unknown fields,
-  repeated field ordering, maximum message size — is unstated.
-| Major
-
-| <<onnx-part-2>> Clauses 5, 6
-| The generated operator clauses supply shape inference, determinism and error
-  conditions for 0 of 222 operators: the upstream documentation states none of
-  them. They cannot be generated and have to be written per operator.
-| Blocking
-
-| <<versioning>>, <<onnx-part-2>>
-| Clause 14.5 requires a consumer to keep evaluating a deprecated operator, but
-  upstream stops documenting the inputs, outputs and type constraints of one
-  once deprecated. Four operators are in that state, so their signature cannot
-  be implemented from the documentation at all.
-| Major
-
-| Clause 6, <<onnx-part-2>>
-| Operator prose refers to broadcasting, which this part does not specify. The
-  references are rendered as plain text because a cross-reference to a clause
-  that does not exist would be worse.
-| Major
+| <<broadcasting>>, <<onnx-part-2>>
+| Broadcasting is now specified in <<broadcasting>>, but the operator prose of
+  <<onnx-part-2>> still refers to it in plain text rather than by
+  cross-reference, because a reference from one part of this standard to a
+  clause of another is not resolved by the toolchain.
+| Minor
 
 | Clause 4 (verbal forms)
 | The document uses RFC 2119 capitalised keywords; ISO/IEC Directives Part 2
   requires "shall/should/may/can". An editorial migration, not a technical one.
 | Minor
 |===
+
+[[gaps-closed]]
+=== Gaps closed from the upstream documentation
+
+<<tbl-closed>> records the rows removed from the table above, and the upstream
+document each was closed from. It is kept so that a reviewer can check the
+transcription rather than take it on trust, and so that a refresh of
+`upstream/onnx/` can be checked against the clauses that depend on it.
+
+[[tbl-closed]]
+.Gaps closed, and the source each was closed from
+[cols="2,3"]
+|===
+| Clause | Source
+
+| <<element-types>> (complete enumeration)
+| `onnx-ml.proto`, `TensorProto.DataType`
+
+| <<reduced-precision>> (narrow types and their packing)
+| `docs/docsgen/source/technical/`: `float4.md`, `float6.md`, `float8.md`,
+  `int2.md`, `int4.md`
+
+| <<broadcasting>>
+| `docs/Broadcasting.md`
+
+| <<dimension-variables>> (model-wide scope)
+| `docs/IR.md`, "Static tensor shapes"
+
+| <<denotation>>
+| `docs/TypeDenotation.md`, `docs/DimensionDenotation.md`
+
+| <<opaque-types>>
+| `docs/ONNXTypes.md`
+
+| <<model-clause>>, <<operator-set-import>>
+| `docs/IR.md`, "Models", "Operator Set Identifiers", "Operator Sets"
+
+| <<names-and-scoping>>, <<subgraph-visibility>>
+| `docs/IR.md`, "Names Within a Graph", "Nodes"
+
+| <<metadata>>
+| `docs/IR.md`, "Optional Metadata"; `docs/MetadataProps.md`
+
+| <<initializers>> (IR version 4 and later)
+| `docs/IR.md`, "Nodes"
+
+| <<optional-io>> (variadic and unsupplied inputs and outputs)
+| `docs/IR.md`, "Variadic Inputs and Outputs", "Optional Inputs and Outputs"
+
+| <<functions>>
+| `docs/IR.md`, "Functions"
+
+| <<graph-semantics>> (model as a stateless function)
+| `docs/IR.md`, "Model Semantics"
+
+| <<external-reference>>
+| `docs/ExternalData.md`, "TensorProto: data_location and external_data fields"
+
+| <<threat-model>>, <<path-resolution>>, <<resource-bounds>>
+| `docs/ExternalDataSecurity.md`
+
+| <<versioning>> (IR version evolution, operator set evolution)
+| `docs/Versioning.md`
+
+| <<inference>> (strictness, symbolic dimensions)
+| `docs/ShapeInference.md`, "Limitations"
+
+| <<maintenance>> (experimental operators)
+| `docs/ManagingExperimentalOps.md`
+|===
+
+NOTE: The baseline is the vendored copy in `upstream/onnx/`, whose release and
+commit are recorded in `upstream/onnx/SOURCE.txt`. Nothing above was taken from
+the upstream repository outside that copy.
