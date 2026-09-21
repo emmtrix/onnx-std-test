@@ -10,15 +10,22 @@ unsupported under <<conformance>>, and SHALL NOT evaluate the model.
 
 === Experimental operators
 
-[IMPORTANT]
-.Editorial note
-====
-State whether this standard recognizes experimental operators at all. Upstream
-has a process for them; a standard that admits operators whose semantics may
-change is in tension with the stability its operator set rules promise. The
-likely answer is that experimental operators live in a separate domain and are
-outside conformance, but the Steering Committee should decide.
-====
+This document does not recognize an experimental status for an operator. Every
+operator of an operator set published under <<onnx-part-2>> is subject without
+exception to <<operator-set-evolution>>.
+
+An operator whose definition is not yet settled SHALL be published in a
+<<domain>> of its own, and is a custom operator under the preceding subclause.
+
+NOTE: Upstream reached the same position. The serialized form of an operator
+set carries a status of `EXPERIMENTAL` or `STABLE`, and an operator marked
+`STABLE` may not change; but experimental operators have not been accepted into
+the ONNX domains since release 1.5, and the operators that had been are
+withdrawn. The field remains in the format, and this document gives it no
+effect.
+
+A producer SHOULD replace a withdrawn experimental operator with the operators
+that supersede it. <<onnx-part-2>> records the correspondence.
 
 === Adding an operator
 

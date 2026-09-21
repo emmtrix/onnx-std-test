@@ -1,3 +1,4 @@
+[[annex-conformance]]
 [appendix,obligation=normative]
 == Conformance statement
 

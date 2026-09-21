@@ -6,6 +6,14 @@
 Evaluating a <<graph>> means computing a value for each of its declared
 outputs, given a value for each of its declared inputs.
 
+A <<model>> denotes a stateless function. Evaluating the same model on the same
+inputs SHALL yield the same outputs, save where an operator of the model is
+permitted to be non-deterministic; see <<determinism>>.
+
+A graph has no side effects. In particular, an operator that would otherwise
+carry state across invocations expresses that state as an explicit output,
+which the caller passes to the next invocation as an input.
+
 === Evaluation order and concurrency
 
 Evaluation is defined by the dataflow relation between nodes. This document
@@ -28,21 +36,39 @@ axis handling of `Scan`. The structural constraints are in
 <<subgraph-scoping>>; this clause owes the semantics.
 ====
 
+[[functions]]
 === Functions
 
-An operator MAY be defined by a function body, that is, by a subgraph expressed
-in terms of other operators.
+A function is an <<operator>> together with an implementation of it in terms of
+other operators, called its function body. The body is a topologically sorted
+list of nodes, as a graph is.
 
-[IMPORTANT]
-.Editorial note
-====
-State whether a function body is normative or merely a reference expansion: if
-normative, an implementation must reproduce its numerical behaviour; if a
-reference, an implementation may compute the operator directly, and the
-tolerance of <<numerical>> applies to the operator rather than to the
-expansion. Upstream treats it as the latter; this document should say so.
-====
+A function is identified by a triple of a <<domain>>, a name and an overload.
+The overload distinguishes function bodies that are required to differ between
+call sites; where a model needs no such distinction the overload is empty. A
+function does not carry an operator set version of its own: the version is that
+of its domain, as imported by the model.
 
+The parameters of a function are its inputs, its outputs and its attributes.
+An attribute parameter MAY have a default value. Where a node in the body uses
+an attribute parameter, that use is replaced by the value the call site
+supplies; where the call site supplies none, it is replaced by the default
+value; where there is no default value, the attribute is omitted from that
+node.
+
+A function body is a fallback implementation, not a definition of the
+operator's numerical behaviour. A <<conforming-implementation>> MAY compute the
+operator by any means, and the tolerances of <<numerical>> apply to the
+operator rather than to the evaluation of its body.
+
+NOTE: A function therefore serves two purposes at once. A consumer that does
+not implement the operator can still evaluate the model by expanding the body;
+a consumer that does implement it is not held to the body's rounding.
+
+A function body MAY omit the types of the values it uses: a function MAY be
+polymorphic in the types of its parameters.
+
+[[determinism]]
 === Determinism
 
 [IMPORTANT]

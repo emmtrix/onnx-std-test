@@ -3,50 +3,180 @@
 === General
 
 Every value in an ONNX <<graph>> has a type. Types are either tensor types,
-sequence types, map types or optional types.
+sparse tensor types, sequence types, map types, optional types or opaque types.
 
+Primitive numeric, string and Boolean types SHALL be used only as the element
+types of tensors; they are not themselves value types.
+
+[[element-types]]
 === Element types
 
-[IMPORTANT]
-.Editorial note
-====
-Reproduce the element type enumeration normatively, including the numeric tag
-of each type, which is part of the wire format and therefore normative.
-Source: `TensorProto.DataType`.
-====
+<<tbl-element-types>> is the complete enumeration of element types. The tag of
+each type is part of the wire format and is therefore normative: a consumer
+SHALL interpret the tag as the type named in the same row, and SHALL NOT assign
+a meaning to a tag not listed.
 
-<<tbl-element-types>> lists the element types and their wire tags.
+The tag 0 (`UNDEFINED`) SHALL NOT appear as the element type of a value.
 
 [[tbl-element-types]]
-.Element types
+.Element types and their wire tags
+[cols="1,3,5"]
 |===
 | Tag | Name | Description
 
-| 1 | `FLOAT` | 32-bit binary floating point as specified in <<ieee754>>
-| 2 | `UINT8` | 8-bit unsigned integer
-| 3 | `INT8` | 8-bit two's complement integer
-| 7 | `INT64` | 64-bit two's complement integer
-| 8 | `STRING` | sequence of octets; see <<string-elements>>
-| 9 | `BOOL` | Boolean
-| 11 | `DOUBLE` | 64-bit binary floating point as specified in <<ieee754>>
+| 1  | `FLOAT`          | binary32 as specified in <<ieee754>>
+| 2  | `UINT8`          | 8-bit unsigned integer
+| 3  | `INT8`           | 8-bit two's complement integer
+| 4  | `UINT16`         | 16-bit unsigned integer
+| 5  | `INT16`          | 16-bit two's complement integer
+| 6  | `INT32`          | 32-bit two's complement integer
+| 7  | `INT64`          | 64-bit two's complement integer
+| 8  | `STRING`         | sequence of octets; see <<string-elements>>
+| 9  | `BOOL`           | Boolean
+| 10 | `FLOAT16`        | binary16 as specified in <<ieee754>>
+| 11 | `DOUBLE`         | binary64 as specified in <<ieee754>>
+| 12 | `UINT32`         | 32-bit unsigned integer
+| 13 | `UINT64`         | 64-bit unsigned integer
+| 14 | `COMPLEX64`      | complex number with `FLOAT` real and imaginary parts
+| 15 | `COMPLEX128`     | complex number with `DOUBLE` real and imaginary parts
+| 16 | `BFLOAT16`       | 1 sign bit, 8 exponent bits, 7 mantissa bits; not an <<ieee754>> format
+| 17 | `FLOAT8E4M3FN`   | see <<reduced-precision>>
+| 18 | `FLOAT8E4M3FNUZ` | see <<reduced-precision>>
+| 19 | `FLOAT8E5M2`     | see <<reduced-precision>>
+| 20 | `FLOAT8E5M2FNUZ` | see <<reduced-precision>>
+| 21 | `UINT4`          | 4-bit unsigned integer, range stem:[[0, 15\]]
+| 22 | `INT4`           | 4-bit two's complement integer, range stem:[[-8, 7\]]
+| 23 | `FLOAT4E2M1`     | see <<reduced-precision>>
+| 24 | `FLOAT8E8M0`     | see <<reduced-precision>>
+| 25 | `UINT2`          | 2-bit unsigned integer, range stem:[[0, 3\]]
+| 26 | `INT2`           | 2-bit two's complement integer, range stem:[[-2, 1\]]
+| 27 | `FLOAT6E2M3`     | see <<reduced-precision>>
+| 28 | `FLOAT6E3M2`     | see <<reduced-precision>>
 |===
 
-NOTE: <<tbl-element-types>> is abridged. The complete enumeration is to be
-supplied; see the editorial note above.
+NOTE: `BFLOAT16` is the binary32 format truncated to 16 bits. It has the
+exponent range of binary32 and the reduced precision of a 7-bit significand,
+and is therefore not one of the <<ieee754>> interchange formats.
 
+[[reduced-precision]]
 === Reduced-precision element types
 
-ONNX defines element types narrower than 8 bits, and floating-point types
-narrower than the <<ieee754>> binary formats.
+==== General
+
+ONNX defines floating-point element types narrower than the <<ieee754>>
+interchange formats, and integer element types narrower than eight bits. This
+subclause states their value encoding and their packing into octets. The
+packing is part of the wire format and is therefore normative.
+
+Support for these types is not required of every <<conforming-implementation>>;
+see <<conformance>>.
+
+==== Narrow floating-point formats
+
+<<tbl-narrow-float>> states, for each narrow floating-point type, the width of
+its sign, exponent and mantissa fields, its exponent bias, and whether it
+encodes infinities and NaN.
+
+[[tbl-narrow-float]]
+.Narrow floating-point element types
+[cols="2,1,1,1,1,1,1"]
+|===
+| Type | Sign | Exp. | Mant. | Bias | Infinities | NaN
+
+| `FLOAT8E4M3FN`   | 1 | 4 | 3 | 7  | no  | yes
+| `FLOAT8E4M3FNUZ` | 1 | 4 | 3 | 8  | no  | yes
+| `FLOAT8E5M2`     | 1 | 5 | 2 | 15 | yes | yes
+| `FLOAT8E5M2FNUZ` | 1 | 5 | 2 | 16 | no  | yes
+| `FLOAT6E2M3`     | 1 | 2 | 3 | 1  | no  | no
+| `FLOAT6E3M2`     | 1 | 3 | 2 | 3  | no  | no
+| `FLOAT4E2M1`     | 1 | 2 | 1 | 1  | no  | no
+|===
+
+A type whose name ends in `UZ` SHALL NOT encode a negative zero: the encoding
+that would otherwise denote it denotes NaN instead.
+
+`FLOAT8E8M0` is an 8-bit type consisting of an exponent field only, with no
+sign bit and no mantissa. It is used as the shared scale of a microscaling
+block format and SHALL NOT be used to represent a signed quantity.
+
+Conversion from a narrow floating-point type to a wider one SHALL be exact.
+Conversion to a narrow floating-point type SHALL round to nearest, ties to
+even.
+
+Where the magnitude of a value exceeds the largest finite value the target type
+represents, the result is either that largest finite value with the sign of the
+operand, or NaN. Which of the two applies is a property of the operator
+performing the conversion and is stated in its definition in <<onnx-part-2>>;
+this document does not fix it.
 
 [IMPORTANT]
 .Editorial note
 ====
-Specify the 4-bit and 6-bit floating-point types, the 2-bit and 4-bit integer
-types, and their packing into octets, which is part of the wire format. Upstream
-documents these separately from the main type documentation; they are the types
-for which <<numerical>> has no stated tolerance, which is the gap Annex C
-records as blocking.
+The rules above are stated as the upstream documentation states them, and two
+things are unsatisfactory about that. The first is the sentence immediately
+above: whether a conversion saturates is settled per operator rather than per
+type, by an attribute of `Cast` in the default domain, so the same pair of
+types converts differently in two places in one model. A type system should
+decide this, and the operator should not be able to vary it.
+
+The second is that the rules are not stated once for all types in
+<<numerical>>, and the tolerance that <<onnx-part-3>> needs in order to pass or
+fail a vector in these types does not follow from them. That remains the
+blocking gap recorded in Annex C.
+====
+
+==== Narrow integer formats
+
+`INT2`, `UINT2`, `INT4` and `UINT4` denote integers of the width and range
+given in <<tbl-element-types>>. Conversion from a narrow integer type to a
+wider one SHALL be exact. Conversion to a narrow integer type SHALL round to
+nearest, ties to even.
+
+[IMPORTANT]
+.Editorial note
+====
+The result of converting a value that lies outside the range of the target type
+is unstated. The upstream documentation says the rounded value is truncated,
+without saying whether that means clamping to the range or discarding the
+leading bits; the two differ in sign as well as in magnitude. State one.
+====
+
+[[packing]]
+==== Packing
+
+A tensor whose element type is narrower than eight bits SHALL be stored as a
+bit stream, the elements in order, each element occupying the next free bits of
+the current octet counting from its least significant bit.
+
+For a 4-bit element type, two elements occupy one octet: the first in the four
+least significant bits, the second in the four most significant bits. For
+consecutive elements `x` and `y`, the octet `z` is
+
+[%unnumbered]
+----
+z = ((y & 0x0F) << 4) | (x & 0x0F)
+----
+
+and the elements are recovered as `x = z & 0x0F` and `y = (z >> 4) & 0x0F`.
+
+For a 2-bit element type, four elements occupy one octet, the element at index
+`i` of the group occupying bits `2i` and `2i + 1`.
+
+For a 6-bit element type, the codes are packed into a contiguous bit stream in
+the same direction; an element therefore MAY span two octets.
+
+The storage size in octets of a tensor of `N` elements of a type of width `w`
+bits SHALL be the least integer not less than `N * w / 8`. Any bits of the
+final octet not occupied by an element SHALL be zero, and a consumer SHALL
+ignore them.
+
+.Storage size
+[example]
+====
+A tensor of 7 `INT4` elements occupies 4 octets, of which the four most
+significant bits of the fourth octet are padding. A tensor of 7 `FLOAT6E2M3`
+elements occupies 6 octets, of which the two most significant bits of the sixth
+octet are padding.
 ====
 
 [[string-elements]]
@@ -59,27 +189,158 @@ The reference implementation treats `STRING` elements as arbitrary byte
 strings, while much tooling assumes UTF-8. Decide whether this document
 requires <<iso10646>> UTF-8 encoding or specifies octet strings with an
 encoding attribute. This is a normative change either way and MUST be raised
-with the Steering Committee.
+with the Steering Committee. The upstream documentation does not settle it.
 ====
 
+[[shapes]]
 === Shapes and dimensions
+
+==== General
 
 A shape is an ordered sequence of dimensions. Each dimension is one of:
 
 * a non-negative integer, denoting a fixed extent;
-* a symbolic name, denoting an extent that is equal wherever the same name
-  occurs within one <<graph>>;
+* a dimension variable, denoting an extent that is not statically fixed;
 * unknown.
 
-A tensor with a shape of length zero is a scalar. A dimension of extent zero is
-permitted; a tensor having such a dimension contains no elements.
+The number of dimensions in a shape is the rank of the tensor. A tensor with a
+shape of length zero is a scalar. A dimension of extent zero is permitted; a
+tensor having such a dimension contains no elements.
 
-=== Dimension denotation
+A tensor type whose shape is absent denotes a tensor of unknown rank. This is
+distinct from a tensor of rank zero, and distinct from a tensor whose rank is
+known and whose extents are unknown.
 
-A dimension MAY carry a denotation, which ascribes a meaning to it, such as a
-batch or channel axis.
+The inputs and outputs of a top-level <<graph>> SHALL have a shape, so that
+their rank is stated, even where the individual extents are not.
 
-A denotation SHALL NOT affect the result of evaluating a model.
+[[dimension-variables]]
+==== Dimension variables
+
+A dimension variable is a name. Two occurrences of the same dimension variable
+SHALL denote the same extent at evaluation.
+
+Dimension variables are scoped to the <<model>>, not to a graph: an occurrence
+in a subgraph and an occurrence in an enclosing graph denote the same extent.
+This is what allows a model to relate an extent inside a subgraph to an extent
+outside it.
+
+A dimension that is neither an integer nor a dimension variable is unknown, and
+is unrelated to any other unknown dimension.
+
+NOTE: Because dimension variables are model-scoped, a value of a sequence type
+whose element shape names a variable is a sequence of tensors that all have
+that extent. A sequence whose elements differ in an extent has to omit that
+dimension from its element type, and one whose elements differ in rank has to
+omit the shape entirely.
+
+The name of a dimension variable SHOULD adhere to the identifier syntax of
+<<iso9899>>.
+
+[[broadcasting]]
+=== Broadcasting
+
+==== General
+
+Two or more tensors of different shapes MAY be combined element by element
+where their shapes are broadcastable in one of the two senses defined below. An
+operator definition in <<onnx-part-2>> states which, if either, of the two
+applies to it.
+
+[[multidirectional]]
+==== Multidirectional broadcasting
+
+A set of tensors is multidirectionally broadcastable where, after each shape of
+rank lower than the greatest rank in the set has been extended on the left with
+dimensions of extent 1 until all shapes have that rank, every position holds,
+across the set, only extents that are equal to one another or equal to 1.
+
+The result has the greatest rank in the set, and its extent at each position is
+the greatest extent at that position.
+
+.Multidirectional broadcasting
+[example]
+====
+Shapes stem:[(2, 3, 4, 5)] and stem:[()] give stem:[(2, 3, 4, 5)]; shapes
+stem:[(1, 4, 5)] and stem:[(2, 3, 1, 1)] give stem:[(2, 3, 4, 5)]; shapes
+stem:[(3, 4, 5)] and stem:[(2, 1, 1, 1)] give stem:[(2, 3, 4, 5)].
+====
+
+[[unidirectional]]
+==== Unidirectional broadcasting
+
+A tensor stem:[B] is unidirectionally broadcastable to a tensor stem:[A] where,
+after the shape of stem:[B] has been extended on the left with dimensions of
+extent 1 until it has the rank of stem:[A], every position holds an extent of
+stem:[B] that is either equal to the extent of stem:[A] at that position or
+equal to 1.
+
+The result has the shape of stem:[A]. Unidirectional broadcasting is not
+symmetric: that stem:[B] is broadcastable to stem:[A] does not imply the
+converse.
+
+==== Broadcasting and dimension variables
+
+Where an extent is a dimension variable, it is equal to another extent only
+where that extent is the same dimension variable. A dimension variable is not
+known to be equal to 1, so a shape containing one is broadcastable only where
+the rule above is satisfied without appeal to the value of the variable.
+
+[[denotation]]
+=== Denotation
+
+==== General
+
+A type MAY carry a type denotation, and a dimension MAY carry a dimension
+denotation. A denotation ascribes a meaning to a type or an axis for the
+benefit of a <<producer>> or a <<consumer>>.
+
+A denotation SHALL NOT affect the result of evaluating a model. A consumer MAY
+ignore a denotation, and MAY reject a model whose denotations are inconsistent
+with the operators applied to the values concerned.
+
+==== Type denotation
+
+<<tbl-type-denotation>> lists the defined type denotations.
+
+[[tbl-type-denotation]]
+.Type denotations
+[cols="1,3"]
+|===
+| Denotation | Meaning
+
+| `TENSOR` | a tensor carrying no further ascribed meaning
+| `IMAGE`  | an image; see <<metadata>> for the properties that describe it
+| `AUDIO`  | an audio signal
+| `TEXT`   | a block of text
+|===
+
+==== Dimension denotation
+
+<<tbl-dimension-denotation>> lists the defined dimension denotations.
+
+[[tbl-dimension-denotation]]
+.Dimension denotations
+[cols="1,3"]
+|===
+| Denotation | Meaning
+
+| `DATA_BATCH`         | the batch axis of the data
+| `DATA_CHANNEL`       | the channel axis of the data
+| `DATA_TIME`          | a time axis
+| `DATA_FEATURE`       | a feature axis, including the spatial axes of an image
+| `FILTER_IN_CHANNEL`  | the input-channel axis of a filter
+| `FILTER_OUT_CHANNEL` | the output-channel axis of a filter
+| `FILTER_SPATIAL`     | a spatial axis of a filter
+|===
+
+An operator that permutes, removes or introduces axes propagates the
+denotations of its input axes to the corresponding output axes.
+
+NOTE: Upstream describes denotation as an experimental mechanism. It is stated
+here because the encoding is part of the wire format and a consumer has to know
+what the values mean; nothing in this document requires a producer to supply a
+denotation.
 
 === Composite types
 
@@ -94,7 +355,31 @@ to values of a single type.
 
 ==== Optional
 
-An optional value either holds a value of its element type or is absent.
+An optional value either holds a value of its element type or is absent. The
+element type is a tensor, sparse tensor, sequence or map type.
+
+An optional type is distinct from the type of its element: a value of type
+optional tensor of `INT64` is not a value of type tensor of `INT64`. The
+operators that convert between the two are defined in <<onnx-part-2>>.
+
+NOTE: This type is what <<graph-structure>> calls a dynamic-optional. It is not
+the same mechanism as an unsupplied operator input, which is described in
+<<optional-io>>.
+
+[[opaque-types]]
+==== Opaque
+
+An opaque type is identified by a pair of a <<domain>> and a name. The name is
+required; an absent or empty domain denotes the default domain.
+
+The meaning of an opaque type is defined by the operators of its domain, and
+this document ascribes none to it. A consumer that does not implement that
+domain SHALL treat a value of the type as unanalysable, and SHALL NOT infer
+anything from it beyond its identity.
+
+NOTE: An opaque type is how a custom domain introduces a kind of value of its
+own — a handle to something a pair of its operators pass between them — without
+a change to this document.
 
 === Type equality and assignability
 
@@ -104,5 +389,7 @@ An optional value either holds a value of its element type or is absent.
 State when two types are equal, and when a value of one type may be supplied
 where another is expected. Shape is part of the type, so this clause decides
 whether a tensor of unknown shape is assignable to a formal input of known
-shape, which in turn decides how much <<inference>> is obliged to prove.
+shape, which in turn decides how much <<inference>> is obliged to prove. The
+upstream documentation does not state this; it is a rule the working group has
+to settle.
 ====

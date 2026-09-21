@@ -16,24 +16,78 @@ document.
 
 === IR version evolution
 
-[IMPORTANT]
-.Editorial note
-====
-State what an increment of the IR version may change and what it may not. This
-is the cadence this part carries; the operator sets carry theirs in
-<<onnx-part-2>>. Keeping the two apart is the reason for the division into
-parts, and the rule that keeps them apart belongs here.
-====
+The IR version is a positive integer that increases monotonically.
 
+A change that alters the structure or the meaning of a model, or that breaks a
+producer or consumer written against the previous version, SHALL increment the
+IR version. A change that does neither SHALL NOT.
+
+NOTE: A change can break a producer or consumer without altering a single octet
+of any model — renaming a field of the serialized form is the standard example.
+Such a change increments the IR version.
+
+A consumer SHOULD accept a model that omits a field the consumer does not
+require. A field that a given IR version requires SHALL be identified as such
+in <<annex-schema>>, and a producer SHALL supply every such field.
+
+An increment of the IR version SHALL NOT of itself change any operator set. An
+increment of an operator set version SHALL NOT of itself change the IR version.
+
+NOTE: The independence stated above is why this standard is in parts. The IR
+version is the cadence of this part; the operator set versions are the cadence
+of <<onnx-part-2>>.
+
+[[operator-set-evolution]]
 === Operator set evolution
 
 An operator set version SHALL NOT be changed once published.
 
-A new operator set version MAY add operators, MAY add optional inputs, outputs
-or attributes to an existing operator, and MAY widen a type constraint. It
-SHALL NOT narrow a type constraint, remove an operator, or change the semantics
-of an existing operator, other than by introducing a new version of that
-operator.
+An operator is identified by a triple of a <<domain>>, a name and the operator
+set version at which that definition of it was introduced. Where the definition
+of an operator changes, the changed definition is a new operator with a new
+such version, and the previous definition remains what it was.
+
+Where the inventory of an operator set changes, whether by addition, by removal
+or by a change to the definition of an operator it contains, a new operator set
+version SHALL be published.
+
+<<tbl-breaking>> states the changes to an operator that require a new version
+of it.
+
+[[tbl-breaking]]
+.Changes requiring a new version of an operator
+[cols="4,1"]
+|===
+| Change | New version required
+
+| Adding, removing or renaming an attribute, including adding an optional
+  attribute whose default value reproduces the previous behaviour
+| yes
+
+| Adding, removing or reordering an input or an output
+| yes
+
+| Adding or removing a type admitted by an input or an output, or changing the
+  type of an attribute
+| yes
+
+| Admitting behaviour the previous definition did not, under an unchanged
+  signature
+| yes
+
+| Resolving an ambiguity in the previous definition in favour of what
+  implementations already do
+| no
+|===
+
+NOTE: The third row is symmetric: widening a type constraint requires a new
+version of the operator just as narrowing one does. What the previous row's
+prohibition protects is the previous definition, which stays available at its
+own version.
+
+A model binds each of its nodes to an operator definition by the operator set
+version the model imports; see <<operator-set-import>>. How a consumer binds
+that definition to an implementation is outside the scope of this document.
 
 === Compatibility obligations
 

@@ -3,26 +3,89 @@
 
 === General
 
-A tensor's contents MAY be stored outside the model file.
+The contents of a tensor MAY be stored outside the model file. A tensor SHALL
+declare, as its data location, either that its contents are carried in the
+model file or that they are external.
 
+A tensor whose data location is external SHALL NOT also carry its contents in
+the model file. Where no data location is declared, the contents are carried in
+the model file.
+
+The octets of external contents have the same layout as the raw contents of a
+tensor carried in the model file.
+
+One external file MAY hold the contents of more than one tensor.
+
+[[external-reference]]
 === Reference resolution
 
-[IMPORTANT]
-.Editorial note
-====
-Specify the resolution of external data references, including whether relative
-paths are permitted, what they are relative to, and how a consumer is to behave
-when a reference cannot be resolved. Path resolution is also the primary
-security surface of this document; see <<security>>.
-====
+An external reference is a set of key-value pairs. <<tbl-external-data>> states
+the keys this document defines and the obligation on each. A consumer SHALL
+reject a reference carrying a key not listed.
 
+[[tbl-external-data]]
+.Keys of an external data reference
+[cols="1,1,4"]
+|===
+| Key | Obligation | Value
+
+| `location`
+| mandatory
+| The path of the file holding the contents, relative to the directory holding
+  the model file.
+
+| `offset`
+| optional
+| The position, in octets, at which the contents begin in that file. Where
+  absent, the contents begin at the start of the file.
+
+| `length`
+| optional
+| The number of octets of contents. Where absent, the contents extend to the
+  end of the file.
+
+| `checksum`
+| optional
+| A digest of the file named by `location`; see <<external-integrity>>.
+|===
+
+The value of `location` SHALL be a relative path, and SHALL NOT contain a
+parent-directory component. A consumer SHALL reject a reference whose
+`location` is an absolute path, contains a parent-directory component, or
+resolves outside the directory holding the model file. See <<security>> for the
+resolution rules a consumer applies in order to establish that.
+
+A consumer that cannot resolve a reference, or that resolves it to a file
+shorter than `offset` plus `length` requires, SHALL report the failure under
+<<validation-clause>> and SHALL NOT evaluate the model.
+
+NOTE: A consumer may record the directory from which it loaded the model
+alongside the reference, so that resolution does not depend on the working
+directory at the time of evaluation. That record is not part of the model, and
+a producer does not write it.
+
+A producer SHOULD align `offset` to a multiple of the page size of the target
+platform, so that a consumer can map the file into memory rather than copying
+it.
+
+[[external-integrity]]
 === Integrity
 
+A reference MAY carry a `checksum`, being the SHA-1 digest of the file named by
+its `location`.
+
+Where a checksum is present, a consumer SHALL verify it before using the
+contents, and SHALL reject the model where it does not match.
+
 [IMPORTANT]
 .Editorial note
 ====
-State whether a model may carry a digest of its external data and whether a
-consumer is obliged to check it. Without this, external data silently changes
-the meaning of a model that is otherwise byte-identical, which undermines any
-claim that a model identifier denotes a fixed computation.
+Two questions remain. SHA-1 is the digest the upstream format specifies, and it
+is no longer fit for the integrity of data from an untrusted source; this
+document should permit a stronger digest and state how the choice is encoded.
+And the checksum covers the whole file rather than the octets the reference
+selects, so it does not bind a tensor to its contents where one file holds
+several tensors. Until both are settled, external contents can change the
+meaning of a model that is otherwise byte-identical, which is the gap Annex C
+records.
 ====

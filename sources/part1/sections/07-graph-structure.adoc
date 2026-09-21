@@ -3,33 +3,107 @@
 
 === Graph, inputs and outputs
 
-A <<graph>> SHALL declare its inputs, its outputs and, optionally, its
-initializers and value type information.
+A <<graph>> SHALL have a name, and SHALL declare its inputs, its outputs and,
+optionally, its initializers and value type information.
 
+A top-level graph SHALL declare the name, type and shape of each of its inputs
+and outputs. The shape states the rank; the individual extents need not be
+stated. See <<shapes>>.
+
+A subgraph SHALL declare the names of its inputs and outputs, and MAY declare
+their types.
+
+A graph MAY declare the type and shape of values that are neither its inputs
+nor its outputs. Such a declaration is a constraint on the value, not a
+definition of it.
+
+[[initializers]]
 === Initializers
+
+An initializer is a named tensor value carried in the graph. The order of the
+initializers of a graph is not significant.
+
+Where an initializer has the same name as an input of the same graph, it
+specifies a default value for that input. A <<consumer>> MAY allow the caller
+to supply a value for that input, overriding the initializer, and MAY allow the
+caller to omit it, in which case the value of the initializer is used.
+
+Where an initializer has a name that is not the name of an input of the same
+graph, it specifies a constant. A caller SHALL NOT supply a value for it.
+
+NOTE: It follows that a producer that intends a value to be constant states it
+as an initializer only, and does not also declare it as a graph input.
+
+In a subgraph, a name SHALL NOT be both an input and an initializer, unless the
+operator whose attribute carries the subgraph states otherwise. The inputs a
+control-flow operator supplies to a subgraph are matched to the inputs of that
+subgraph positionally, so an initializer of a subgraph that is also declared as
+an input SHALL be declared after every input the operator supplies.
 
 [IMPORTANT]
 .Editorial note
 ====
-Clarify the relationship between initializers and graph inputs. Since IR
-version 4 an initializer need not appear as a graph input, but models in
-circulation rely on both readings, and consumer behaviour differs. Specify one
-and state the compatibility rule for the other.
+The subgraph rule above holds for models produced against IR version 4 and
+later. Earlier models were permitted to use one name as both a subgraph input
+and a subgraph initializer in order to carry a constant, and models in
+circulation rely on it. State whether this document admits those models, and if
+so under what compatibility rule; see <<versioning>>.
 ====
 
 === Nodes
 
+==== General
+
 A <<node>> SHALL identify the <<operator>> it invokes by domain and name.
 
-The number and types of a node's inputs and outputs SHALL satisfy the signature
-of the operator as defined in the operator set version declared by the
-enclosing model.
+The number and types of a node's inputs and outputs, and the set and types of
+its attributes, SHALL satisfy the signature of the operator as defined in the
+operator set version declared by the enclosing model.
+
+A node's inputs and outputs are matched to the formal inputs and outputs of its
+operator by position. Its attributes are matched by name.
+
+A node MAY have a name. A node name is for diagnostic purposes and SHALL NOT
+affect the result of evaluating the graph.
+
+==== Variadic inputs and outputs
+
+The last formal input or output of an operator MAY be variadic, in which case
+the operator definition states its minimum arity stem:[N]. A node invoking such
+an operator SHALL supply stem:[N] or more inputs, respectively outputs, in that
+position.
+
+[[optional-io]]
+==== Unsupplied inputs and outputs
+
+An operator definition MAY mark a formal input as optional, in which case a
+node invoking the operator MAY leave it unsupplied. An operator definition MAY
+mark a formal output as optional, in which case a consumer MAY forgo computing
+it where the node leaves it unsupplied.
+
+An input or output is left unsupplied in one of two ways: by omitting it, which
+is available only where it and every input or output after it is also omitted;
+or by giving an empty name in its position.
+
+A node SHALL give a name for each output that is computed, and SHALL NOT give a
+name for an output that is not.
+
+NOTE: This mechanism is distinct from the optional type of <<shapes>>. Leaving
+an input unsupplied does not change the type of anything; the optional type is
+a type, and the operators that construct and destruct it are defined in
+<<onnx-part-2>>.
 
 === Attributes
 
 An <<attribute>> SHALL have a name that is unique within its node.
 
-An attribute value SHALL NOT refer to a value produced by dataflow.
+An attribute value SHALL NOT refer to a value produced by dataflow: it is fixed
+when the graph is constructed.
+
+The value of an attribute is one of: a tensor, a sparse tensor, a numeric
+scalar, a string, a type, a graph, or a list of values of one of those kinds.
+The type system of attribute values is therefore not the type system of
+<<shapes>>, which applies to values carried by dataflow.
 
 === Topological constraints
 
@@ -40,17 +114,32 @@ The graph SHALL be acyclic.
 
 Every value consumed by a node SHALL be produced by exactly one of: a graph
 input, an initializer, an earlier node in the same graph, or an enclosing
-scope.
+scope; see <<definitions-and-uses>>.
+
+A graph SHALL be in single static assignment form: every node output name SHALL
+be unique within the graph.
 
 [[subgraph-scoping]]
 === Subgraphs and scoping
 
-Subgraphs appear as attributes of the `If`, `Loop` and `Scan` operators.
+Subgraphs appear as attribute values, and are evaluated by the operators that
+carry them; in the default domain these are `If`, `Loop` and `Scan`.
+
+The names a subgraph may use from an enclosing graph, and the prohibition on
+shadowing, are stated in <<subgraph-visibility>>. The names of a subgraph's own
+inputs and initializers are constrained by <<initializers>>.
+
+The acyclicity requirement above applies to each graph separately. A subgraph
+SHALL NOT be reachable from itself through the attribute values of its own
+nodes.
 
 [IMPORTANT]
 .Editorial note
 ====
-Specify the binding of loop-carried dependencies, the termination condition,
-and the interaction between subgraph scoping and the acyclicity requirement
-above.
+This clause now states the structural rules completely. What remains unwritten
+is the evaluation semantics of the operators that carry subgraphs: the branch
+selection of `If`, the termination condition and loop-carried dependencies of
+`Loop`, and the scan axis handling of `Scan`. Those belong to
+<<graph-semantics>>, and the upstream documentation states them only in the
+operator definitions, which is to say in <<onnx-part-2>>.
 ====

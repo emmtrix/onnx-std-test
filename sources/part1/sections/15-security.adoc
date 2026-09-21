@@ -6,52 +6,100 @@
 A <<model>> is data from an untrusted source unless the consumer knows
 otherwise. This clause states the obligations that follow.
 
-[IMPORTANT]
-.Editorial note
-====
-This clause is new in this structure; the draft previously said nothing on the
-subject beyond a passing remark about external data. Upstream documents the
-external-data attack surface separately from the specification. A standard that
-is silent here is incomplete, and silence is also the answer most likely to be
-challenged in an ISO ballot.
-====
-
+[[threat-model]]
 === Threat model
 
-[IMPORTANT]
-.Editorial note
-====
-State what a consumer is defending against: a model crafted to read files
-outside its directory, to exhaust memory or disk, to cause unbounded recursion
-through subgraphs, or to exploit a decoder. State also what is out of scope —
-this document cannot defend against an operator implementation's own defects.
-====
+A <<consumer>> defends against a model crafted so that processing it causes the
+consumer to read or write a file the caller did not intend, to consume
+unbounded memory, processor time or disk, or to recur without bound.
 
+<<tbl-threats>> states the attacks a consumer is obliged to defend against and
+the clause that states the defence.
+
+[[tbl-threats]]
+.Threats and the defences required
+[cols="2,3,1"]
+|===
+| Threat | Description | Defence
+
+| Path traversal
+| An external data reference escapes the model directory through a
+  parent-directory component or an absolute path.
+| <<path-resolution>>
+
+| Symbolic link traversal
+| A component of an external data path is a symbolic link resolving outside the
+  model directory.
+| <<path-resolution>>
+
+| Hard link exposure
+| A file in the model directory is a hard link to a file outside it, and so
+  passes a check that considers symbolic links alone.
+| <<path-resolution>>
+
+| Resource exhaustion
+| A model declares a tensor, a dimension, a loop bound or an external file so
+  large that evaluating it exhausts memory, disk or time.
+| <<resource-bounds>>
+
+| Unbounded recursion
+| Subgraphs nest so deeply that evaluating them exhausts the evaluation stack.
+| <<resource-bounds>>
+|===
+
+The following are outside the scope of this document: defects in the
+implementation of an individual operator; the integrity of the channel by which
+a model was obtained; and the behaviour of a consumer processing a file that is
+not an ONNX model.
+
+[[path-resolution]]
 === External data and path resolution
 
-A consumer SHALL NOT resolve an external data reference to a location outside
-the directory containing the model, unless explicitly configured to do so.
+A consumer SHALL resolve the `location` of an external data reference
+(<<external-reference>>) against the directory holding the model file, and
+SHALL reject a reference that resolves outside that directory. Resolution SHALL
+take account of every component of the path, not the final component alone.
 
-[IMPORTANT]
-.Editorial note
-====
-State this as a testable requirement: which path forms are rejected (absolute
-paths, parent-directory traversal, symbolic links, URLs), and whether rejection
-is a validation error under <<validation-clause>> or a runtime failure.
-====
+A consumer SHALL reject a reference whose path, or any component of it, is a
+symbolic link.
 
+A consumer SHALL reject a reference naming a file that has more than one hard
+link.
+
+A consumer SHALL establish that the file it has opened is the file the
+resolution identified, and SHALL NOT rely on the path alone; a path checked
+before opening can name a different file by the time it is opened.
+
+A consumer MAY be configured to resolve references outside the model directory.
+Such a configuration SHALL be explicit and SHALL NOT be the default.
+
+Rejection under this subclause is a validation failure under
+<<validation-clause>>.
+
+NOTE: These requirements are stated as obligations on the outcome, not on the
+mechanism. The upstream implementation meets them with a layered check —
+canonical containment, a symbolic link test, a constrained open, and a hard
+link count — and the constrained open is the only layer that is not subject to
+a change of the file system between the check and the open.
+
+[[resource-bounds]]
 === Resource bounds
 
-[IMPORTANT]
-.Editorial note
-====
-State the limits a conforming consumer may impose, and on what: total allocated
-memory, the extent of a single dimension, the depth of subgraph nesting, the
-number of loop iterations, the size of an external data file. A consumer that
-refuses a model for exceeding a documented limit is conforming; one that
-crashes is not. The limits are implementation-defined, but the obligation to
-document them and to fail cleanly is not.
-====
+A consumer MAY impose a limit on the memory it allocates for a model, on the
+extent of a dimension, on the depth to which subgraphs nest, on the number of
+iterations of a loop, and on the size of an external data file.
+
+A consumer that imposes such a limit SHALL document it, and SHALL report a
+model that exceeds it as a refusal under <<validation-clause>> rather than
+failing in any other way.
+
+A consumer SHALL validate the declared size of an external data reference
+against the size of the file before allocating for it.
+
+NOTE: A consumer that refuses a model for exceeding a documented limit
+conforms; one that crashes does not. The limits themselves are
+implementation-defined, and a conformance statement (<<annex-conformance>>)
+records them.
 
 === Handling untrusted models
 

@@ -1,3 +1,4 @@
+[[annex-schema]]
 [appendix,obligation=normative]
 == Protocol Buffers schema
 
