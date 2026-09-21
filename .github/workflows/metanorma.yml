@@ -41,6 +41,12 @@ jobs:
       - name: Check generated operator clauses
         run: bundle exec make check-operators
 
+      # Annex B of Part 1 is generated from upstream/onnx/proto/. Same
+      # contract: a hand edit, or a refresh of the vendored schema without
+      # regenerating, fails here rather than drifting.
+      - name: Check generated schema annex
+        run: bundle exec make check-schema
+
       - name: Check PDF stylesheet
         run: bundle exec ruby scripts/check-stylesheet.rb
 

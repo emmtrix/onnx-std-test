@@ -54,6 +54,7 @@ sources/
 scripts/check-errors.rb    Gates the build on Metanorma diagnostic severity
 scripts/vendor-onnx-docs.sh  Refreshes the vendored upstream copy
 scripts/generate-operators.rb Generates the operator clauses of Part 2
+scripts/generate-schema.rb  Generates Annex B of Part 1 from the vendored .proto
 upstream/onnx/             Verbatim upstream ONNX docs (complete) + .proto
 .github/workflows/         CI: build HTML + PDF, publish as artifacts
 ```

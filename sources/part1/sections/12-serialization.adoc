@@ -27,16 +27,16 @@ which is why <<canonical-form>> is a separate question.
 
 === Message definitions
 
-The message definitions are given normatively in Annex B.
+The message definitions are given normatively in <<annex-schema>>, as a table
+of fields per message giving wire tag, type and obligation.
 
-[IMPORTANT]
-.Editorial note
-====
-Annex B currently reproduces the schema as source. The intended form is a table
-of fields per message, giving wire tag, type and obligation, with the schema
-source retained as an informative aid. A table states each field's obligation,
-which the schema cannot express, and survives a change of encoding.
-====
+A field's tag identifies it on the wire. A tag SHALL NOT be reused for a
+different field, and a tag recorded as reserved SHALL NOT be used at all.
+
+NOTE: The obligation is what the schema source cannot express, and is the
+reason the annex is a table rather than the source. In the Protocol Buffers
+syntax this schema uses, every field is syntactically optional; which ones a
+producer must supply is carried in the comments.
 
 [[canonical-form]]
 === Canonical form
