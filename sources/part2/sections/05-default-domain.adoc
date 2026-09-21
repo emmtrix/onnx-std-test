@@ -178,6 +178,7 @@ Generates a 2D or 3D flow field (sampling grid), given a batch of affine matrice
 (https://pytorch.org/docs/stable/generated/torch.nn.functional.affine_grid.html).
 An affine matrix `theta` is applied to a position tensor represented in its homogeneous expression. Here is an example in 3D:
 
+[%unnumbered]
 ----
 [r00, r01, r02, t0]   [x]   [x']
 [r10, r11, r12, t1] * [y] = [y']
@@ -193,6 +194,7 @@ The output `grid` contains positions in the output space.
 
 When `align_corners=1`, consider `-1` and `1` to refer to the centers of the corner pixels (mark `v` in illustration).
 
+[%unnumbered]
 ----
 v            v            v            v
 |-------------------|------------------|
@@ -201,6 +203,7 @@ v            v            v            v
 
 When `align_corners=0`, consider `-1` and `1` to refer to the outer edge of the corner pixels.
 
+[%unnumbered]
 ----
     v        v         v         v
 |------------------|-------------------|
@@ -498,6 +501,7 @@ Attention bias to be added is calculated based on `attn_mask` input and `is_caus
 1) `attn_mask`: A boolean mask where a value of `True` indicates that the element should take part in attention or a float mask of the same type as query, key, value that is added to the attention score.
 2) If `is_causal` is set to `1`, causal masking is applied with bottom-right (offset-aware) alignment: query `i` attends key `j` iff `+j <= i + offset+`, as illustrated below.
 
+[%unnumbered]
 ----
   2D causal mask for Attention (PR onnx/onnx#8068)
    S_q=4 queries, S_k=8 keys
@@ -538,6 +542,7 @@ With `nonpad_kv_seqlen=4` (offset=0), the mask is the standard lower-triangular.
 
 `left_window_size` and `right_window_size` independently restrict the keys visible to each query. A query at absolute position `p = offset + query_index` attends keys `j` satisfying `+p - left_window_size <= j <= p + right_window_size+` for each nonnegative bound. A value of `-1` leaves that side unbounded. For example, `(left_window_size=2, right_window_size=0)` is a causal left-looking window containing the current key and two preceding keys, while `(left_window_size=2, right_window_size=1)` is an asymmetric bidirectional window. Window bounds are composed with `is_causal` and `attn_mask`; when `is_causal=1`, the causal upper bound still excludes future keys.
 
+[%unnumbered]
 ----
   2D sliding-window mask for Attention (opset 25)
    S_q=4 queries, S_k=6 keys, left_window_size=2, right_window_size=1, offset=0
@@ -574,6 +579,7 @@ as the maximum value of `nonpad_kv_seqlen`.
 Both past and present state key/values are optional. They shall be used together, and not allowed to use only one of them.
 The following pattern is applied to the Q, K and V inputs after appropriate reshaping of K and V inputs based on sequence lengths and num heads provided:
 
+[%unnumbered]
 ----
   The following pattern is applied by this operator:
       Q          K          V
@@ -652,12 +658,14 @@ AveragePool consumes an input tensor X and applies average pooling across
  depending on whether explicit padding is used, where pads is employed, or auto padding is used, where auto_pad is utilized.
  With explicit padding (https://pytorch.org/docs/stable/generated/torch.nn.MaxPool2d.html?highlight=maxpool#torch.nn.MaxPool2d):
 
+[%unnumbered]
 ----
  output_spatial_shape[i] = floor((input_spatial_shape[i] + pad_shape[i] - dilation[i] * (kernel_shape[i] - 1) - 1) / strides_spatial_shape[i] + 1)
 ----
 
 or
 
+[%unnumbered]
 ----
  output_spatial_shape[i] = ceil((input_spatial_shape[i] + pad_shape[i] - dilation[i] * (kernel_shape[i] - 1) - 1) / strides_spatial_shape[i] + 1)
 ----
@@ -666,6 +674,7 @@ if ceil_mode is enabled. `pad_shape[i]` is the sum of pads along axis `i`. Slidi
 
 `auto_pad` is a DEPRECATED attribute. If you are using them currently, the output spatial shape will be following when ceil_mode is enabled:
 
+[%unnumbered]
 ----
  VALID: output_spatial_shape[i] = ceil((input_spatial_shape[i] - ((kernel_spatial_shape[i] - 1) * dilations[i] + 1) + 1) / strides_spatial_shape[i])
  SAME_UPPER or SAME_LOWER: output_spatial_shape[i] = ceil(input_spatial_shape[i] / strides_spatial_shape[i])
@@ -673,6 +682,7 @@ if ceil_mode is enabled. `pad_shape[i]` is the sum of pads along axis `i`. Slidi
 
 or when ceil_mode is disabled (https://www.tensorflow.org/api_docs/python/tf/keras/layers/AveragePooling2D):
 
+[%unnumbered]
 ----
  VALID: output_spatial_shape[i] = floor((input_spatial_shape[i] - ((kernel_spatial_shape[i] - 1) * dilations[i] + 1)) / strides_spatial_shape[i]) + 1
  SAME_UPPER or SAME_LOWER: output_spatial_shape[i] = floor((input_spatial_shape[i] - 1) / strides_spatial_shape[i]) + 1
@@ -680,6 +690,7 @@ or when ceil_mode is disabled (https://www.tensorflow.org/api_docs/python/tf/ker
 
 And pad shape will be following if `SAME_UPPER` or `SAME_LOWER`:
 
+[%unnumbered]
 ----
  pad_shape[i] = (output_spatial_shape[i] - 1) * strides_spatial_shape[i] + ((kernel_spatial_shape[i] - 1) * dilations[i] + 1) - input_spatial_shape[i]
 ----
@@ -737,6 +748,7 @@ There are multiple cases for the number of outputs, which we list below:
 When training_mode=False, extra outputs are invalid.
 The outputs are updated as follows when training_mode=True:
 
+[%unnumbered]
 ----
 running_mean = input_mean * momentum + current_mean * (1 - momentum)
 running_var = input_var * momentum + current_var * (1 - momentum)
@@ -746,6 +758,7 @@ Y = (X - current_mean) / sqrt(current_var + epsilon) * scale + B
 
 where:
 
+[%unnumbered]
 ----
 current_mean = ReduceMean(X, axis=all_except_channel_index)
 current_var =  ReduceVar(X, axis=all_except_channel_index)
@@ -759,6 +772,7 @@ The computation of ReduceMean and ReduceVar uses float to avoid overflow for flo
 
 When training_mode=False:
 
+[%unnumbered]
 ----
 Y = (X - input_mean) / sqrt(input_var + epsilon) * scale + B
 ----
@@ -1445,6 +1459,7 @@ Continuously Differentiable Exponential Linear Units:
 Perform the linear unit element-wise on the input tensor X
 using formula:
 
+[%unnumbered]
 ----
 max(0,x) + min(0,alpha*(exp(x/alpha)-1))
 ----
@@ -1981,6 +1996,7 @@ It can also perform product in the opposite direction of the axis. For that, set
 
 Example:
 
+[%unnumbered]
 ----
 input_x = [1, 2, 3]
 axis=0
@@ -2032,6 +2048,7 @@ It can also perform summation in the opposite direction of the axis. For that, s
 
 Example:
 
+[%unnumbered]
 ----
 input_x = [1, 2, 3]
 axis=0
@@ -2188,6 +2205,7 @@ and width dimensions. By default, `mode` = `DCR`.
 In the DCR mode, elements along the depth dimension from the input tensor are rearranged in the
 following order: depth, column, and then row. The output y is computed from the input x as below:
 
+[%unnumbered]
 ----
 b, c, h, w = x.shape
 tmp = np.reshape(x, [b, blocksize, blocksize, c // (blocksize**2), h, w])
@@ -2198,6 +2216,7 @@ y = np.reshape(tmp, [b, c // (blocksize**2), h * blocksize, w * blocksize])
 In the CRD mode, elements along the depth dimension from the input tensor are rearranged in the
 following order: column, row, and the depth. The output y is computed from the input x as below:
 
+[%unnumbered]
 ----
 b, c, h, w = x.shape
 tmp = np.reshape(x, [b, c // (blocksize ** 2), blocksize, blocksize, h, w])
@@ -2363,12 +2382,14 @@ output (floating-point tensor) and mask (optional `Tensor<bool>`). If `training_
 Note that this Dropout scales the masked input data by the following equation, so to convert the trained model into inference mode,
 the user can simply not pass `training_mode` input or set it to false.
 
+[%unnumbered]
 ----
 output = scale * data * mask,
 ----
 
 where
 
+[%unnumbered]
 ----
 scale = 1. / (1. - ratio).
 ----
@@ -2414,6 +2435,7 @@ A Function to fuse calculation for Scale, Zero Point and FP32\->8Bit conversion 
 Outputs Scale, ZeroPoint and Quantized Input for a given FP32 Input.
 Scale is calculated as:
 
+[%unnumbered]
 ----
 y_scale = (maximum(0, max(x)) - minimum(0, min(x))) / (qmax - qmin)
 ----
@@ -2423,6 +2445,7 @@ y_scale = (maximum(0, max(x)) - minimum(0, min(x))) / (qmax - qmin)
 
 Zero point is calculated as:
 
+[%unnumbered]
 ----
 intermediate_zero_point = qmin - min(x)/y_scale
 y_zero_point = cast(round(saturate(intermediate_zero_point)))
@@ -2434,6 +2457,7 @@ y_zero_point = cast(round(saturate(intermediate_zero_point)))
 
 Data quantization formula is:
 
+[%unnumbered]
 ----
 y = saturate (round (x / y_scale) + y_zero_point)
 ----
@@ -2473,6 +2497,7 @@ Shape inference, determinism, errors. See the editorial note at the head of this
 
 An einsum of the form `+term1, term2 -> output-term+` produces an output tensor using the following equation
 
+[%unnumbered]
 ----
 output[output-term] = reduce-sum( input1[term1] * input2[term2] )
 ----
@@ -2936,6 +2961,7 @@ The following few examples illustrate how `Gather` works for specific shapes of 
 More generally, if `axis = 0`, let `+k = indices[i_{0}, ..., i_{q-1}]+`
 then `+output[i_{0}, ..., i_{q-1}, j_{0}, ..., j_{r-2}] = input[k , j_{0}, ..., j_{r-2}]+`:
 
+[%unnumbered]
 ----
 data = [
     [1.0, 1.2],
@@ -2961,6 +2987,7 @@ output = [
 If `axis = 1`, let `+k = indices[i_{0}, ..., i_{q-1}]+`
 then `+output[j_{0}, i_{0}, ..., i_{q-1}, j_{1}, ..., j_{r-2}] = input[j_{0}, k, j_{1}, ..., j_{r-2}]+`:
 
+[%unnumbered]
 ----
 data = [
     [1.0, 1.2, 1.9],
@@ -3021,6 +3048,7 @@ Its output shape is the same as the shape of `indices` and consists of one value
 For instance, in the 3-D case (r = 3), the output produced is determined
 by the following equations:
 
+[%unnumbered]
 ----
 out[i][j][k] = input[index[i][j][k]][j][k] if axis = 0,
 out[i][j][k] = input[i][index[i][j][k]][k] if axis = 1,
@@ -3031,6 +3059,7 @@ This operator is also the inverse of ScatterElements. It is similar to Torch's g
 
 Example 1:
 
+[%unnumbered]
 ----
 data = [
     [1, 2],
@@ -3049,6 +3078,7 @@ output = [
 
 Example 2:
 
+[%unnumbered]
 ----
 data = [
     [1, 2, 3],
@@ -3140,6 +3170,7 @@ This operator is the inverse of `ScatterND`.
 
 *Example 1*
 
+[%unnumbered]
 ----
 batch_dims = 0
 data    = [[0,1],[2,3]]   # data_shape    = [2, 2]
@@ -3149,6 +3180,7 @@ output  = [0,3]           # output_shape  = [2]
 
 *Example 2*
 
+[%unnumbered]
 ----
 batch_dims = 0
 data    = [[0,1],[2,3]]  # data_shape    = [2, 2]
@@ -3158,6 +3190,7 @@ output  = [[2,3],[0,1]]  # output_shape  = [2, 2]
 
 *Example 3*
 
+[%unnumbered]
 ----
 batch_dims = 0
 data    = [[[0,1],[2,3]],[[4,5],[6,7]]] # data_shape    = [2, 2, 2]
@@ -3167,6 +3200,7 @@ output  = [[2,3],[4,5]]                 # output_shape  = [2, 2]
 
 *Example 4*
 
+[%unnumbered]
 ----
 batch_dims = 0
 data    = [[[0,1],[2,3]],[[4,5],[6,7]]] # data_shape    = [2, 2, 2]
@@ -3176,6 +3210,7 @@ output  = [[[2,3]],[[4,5]]]             # output_shape  = [2, 1, 2]
 
 *Example 5*
 
+[%unnumbered]
 ----
 batch_dims = 1
 data    = [[[0,1],[2,3]],[[4,5],[6,7]]] # data_shape    = [2, 2, 2]
@@ -3530,6 +3565,7 @@ the paper https://arxiv.org/abs/1803.08494
 
 This operator transforms input according to
 
+[%unnumbered]
 ----
 y = scale * (x - mean) / sqrt(variance + epsilon) + bias,
 ----
@@ -3839,6 +3875,7 @@ When rounding, 0.5 is rounded down and up at alternative pixels locations to pre
 larger values (ordered dither pattern).
 Considering adjacent input pixels A, B, and C, B is upsampled to pixels B0 and B1 so that
 +
+[%unnumbered]
 ----
 B0 = round_half_down((1/4) * A + (3/4) * B)
 B1 = round_half_up((3/4) * B + (1/4) * C)
@@ -4494,7 +4531,8 @@ Operator inputs defined as (max_trip_count, condition_var).
 
 _Sample usage - cond as well as trip count_
 
-....
+[%unnumbered]
+----
 graph predict-net {
   %a = Constant[value = <Scalar Tensor [3]>]()
   %b = Constant[value = <Scalar Tensor [6]>]()
@@ -4515,11 +4553,12 @@ graph body-net (
   %user_defined_val = Add(%b_in, %b_in) // scan-output value to be accumulated
   return %keepgoing_out, %b_out, %user_defined_val
 }
-....
+----
 
 _Sample equivalent C code_
 
-....
+[%unnumbered]
+----
 {
   /* User-defined code (enclosing scope) */
   int a = 3, b = 6;
@@ -4555,7 +4594,7 @@ _Sample equivalent C code_
   // The values below are bound to the output variables of the loop and therefore accessible
   // b_out; user_defined_vals; keepgoing_out;
 }
-....
+----
 
 There are several things of note in this code snippet:
 
@@ -4661,12 +4700,14 @@ LpPool consumes an input tensor X and applies Lp pooling across
  of the input tensor according to the kernel size and downsampling the
  data into the output tensor Y for further processing. The output spatial shape will be following:
 
+[%unnumbered]
 ----
  output_spatial_shape[i] = floor((input_spatial_shape[i] + pad_shape[i] - {kernelSpatialShape}) / strides_spatial_shape[i] + 1)
 ----
 
 or
 
+[%unnumbered]
 ----
  output_spatial_shape[i] = ceil((input_spatial_shape[i] + pad_shape[i] - {kernelSpatialShape}) / strides_spatial_shape[i] + 1)
 ----
@@ -4675,6 +4716,7 @@ if ceil_mode is enabled `pad_shape[i]` is the sum of pads along axis `i`.
 
 `auto_pad` is a DEPRECATED attribute. If you are using them currently, the output spatial shape will be following:
 
+[%unnumbered]
 ----
  VALID: output_spatial_shape[i] = ceil((input_spatial_shape[i] - {kernelSpatialShape} + 1) / strides_spatial_shape[i])
  SAME_UPPER or SAME_LOWER: output_spatial_shape[i] = ceil(input_spatial_shape[i] / strides_spatial_shape[i])
@@ -4682,6 +4724,7 @@ if ceil_mode is enabled `pad_shape[i]` is the sum of pads along axis `i`.
 
 And pad shape will be following if `SAME_UPPER` or `SAME_LOWER`:
 
+[%unnumbered]
 ----
  pad_shape[i] = (output_spatial_shape[i] - 1) * strides_spatial_shape[i] + {kernelSpatialShape} - input_spatial_shape[i]
 ----
@@ -4832,12 +4875,14 @@ MaxPool consumes an input tensor X and applies max pooling across
  depending on whether explicit padding is used, where pads is employed, or auto padding is used, where auto_pad is utilized.
  With explicit padding (https://pytorch.org/docs/stable/generated/torch.nn.MaxPool2d.html?highlight=maxpool#torch.nn.MaxPool2d):
 
+[%unnumbered]
 ----
  output_spatial_shape[i] = floor((input_spatial_shape[i] + pad_shape[i] - dilation[i] * (kernel_shape[i] - 1) - 1) / strides_spatial_shape[i] + 1)
 ----
 
 or
 
+[%unnumbered]
 ----
  output_spatial_shape[i] = ceil((input_spatial_shape[i] + pad_shape[i] - dilation[i] * (kernel_shape[i] - 1) - 1) / strides_spatial_shape[i] + 1)
 ----
@@ -4846,6 +4891,7 @@ if ceil_mode is enabled. `pad_shape[i]` is the sum of pads along axis `i`. Slidi
 
 `auto_pad` is a DEPRECATED attribute. If you are using them currently, the output spatial shape will be following when ceil_mode is enabled:
 
+[%unnumbered]
 ----
  VALID: output_spatial_shape[i] = ceil((input_spatial_shape[i] - ((kernel_spatial_shape[i] - 1) * dilations[i] + 1) + 1) / strides_spatial_shape[i])
  SAME_UPPER or SAME_LOWER: output_spatial_shape[i] = ceil(input_spatial_shape[i] / strides_spatial_shape[i])
@@ -4853,6 +4899,7 @@ if ceil_mode is enabled. `pad_shape[i]` is the sum of pads along axis `i`. Slidi
 
 or when ceil_mode is disabled (https://www.tensorflow.org/api_docs/python/tf/keras/layers/AveragePooling2D):
 
+[%unnumbered]
 ----
  VALID: output_spatial_shape[i] = floor((input_spatial_shape[i] - ((kernel_spatial_shape[i] - 1) * dilations[i] + 1)) / strides_spatial_shape[i]) + 1
  SAME_UPPER or SAME_LOWER: output_spatial_shape[i] = floor((input_spatial_shape[i] - 1) / strides_spatial_shape[i]) + 1
@@ -4860,6 +4907,7 @@ or when ceil_mode is disabled (https://www.tensorflow.org/api_docs/python/tf/ker
 
 And pad shape will be following if `SAME_UPPER` or `SAME_LOWER`:
 
+[%unnumbered]
 ----
  pad_shape[i] = (output_spatial_shape[i] - 1) * strides_spatial_shape[i] + ((kernel_spatial_shape[i] - 1) * dilations[i] + 1) - input_spatial_shape[i]
 ----
@@ -5064,7 +5112,10 @@ Shape inference, determinism, errors. See the editorial note at the head of this
 Generate a MelWeightMatrix that can be used to re-weight a Tensor containing a linearly sampled frequency spectra (from DFT or STFT) into num_mel_bins frequency information based on the [lower_edge_hertz, upper_edge_hertz] range on the mel scale.
 This function defines the mel scale in terms of a frequency in hertz according to the following formula:
 
+[%unnumbered]
+----
  mel(f) = 2595 * log10(1 + f/700)
+----
 
 In the returned matrix, all the triangles (filterbanks) have a peak value of 1.0.
 
@@ -5141,6 +5192,7 @@ Mish: A Self Regularized Non-Monotonic Neural Activation Function.
 
 Perform the linear unit element-wise on the input tensor X using formula:
 
+[%unnumbered]
 ----
 mish(x) = x * tanh(softplus(x)) = x * tanh(ln(1 + e^{x}))
 ----
@@ -5348,18 +5400,21 @@ The operator's "target" input tensor has the shape of (N, d1, d2, ..., dk). It e
 or it may contain a special value (indicated by an attribute ignore_index) for N x d1 x d2 x ... x dk samples.
 The loss value for input[n, :, d_1, d_2,...d_k] being classified as class c = target[n][d_1][d_2]...[d_k] is computed as:
 
+[%unnumbered]
 ----
 loss[n][d_1][d_2]...[d_k] = -input[n][c][d_1][d_2]...[d_k].
 ----
 
 When an optional "weight" is provided, the sample loss is calculated as:
 
+[%unnumbered]
 ----
 loss[n][d_1][d_2]...[d_k] = -input[n][c][d_1][d_2]...[d_k] * weight[c].
 ----
 
 loss is zero for the case when target-value equals ignore_index.
 
+[%unnumbered]
 ----
 loss[n][d_1][d_2]...[d_k] = 0, when target[n][d_1][d_2]...[d_k] = ignore_index
 ----
@@ -5367,12 +5422,14 @@ loss[n][d_1][d_2]...[d_k] = 0, when target[n][d_1][d_2]...[d_k] = ignore_index
 If "reduction" attribute is set to "none", the operator's output will be the above loss with shape (N, d1, d2, ..., dk).
 If "reduction" attribute is set to "mean" (the default attribute value), the output loss is (weight) averaged:
 
+[%unnumbered]
 ----
 mean(loss), if "weight" is not provided,
 ----
 
 or if weight is provided,
 
+[%unnumbered]
 ----
 sum(loss) / sum(weight[target[n][d_1][d_2]...[d_k]]]), for all samples.
 ----
@@ -5383,6 +5440,7 @@ See also https://pytorch.org/docs/stable/nn.html#torch.nn.NLLLoss.
 
 Example 1:
 
+[%unnumbered]
 ----
 // negative log likelihood loss, "none" reduction
 N, C, d1 = 2, 3, 2
@@ -5403,6 +5461,7 @@ for n in range(N):
 
 Example 2:
 
+[%unnumbered]
 ----
 // weighted negative log likelihood loss, sum reduction
 N, C, d1 = 2, 3, 2
@@ -5423,6 +5482,7 @@ loss = np.sum(loss)
 
 Example 3:
 
+[%unnumbered]
 ----
 // weighted negative log likelihood loss, mean reduction
 N, C, d1 = 2, 3, 2
@@ -5598,13 +5658,14 @@ Produces a one-hot tensor based on inputs.
     the range [-depth, depth-1] will result in one-hot representation with all 'off_value' values in the
     output tensor.
 
-....
+[%unnumbered]
+----
 when axis = 0:
 output[input[i, j, k], i, j, k] = 1 for all i, j, k and 0 otherwise.
 
 when axis = -1:
 output[i, j, k, input[i, j, k]] = 1 for all i, j, k and 0 otherwise.
-....
+----
 
 Domain::
 `ai.onnx`
@@ -5834,6 +5895,7 @@ Example 1 (`constant` mode):
 
 Insert 0 pads to the beginning of the second dimension.
 
+[%unnumbered]
 ----
 data = [
     [1.0, 1.2],
@@ -5856,6 +5918,7 @@ output = [
 
 Example 2 (`reflect` mode):
 
+[%unnumbered]
 ----
 data = [
     [1.0, 1.2],
@@ -5876,6 +5939,7 @@ output = [
 
 Example 3 (`edge` mode):
 
+[%unnumbered]
 ----
 data = [
     [1.0, 1.2],
@@ -5896,6 +5960,7 @@ output = [
 
 Example 4 (`wrap` mode):
 
+[%unnumbered]
 ----
 data = [
     [1.0, 1.2],
@@ -6486,12 +6551,14 @@ up to `limit` (exclusive).
 
 The number of elements in the output of range is computed as below:
 
+[%unnumbered]
 ----
 number_of_elements = max( ceil( (limit - start) / delta ) , 0 )
 ----
 
 The pseudocode determining the contents of the output is shown below:
 
+[%unnumbered]
 ----
 for(int i=0; i<number_of_elements; ++i) {
   output[i] =  start + (i * delta);
@@ -6500,6 +6567,7 @@ for(int i=0; i<number_of_elements; ++i) {
 
 Example 1:
 
+[%unnumbered]
 ----
 Inputs: start = 3, limit = 9, delta = 3
 Output: [3, 6]
@@ -6507,6 +6575,7 @@ Output: [3, 6]
 
 Example 2:
 
+[%unnumbered]
 ----
 Inputs: start = 10, limit = 4, delta = -2
 Output: [10, 8, 6]
@@ -7100,6 +7169,7 @@ Shape inference, determinism, errors. See the editorial note at the head of this
 Resize the input tensor. In general, it calculates every value in the output tensor as a weighted average of neighborhood (a.k.a. sampling locations) in the input tensor.
 Each dimension value of the output tensor is:
 
+[%unnumbered]
 ----
 output_dimension = floor(input_dimension * (roi_end - roi_start) * scale)
 ----
@@ -7277,6 +7347,7 @@ The rotation ensures that the model captures both absolute and relative position
 
 Rotary embeddings are defined using the following algorithm:
 
+[%unnumbered]
 [,python]
 ----
 def rotary_embedding(
@@ -7407,6 +7478,7 @@ The output tensor has the same shape and type as the input.
 
 Examples:
 
+[%unnumbered]
 ----
 round([0.9]) = [1.0]
 round([2.5]) = [2.0]
@@ -7550,15 +7622,19 @@ The attribute num_scan_inputs indicates the number M of scan-inputs.
 
 The behavior of
 
+[%unnumbered]
+----
  Scan <
      num_scan_inputs = m,
      body = loop-body,
      scan_input_axes = [axis_1, ..., axis_m]
  > (init_1, ..., init_n, scan_1, ..., scan_m)
+----
 
 is equivalent to the following pseudo-code:
 
-....
+[%unnumbered]
+----
 // scan_i.shape[axis_i] denotes the (max) sequence-length of scan_i
 // scan_i.shape[axis_i] is required to be equal to scan_j.shape[axis_j] for all i,j.
 sequence_length = scan_1.shape[axis_1];
@@ -7583,7 +7659,7 @@ for (int t = 0; t < sequence_length; ++t) {
 }
 
 return st_1, ..., st_n, scan_out_1, ..., scan_out_k;
-....
+----
 
 _Sample usage: Encoding RNN using a Scan_
 
@@ -7593,7 +7669,8 @@ be encoded as a ScanLoop. Note that the loop-body is a nested graph, and it dire
 %Wi, %Ri, %Wbi, and %Rbi (typically constants or initializers in the body graph). If these
 values are computed in the outer graph, they need to be passed in as extra state_variables.
 
-....
+[%unnumbered]
+----
 graph rnn-encoding {
   %H_0 = ...
   %X = ...
@@ -7618,7 +7695,7 @@ graph rnn-cell-1 (
   %Accumulate = Identity(%Ht)
   return %Ht, %Accumulate
 }
-....
+----
 
 Domain::
 `ai.onnx`
@@ -7673,6 +7750,7 @@ index of the entry itself.
 For instance, in a 2-D tensor case, the update corresponding to the [i][j] entry
 is performed as below:
 
+[%unnumbered]
 ----
   output[indices[i][j]][j] = updates[i][j] if axis = 0,
   output[i][indices[i][j]] = updates[i][j] if axis = 1,
@@ -7682,6 +7760,7 @@ This operator is the inverse of GatherElements. It is similar to Torch's Scatter
 
 Example 1:
 
+[%unnumbered]
 ----
   data = [
       [0.0, 0.0, 0.0],
@@ -7705,6 +7784,7 @@ Example 1:
 
 Example 2:
 
+[%unnumbered]
 ----
   data = [[1.0, 2.0, 3.0, 4.0, 5.0]]
   indices = [[1, 3]]
@@ -7765,6 +7845,7 @@ In cases where `reduction` is set to "none", indices should not have duplicate e
 then indices[idx1] != indices[idx2]. For instance, in a 2-D tensor case, the update
 corresponding to the [i][j] entry is performed as below:
 
+[%unnumbered]
 ----
 output[indices[i][j]][j] = updates[i][j] if axis = 0,
 output[i][indices[i][j]] = updates[i][j] if axis = 1,
@@ -7772,6 +7853,7 @@ output[i][indices[i][j]] = updates[i][j] if axis = 1,
 
 When `reduction` is set to some reduction function `f`, the update corresponding to the [i][j] entry is performed as below:
 
+[%unnumbered]
 ----
 output[indices[i][j]][j] = f(output[indices[i][j]][j], updates[i][j]) if axis = 0,
 output[i][indices[i][j]] = f(output[i][indices[i][j]], updates[i][j]) if axis = 1,
@@ -7785,6 +7867,7 @@ This operator is the inverse of GatherElements. It is similar to Torch's Scatter
 
 Example 1:
 
+[%unnumbered]
 ----
 data = [
     [0.0, 0.0, 0.0],
@@ -7808,6 +7891,7 @@ output = [
 
 Example 2:
 
+[%unnumbered]
 ----
 data = [[1.0, 2.0, 3.0, 4.0, 5.0]]
 indices = [[1, 3]]
@@ -7875,6 +7959,7 @@ of shapes.
 
 The `output` is calculated via the following equation:
 
+[%unnumbered]
 ----
 output = np.copy(data)
 update_indices = indices.shape[:-1]
@@ -7892,6 +7977,7 @@ In cases where `reduction` is set to "none", indices should not have duplicate e
 then indices[idx1] != indices[idx2]. This ensures that the output value does not depend on the iteration order.
 When `reduction` is set to some reduction function `f`, `output` is calculated as follows:
 
+[%unnumbered]
 ----
 output = np.copy(data)
 update_indices = indices.shape[:-1]
@@ -7907,6 +7993,7 @@ This operator is the inverse of GatherND.
 
 Example 1:
 
+[%unnumbered]
 ----
 data    = [1, 2, 3, 4, 5, 6, 7, 8]
 indices = [[4], [3], [1], [7]]
@@ -7916,6 +8003,7 @@ output  = [1, 11, 3, 10, 9, 6, 7, 12]
 
 Example 2:
 
+[%unnumbered]
 ----
 data    = [[[1, 2, 3, 4], [5, 6, 7, 8], [8, 7, 6, 5], [4, 3, 2, 1]],
             [[1, 2, 3, 4], [5, 6, 7, 8], [8, 7, 6, 5], [4, 3, 2, 1]],
@@ -8251,24 +8339,28 @@ value of 0. If start > end, the result will be an empty shape.
 
 Examples:
 
+[%unnumbered]
 ----
 Input tensor with shape: [2, 3, 4]
 No attributes specified.
 Output: [2, 3, 4]
 ----
 
+[%unnumbered]
 ----
 Input tensor with shape: [2, 3, 4]
 start: -1
 Output: [4]
 ----
 
+[%unnumbered]
 ----
 Input tensor with shape: [2, 3, 4]
 end: -1
 Output: [2, 3]
 ----
 
+[%unnumbered]
 ----
 Input tensor with shape: [2, 3, 4]
 start: 1
@@ -8540,6 +8632,7 @@ in `INT_MAX` when slicing forward and 'INT_MIN' when slicing backward.
 
 Example 1:
 
+[%unnumbered]
 ----
 data = [
     [1, 2, 3, 4],
@@ -8556,6 +8649,7 @@ result = [
 
 Example 2:
 
+[%unnumbered]
 ----
 data = [
     [1, 2, 3, 4],
@@ -8656,24 +8750,28 @@ with K >= 1 in case of K-dimensional loss.
 
 The loss for one sample, l_i, can calculated as follows:
 
+[%unnumbered]
 ----
 l[i][d1][d2]...[dk] = -y[i][c][d1][d2]..[dk], where i is the index of classes.
 ----
 
 or
 
+[%unnumbered]
 ----
 l[i][d1][d2]...[dk] = -y[i][c][d1][d2]..[dk] * weights[c], if 'weights' is provided.
 ----
 
 loss is zero for the case when label-value equals ignore_index.
 
+[%unnumbered]
 ----
 l[i][d1][d2]...[dk]  = 0, when labels[n][d1][d2]...[dk] = ignore_index
 ----
 
 where:
 
+[%unnumbered]
 ----
 p = Softmax(scores)
 y = Log(p)
@@ -9167,6 +9265,7 @@ SwiGLU is a gated activation that takes two inputs, a gate `A` and a linear (val
 input `B`, and produces one output `Y`. It applies the Swish activation to the gate
 and multiplies the result elementwise by the linear input:
 
+[%unnumbered]
 ----
 Y = Swish_alpha(A) * B
 ----
@@ -9316,6 +9415,7 @@ The optional `write_indices` input indicates the write index for each sample in 
 if not provided. When the `mode` attribute is set to "circular", the write index is modulo max_sequence_length.
 The operation can be described using the following pseudocode:
 
+[%unnumbered]
 ----
 for prefix_idx in np.ndindex(past_cache.shape[:axis]):
     batch_idx = prefix_idx[0]
@@ -9649,6 +9749,7 @@ https://docs.scipy.org/doc/numpy/reference/generated/numpy.unique.html
 
 Example 1:
 
+[%unnumbered]
 ----
 input_X = [2, 1, 1, 3, 4, 3]
 attribute_sorted = 0
@@ -9661,6 +9762,7 @@ output_counts = [1, 2, 2, 1]
 
 Example 2:
 
+[%unnumbered]
 ----
 input_X = [[1, 3], [2, 3]]
 attribute_sorted = 1
@@ -9673,6 +9775,7 @@ output_counts = [1, 1, 2]
 
 Example 3:
 
+[%unnumbered]
 ----
 input_X = [[1, 0, 0], [1, 0, 0], [2, 3, 4]]
 attribute_sorted = 1
@@ -9685,6 +9788,7 @@ output_counts = [2, 1]
 
 Example 4:
 
+[%unnumbered]
 ----
 input_x = [[[1., 1.], [0., 1.], [2., 1.], [0., 1.]],
             [[1., 1.], [0., 1.], [2., 1.], [0., 1.]]]
@@ -9695,6 +9799,7 @@ attribute_axis = 1
 intermediate data are presented below for better understanding:
 there are 4 subtensors sliced along axis 1 of input_x (shape = (2, 4, 2)):
 
+[%unnumbered]
 ----
 A: [[1, 1], [1, 1]],
    [[0, 1], [0, 1]],
@@ -9704,6 +9809,7 @@ A: [[1, 1], [1, 1]],
 
 there are 3 unique subtensors:
 
+[%unnumbered]
 ----
 [[1, 1], [1, 1]],
 [[0, 1], [0, 1]],
@@ -9712,6 +9818,7 @@ there are 3 unique subtensors:
 
 sorted unique subtensors:
 
+[%unnumbered]
 ----
 B: [[0, 1], [0, 1]],
    [[1, 1], [1, 1]],
@@ -9720,6 +9827,7 @@ B: [[0, 1], [0, 1]],
 
 output_Y is constructed from B:
 
+[%unnumbered]
 ----
 [[[0. 1.], [1. 1.], [2. 1.]],
  [[0. 1.], [1. 1.], [2. 1.]]]
@@ -9727,18 +9835,21 @@ output_Y is constructed from B:
 
 output_indices is to map from B to A:
 
+[%unnumbered]
 ----
 [1, 0, 2]
 ----
 
 output_inverse_indices is to map from A to B:
 
+[%unnumbered]
 ----
 [1, 0, 2, 0]
 ----
 
 output_counts:
 
+[%unnumbered]
 ----
 [2, 1, 1]
 ----

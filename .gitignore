@@ -6,14 +6,19 @@ published/
 *.presentation.xml
 *.rxl
 *.err
-sources/*.xml
-sources/*.html
-sources/*.pdf
-sources/*.doc
-sources/*.rxl
-sources/*.err
-sources/*.xml_tmp
-sources/*.pdf_fonts_config.xml.out
+sources/**/*.xml
+sources/**/*.html
+sources/**/*.pdf
+sources/**/*.doc
+sources/**/*.rxl
+sources/**/*.err
+sources/**/*.xml_tmp
+sources/**/*.pdf_fonts_config.xml.out
+sources/**/*.asciidoc.log.txt
+
+# ... but these are sources, not output. They sit next to the documents they
+# configure, and the patterns above would otherwise swallow them.
+!sources/onnx.titlepage.html
 
 # Relaton cache
 .relaton/

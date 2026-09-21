@@ -135,6 +135,83 @@ def title_tables(adoc, operator)
   out.join("\n")
 end
 
+# Metanorma numbers every block it renders as a figure, so the ASCII matrices,
+# mask diagrams and pseudo-code carried over from the upstream prose would each
+# acquire a "Figure N" caption. Nothing refers to them by number -- they are
+# illustrations inside a paragraph, not exhibits -- so the numbering is noise.
+# `[%unnumbered]` drops the caption and keeps the block.
+#
+# Three shapes have to be handled, because the attribute only takes effect on a
+# delimited listing block:
+#
+#   ----  honoured directly.
+#   ....  ignored; Metanorma renders a literal block as a plain figure. Kramdoc
+#         emits one for an indented code block upstream and a listing block for
+#         a fenced one, a distinction that carries no meaning here, so it is
+#         rewritten as a listing block. A block whose own body holds a ----
+#         line is left alone, since rewriting it would close the block early.
+#   an indented paragraph, which Kramdoc leaves as a bare literal paragraph
+#         with no delimiters at all: wrapped in a listing block.
+#
+# An existing attribute line ([source,python]) is kept: AsciiDoc merges several
+# attribute lines, so [%unnumbered] goes above it rather than replacing it.
+def unnumber_blocks(adoc)
+  lines = adoc.split("\n", -1)
+  out = []
+  i = 0
+
+  # Insert the attribute above any attribute or title lines already collected
+  # for the block that is about to open.
+  mark = lambda do
+    at = out.length
+    at -= 1 while at.positive? && out[at - 1].to_s.match?(/\A[\[.]\S/)
+    out.insert(at, "[%unnumbered]") unless out[at..].include?("[%unnumbered]")
+  end
+
+  while i < lines.length
+    line = lines[i]
+
+    if line == "----" || line == "...."
+      close = lines[(i + 1)..]&.index(line)
+      if close.nil? # unterminated: leave the rest untouched
+        out.concat(lines[i..])
+        break
+      end
+      body = lines[(i + 1), close]
+      delim = line == "...." && !body.include?("----") ? "----" : line
+      mark.call
+      out << delim
+      out.concat(body)
+      out << delim
+      i += close + 2
+      next
+    end
+
+    # A literal paragraph: indented, at the start of a paragraph, and not part
+    # of a list item continuation.
+    if line.match?(/\A\s+\S/) && out.last.to_s.empty?
+      run = []
+      run << lines[i] and i += 1 while i < lines.length &&
+        (lines[i].match?(/\A\s+\S/) ||
+         (lines[i].empty? && lines[(i + 1)]&.match?(/\A\s+\S/)))
+      if run.any? { |l| l == "----" }
+        out.concat(run)
+      else
+        out << "[%unnumbered]"
+        out << "----"
+        out.concat(run)
+        out << "----"
+      end
+      next
+    end
+
+    out << line
+    i += 1
+  end
+
+  out.join("\n")
+end
+
 def inline(md)
   markdown_to_adoc(md).gsub(/\n+/, " ").strip
 end
@@ -260,10 +337,10 @@ def render_operator(op)
   out << "=== #{op[:name]}"
   out << ""
 
-  prose = title_tables(
+  prose = unnumber_blocks(title_tables(
     markdown_to_adoc(op[:prose].map { |l| l.sub(/\A {1,2}/, "") }.join("\n")),
     op[:name]
-  )
+  ))
   unless prose.empty?
     out << prose
     out << ""

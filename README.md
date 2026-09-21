@@ -49,6 +49,7 @@ Makefile                   Build entry points
 sources/
   onnx.yml                 Publisher identity for the `generic` flavour
   onnx.standard.xsl        ONNX house style for PDF
+  onnx.titlepage.html      HTML cover page (the stock one carries a foreign address)
   part1/ part2/ part3/     One directory per part: master document + sections/
 scripts/check-errors.rb    Gates the build on Metanorma diagnostic severity
 scripts/vendor-onnx-docs.sh  Refreshes the vendored upstream copy
