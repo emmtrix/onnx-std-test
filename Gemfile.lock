@@ -288,6 +288,13 @@ GEM
       rack (>= 2.2, < 4)
       rdf (~> 3.3)
       rexml (~> 3.2)
+    kramdown (2.4.0)
+      rexml
+    kramdown-asciidoc (2.1.1)
+      kramdown (~> 2.4.0)
+      kramdown-parser-gfm (~> 1.1.0)
+    kramdown-parser-gfm (1.1.0)
+      kramdown (~> 2.0)
     latex-decode (0.4.2)
     leptris (1.9.209.1-aarch64-linux)
       ffi (~> 1.15)
@@ -1169,6 +1176,7 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
+  kramdown-asciidoc
   metanorma-cli (~> 1.12)
   metanorma-generic
   sassc-embedded
@@ -1261,6 +1269,9 @@ CHECKSUMS
   json (2.21.2) sha256=1f1d3b7cf2b3ba1a69beca0bb6db13d5438b80bff3cd54cdaaa620b9b07c1c6a
   json-canonicalization (1.0.0) sha256=d4848a8cca7534455c6721f2d9fc9e5e9adca49486864a898810024f67d59446
   json-ld (3.3.2) sha256=b9531893bf5bdc01db428e96953845a23adb1097125ce918ae0f97c4a6e1ab27
+  kramdown (2.4.0) sha256=b62e5bcbd6ea20c7a6730ebbb2a107237856e14f29cebf5b10c876cc1a2481c5
+  kramdown-asciidoc (2.1.1) sha256=5823c2d8b6e8770773f701b08fb34fbe3e04e95d5eb9f7308379439b33c4f89f
+  kramdown-parser-gfm (1.1.0) sha256=fb39745516427d2988543bf01fc4cf0ab1149476382393e0e9c48592f6581729
   latex-decode (0.4.2) sha256=e85633406e315e348e0ca6de231dee1bf45a22496b0866059c635f7502c2a592
   leptris (1.9.209.1-aarch64-linux) sha256=42e8916bd4ffccf3001f73081f8ea3e89f38cf2ce66c565abc7b577f0849ac3a
   leptris (1.9.209.1-aarch64-linux-musl) sha256=e087eeff98cf0a6e6a38ffbef8d273f01ab301f597522f3c4ccaab0cd3b5c885

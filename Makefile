@@ -6,6 +6,7 @@
 #   make site       build the browsable site under _site/ and verify it
 #   make lint       fail if the last build reported errors above the
 #                   configured severity threshold (builds first if needed)
+#   make operators  regenerate the operator clauses of Part 2 from upstream
 #   make check-stylesheet
 #                   verify the PDF stylesheet (well-formed, no foreign branding)
 #   make clean      remove build output
@@ -27,7 +28,8 @@ RUBY       ?= ruby
 # 0 = fatal, 1 = error, 2 = warning, 3 = informational.
 SEVERITY   ?= 1
 
-.PHONY: all html doc pdf site lint clean deps check-stylesheet
+.PHONY: all html doc pdf site lint clean deps check-stylesheet \
+        operators check-operators
 
 all: html
 
@@ -56,6 +58,17 @@ doc: $(SOURCES)
 	  $(METANORMA) compile -t $(FLAVOUR) $(NOFONTS) \
 	    -x xml,presentation,html,doc "$$d" || exit 1; \
 	done
+
+# The operator clauses of Part 2 are generated from the vendored upstream
+# documentation; there are 222 of them and they are not written by hand.
+operators:
+	@$(RUBY) scripts/generate-operators.rb
+
+# Fails if the committed clauses are not what the generator produces — a hand
+# edit, or a refresh of upstream/onnx/ without regenerating, shows up here
+# rather than as silent drift.
+check-operators:
+	@$(RUBY) scripts/generate-operators.rb --check
 
 # mn2pdf parses the stylesheet itself, and Metanorma exits 0 when that parse
 # fails — producing no PDF while the build looks successful. Check it first;
