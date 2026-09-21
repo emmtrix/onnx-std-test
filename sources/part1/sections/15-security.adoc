@@ -3,13 +3,13 @@
 
 === General
 
-A <<model>> is data from an untrusted source unless the consumer knows
+A <<model,model>> is data from an untrusted source unless the consumer knows
 otherwise. This clause states the obligations that follow.
 
 [[threat-model]]
 === Threat model
 
-A <<consumer>> defends against a model crafted so that processing it causes the
+A <<consumer,consumer>> defends against a model crafted so that processing it causes the
 consumer to read or write a file the caller did not intend, to consume
 unbounded memory, processor time or disk, or to recur without bound.
 

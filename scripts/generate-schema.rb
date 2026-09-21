@@ -236,9 +236,9 @@ def render(groups)
   out << "The tag of a field is normative; it identifies the field on the " \
          "wire and SHALL NOT be reused. A field marked mandatory SHALL be " \
          "present. A field marked optional MAY be absent, and a " \
-         "<<consumer>> SHALL accept a message in which it is. A field marked " \
+         "<<consumer,consumer>> SHALL accept a message in which it is. A field marked " \
          "repeated holds zero or more values. A field marked deprecated " \
-         "SHALL NOT be written by a <<producer>>, and a consumer that reads " \
+         "SHALL NOT be written by a <<producer,producer>>, and a consumer that reads " \
          "one SHALL ignore it."
   out << ""
   out << "The obligations are those in force at the IR version stated in " \

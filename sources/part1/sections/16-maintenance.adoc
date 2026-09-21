@@ -3,7 +3,7 @@
 
 === Custom domains
 
-A model MAY use operators in a <<domain>> not defined by <<onnx-part-2>>.
+A model MAY use operators in a <<domain,domain>> not defined by <<onnx-part-2>>.
 
 A consumer that does not implement such a domain SHALL report the operator as
 unsupported under <<conformance>>, and SHALL NOT evaluate the model.
@@ -15,7 +15,7 @@ operator of an operator set published under <<onnx-part-2>> is subject without
 exception to <<operator-set-evolution>>.
 
 An operator whose definition is not yet settled SHALL be published in a
-<<domain>> of its own, and is a custom operator under the preceding subclause.
+<<domain,domain>> of its own, and is a custom operator under the preceding subclause.
 
 NOTE: Upstream reached the same position. The serialized form of an operator
 set carries a status of `EXPERIMENTAL` or `STABLE`, and an operator marked
@@ -29,7 +29,7 @@ that supersede it. <<onnx-part-2>> records the correspondence.
 
 === Adding an operator
 
-The procedure by which an operator enters an <<operator-set>> is specified in
+The procedure by which an operator enters an <<operator-set,operator set>> is specified in
 <<onnx-part-2>>. The constraints that procedure must respect are in
 <<versioning>>.
 

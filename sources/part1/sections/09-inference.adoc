@@ -4,10 +4,10 @@
 === General
 
 Shape and type inference derives the types and shapes of values that a
-<<model>> does not state explicitly.
+<<model,model>> does not state explicitly.
 
 Inference is normative rather than a convenience: consumers rely on it, and a
-<<producer>> is permitted to omit value type information for values other than
+<<producer,producer>> is permitted to omit value type information for values other than
 graph inputs and outputs.
 
 [[inference-obligations]]

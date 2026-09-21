@@ -1,12 +1,14 @@
 == Terms and definitions
 
-For the purposes of this document, the terms and definitions given in
-<<onnx-part-1>> apply, together with the following.
+// Metanorma opens this clause with "For the purposes of this document, the
+// following terms and definitions apply." itself, so this sentence adds only
+// what that one does not say.
+The terms and definitions given in <<onnx-part-1>> also apply.
 
 [[vector-outcome]]
 === outcome
 
-result of applying one <<test-vector-t>> to an implementation, being one of
+result of applying one <<test-vector-t,test vector>> to an implementation, being one of
 _pass_, _fail_, _unsupported_ or _error_
 
 [[test-vector-t]]

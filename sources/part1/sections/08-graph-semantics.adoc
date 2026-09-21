@@ -3,10 +3,10 @@
 
 === Evaluation model
 
-Evaluating a <<graph>> means computing a value for each of its declared
+Evaluating a <<graph,graph>> means computing a value for each of its declared
 outputs, given a value for each of its declared inputs.
 
-A <<model>> denotes a stateless function. Evaluating the same model on the same
+A <<model,model>> denotes a stateless function. Evaluating the same model on the same
 inputs SHALL yield the same outputs, save where an operator of the model is
 permitted to be non-deterministic; see <<determinism>>.
 
@@ -19,7 +19,7 @@ which the caller passes to the next invocation as an input.
 Evaluation is defined by the dataflow relation between nodes. This document
 does not prescribe an evaluation order beyond the constraint that a node's
 inputs are available before the node is evaluated; in particular, a
-<<conforming-implementation>> MAY evaluate nodes concurrently, may elide nodes
+<<conforming-implementation,conforming implementation>> MAY evaluate nodes concurrently, may elide nodes
 whose outputs are unused, and may fuse or reassociate computations, provided
 that the results remain within the tolerances of <<numerical>>.
 
@@ -39,11 +39,11 @@ axis handling of `Scan`. The structural constraints are in
 [[functions]]
 === Functions
 
-A function is an <<operator>> together with an implementation of it in terms of
+A function is an <<operator,operator>> together with an implementation of it in terms of
 other operators, called its function body. The body is a topologically sorted
 list of nodes, as a graph is.
 
-A function is identified by a triple of a <<domain>>, a name and an overload.
+A function is identified by a triple of a <<domain,domain>>, a name and an overload.
 The overload distinguishes function bodies that are required to differ between
 call sites; where a model needs no such distinction the overload is empty. A
 function does not carry an operator set version of its own: the version is that
@@ -57,7 +57,7 @@ value; where there is no default value, the attribute is omitted from that
 node.
 
 A function body is a fallback implementation, not a definition of the
-operator's numerical behaviour. A <<conforming-implementation>> MAY compute the
+operator's numerical behaviour. A <<conforming-implementation,conforming implementation>> MAY compute the
 operator by any means, and the tolerances of <<numerical>> apply to the
 operator rather than to the evaluation of its body.
 

@@ -11,7 +11,7 @@
 
 This annex states the message definitions of the serialized form: 35 messages and 166 fields.
 
-The tag of a field is normative; it identifies the field on the wire and SHALL NOT be reused. A field marked mandatory SHALL be present. A field marked optional MAY be absent, and a <<consumer>> SHALL accept a message in which it is. A field marked repeated holds zero or more values. A field marked deprecated SHALL NOT be written by a <<producer>>, and a consumer that reads one SHALL ignore it.
+The tag of a field is normative; it identifies the field on the wire and SHALL NOT be reused. A field marked mandatory SHALL be present. A field marked optional MAY be absent, and a <<consumer,consumer>> SHALL accept a message in which it is. A field marked repeated holds zero or more values. A field marked deprecated SHALL NOT be written by a <<producer,producer>>, and a consumer that reads one SHALL ignore it.
 
 The obligations are those in force at the IR version stated in <<ir-version-specified>>.
 
