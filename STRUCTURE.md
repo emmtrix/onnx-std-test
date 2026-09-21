@@ -224,11 +224,11 @@ every such clause. The count rose from 16 notes to 44 across the three parts,
 which was not a regression: the new clauses — validation, security, inference,
 test vectors — are places the previous structure had no room to admit a gap in.
 
-A pass over the vendored upstream documentation has since closed 18 gaps,
-taking Part 1 from 34 editorial notes to 24 and the three parts together from
-44 to 34. (Twelve notes went; two new ones came, both in the narrow-type
-conversion rules, where reading the source closely raised a question the
-previous note had not seen.) The clauses concerned are the ones where ONNX does
+A pass over the vendored upstream documentation has since closed 20 gaps,
+taking Part 1 from 34 editorial notes to 25 and the three parts together from
+44 to 35. (Twelve notes went; three new ones came, all from reading the source
+closely: two in the narrow-type conversion rules, and one on the IR version
+this edition specifies, which turns out to be one ONNX has not published.) The clauses concerned are the ones where ONNX does
 state a rule and this document simply had not yet said so: the complete
 element type enumeration, the narrow types and their packing, broadcasting,
 denotation, opaque types, the model and its operator set imports, namespaces and subgraph

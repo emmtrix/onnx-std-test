@@ -3,6 +3,8 @@
 
 === Version axes
 
+==== General
+
 ONNX has three independent version axes:
 
 IR version:: the version of the structural and serialization rules given in
@@ -13,6 +15,44 @@ published in <<onnx-part-2>>.
 
 Model version:: an identifier assigned by the <<producer>>, opaque to this
 document.
+
+[[ir-version-specified]]
+==== The IR version this edition specifies
+
+This edition specifies IR version 14.
+
+[IMPORTANT]
+.Editorial note
+====
+IR version 14 is not published. The upstream schema carries it as the current
+version with its publication date given as "TBD", and it is the version that
+introduces `FLOAT6E2M3`, `FLOAT6E3M2` and the opaque type outside the ONNX-ML
+build --- all three of which this document specifies, in
+<<reduced-precision>> and <<opaque-types>>.
+
+A standard cannot specify an unpublished version of the thing it standardizes.
+Either this edition specifies IR version 13, and those three are removed from
+it and held for an amendment, or the Steering Committee publishes 14 first.
+The choice is theirs; it should not be made by whichever ONNX release happened
+to be vendored when the draft was written.
+
+<<tbl-ir-versions>> is the version history, from the upstream schema.
+====
+
+[[tbl-ir-versions]]
+.IR versions and what each introduced
+[cols="1,2,4"]
+|===
+| Version | Published | Introduced
+
+| 8  | 2021-07-30 | the sparse tensor and optional types; model-local functions
+| 9  | 2023-05-05 | attribute default values in a function; the four FP8 types
+| 10 | 2024-03-25 | `UINT4` and `INT4`; the function overload; metadata properties
+| 11 | 2025-05-12 | `FLOAT4E2M1`; multi-device configuration
+| 12 | 2025-08-26 | `FLOAT8E8M0`
+| 13 | 2025-11-06 | `UINT2` and `INT2`
+| 14 | not published | `FLOAT6E2M3` and `FLOAT6E3M2`; the opaque type outside the ONNX-ML build
+|===
 
 === IR version evolution
 
